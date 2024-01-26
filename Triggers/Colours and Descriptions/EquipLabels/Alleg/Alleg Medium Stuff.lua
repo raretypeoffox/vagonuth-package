@@ -1,0 +1,48 @@
+-- Trigger: Alleg Medium Stuff 
+-- Attribute: isActive
+
+
+-- Trigger Patterns:
+-- 0 (substring): an iron dha
+-- 1 (substring): a seething ball of blue flame
+-- 2 (substring): a rock hammer
+-- 3 (substring): a cape of angel feathers
+-- 4 (substring): green psi-blade
+-- 5 (substring): yellow psi-blade
+-- 6 (substring): a lavabomb
+-- 7 (substring): a green web veil
+-- 8 (substring): a heavy shroud
+-- 9 (substring): clasp of eternal anguish
+-- 10 (substring): an ice hound's tooth
+-- 11 (substring): a small steam gun
+-- 12 (substring): a unicorn horn
+-- 13 (substring): an ice collar
+-- 14 (substring): Ring of the white flame
+-- 15 (substring): a diamond dagger
+-- 16 (substring): a black whip
+-- 17 (substring): blue psi-blade
+-- 18 (substring): a dancing katana
+-- 19 (substring): a dancing rapier
+-- 20 (substring):  a sun staff
+-- 21 (substring): a stone hammer
+-- 22 (substring): golden sleeves
+-- 23 (substring): a viper fang
+-- 24 (substring): the Blade of Discord
+-- 25 (substring): exotic robes
+-- 26 (substring): devilish lance
+-- 27 (substring):  an aurora bow
+-- 28 (substring): a radiance of wickedness
+-- 29 (substring): stone platemail
+-- 30 (substring): a dancing dagger
+-- 31 (substring): a flametongue called 'Firebrand'
+-- 32 (substring): an obsidian sledgehammer
+-- 33 (substring): the earthen mace of might
+-- 34 (substring): a flaming phoenix feather
+-- 35 (substring):  signet of the Pure Flame
+-- 36 (substring):  the whip, "Death-Tamer"
+-- 37 (substring):  clear psi-blade
+-- 38 (substring): the staff of the lower planes
+-- 39 (substring): panthrodrine-skin leggings
+
+-- Script Code:
+cecho (string.rep (" ",80-tonumber(string.len(line))) .. "<yellow> [ALLEG - Medium]")
