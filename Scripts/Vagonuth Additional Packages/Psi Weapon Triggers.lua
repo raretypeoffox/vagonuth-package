@@ -58,9 +58,9 @@ function PSITrigger.Update()
       -- Record that we've looked up this Psi already
       PSITrigger.TriedLookUp[char] = true
 
-      if PPSITrigger.PsiTriggers[char] then -- If we have weapon details for this Psi, create a trigger
-        local w1name, w1keyword = PPSITrigger.PsiTriggers[char].w1name or nil, PPSITrigger.PsiTriggers[char].w1keyword or nil
-        local w2name, w2keyword = PPSITrigger.PsiTriggers[char].w2name or nil, PPSITrigger.PsiTriggers[char].w2keyword or nil
+      if PSIWeaponLookup[char] then -- If we have weapon details for this Psi, create a trigger
+        local w1name, w1keyword = PSIWeaponLookup[char].w1name or nil, PSIWeaponLookup[char].w1keyword or nil
+        local w2name, w2keyword = PSIWeaponLookup[char].w2name or nil, PSIWeaponLookup[char].w2keyword or nil
 
         if w1name and w1keyword then
           PSITrigger.Create(char, w1name, w1keyword)
@@ -85,6 +85,13 @@ function PSITrigger.Load()
   for char_name, psitrigger in pairs(PSIWeaponLookup) do
     PSITrigger.PsiTriggers[char_name] = psitrigger
   end
+end
+
+-- Called manually, for updating the PsiTrigger file for github upload
+-- Note local file will be overwritten everytime profile is launched
+function PSITrigger.Save()
+  table.save(PSITrigger.DownloadPath .. PSITrigger.Filename, PSITrigger.PsiTriggers)
+
 end
 
 function PSITrigger.DownloadFile()
