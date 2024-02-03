@@ -23,5 +23,5 @@ return {{[ [[Chronos]] ] = {2},[ [[Aginor]] ] = {3},[ [[Dazer]] ] = {4},[ [[Fors
 {[ [[w1name]] ] = [[a saber of pure light]],[ [[w1keyword]] ] = [[ky]],},
 {[ [[w1name]] ] = [[Sludge's fiery wield]],[ [[w1keyword]] ] = [[sludge]],},
 {[ [[w2name]] ] = [[ Fear]],[ [[w1keyword]] ] = [[pain]],[ [[w1name]] ] = [[ Pain]],[ [[w2keyword]] ] = [[fear]],},
-{[ [[w2name]] ] = [[a gnawed blood-splattered arm bone]],[ [[w1keyword]] ] = [[rawil]],[ [[w1name]] ] = [[a gnawed blood-splattered leg bone]],[ [[w2keyword]] ] = [[rawil2]],},
+{[ [[w2name]] ] = [[a gnawed blood-splattered arm bone]],[ [[w1keyword]] ] = [[rawil]],[ [[w1name]] ] = [[a gnawed blood-splattered leg bone]],[ [[w2keyword]] ] = [[rawil]],},
 }
