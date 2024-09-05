@@ -17,7 +17,7 @@ return {{[ [[Fango]] ] = {2},[ [[Ghaik]] ] = {3},[ [[Rancor]] ] = {4},[ [[Kaki]]
 {[ [[w2keyword]] ] = [[aginorwield]],[ [[w1keyword]] ] = [[aginoroffh]],[ [[w1name]] ] = [[Kiss of the Dragkhar]],[ [[w2name]] ] = [[Myrddraal's Blade]],},
 {[ [[w2keyword]] ] = [[spuati]],[ [[w1keyword]] ] = [[snuffle]],[ [[w1name]] ] = [[manna hat rack]],[ [[w2name]] ] = [[a tan ham crank]],},
 {[ [[w2keyword]] ] = [[eanruigo]],[ [[w1keyword]] ] = [[eanruigw]],[ [[w1name]] ] = [[Chondrite Longsword]],[ [[w2name]] ] = [[Chondrite Shortsword]],},
-{[ [[w1name]] ] = [[Blaset's Blaset-ing Sword]],[ [[w1keyword]] ] = [[mandel]],},
+{[ [[w2keyword]] ] = [[mandeljarofff]],[ [[w1keyword]] ] = [[mandeljar]],[ [[w1name]] ] = [[Mandel's Greater Sword]],[ [[w2name]] ] = [[Mandel's Great Sword]],},
 {[ [[w1name]] ] = [[CLICK CLICK]],[ [[w1keyword]] ] = [[calpchak]],},
 {[ [[w2name]] ] = [[zygarth]],[ [[w1keyword]] ] = [[zygarth]],[ [[w1name]] ] = [[Zygarth's silver sword]],},
 {[ [[w2name]] ] = [[Loradon's Justice]],[ [[w1keyword]] ] = [[islene]],[ [[w1name]] ] = [[Islene's Fury]],[ [[w2keyword]] ] = [[loradon]],},
