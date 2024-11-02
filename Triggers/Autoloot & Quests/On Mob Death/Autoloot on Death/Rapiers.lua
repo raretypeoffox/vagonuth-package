@@ -1,5 +1,4 @@
 -- Trigger: Rapiers 
--- Attribute: isActive
 
 
 -- Trigger Patterns:

@@ -63,7 +63,7 @@ function InitSessionXPOnLogin()
       if StatTable.Level ~= nil and StatTable.Level < 51 then 
         RunStats.SessionXp[StatTable.CharName].SessionStartLevel = StatTable.Level 
       else 
-        RunStats.SessionXp[StatTable.CharName].SessionStartLevel= StatTable.SubLevel 
+        RunStats.SessionXp[StatTable.CharName].SessionStartLevel = StatTable.SubLevel 
       end
     end)
   end
@@ -76,7 +76,7 @@ end
 
 
 safeEventHandler("InitSessionXPOnLoginID", "CustomProfileInit", "InitSessionXPOnLogin", false)
-safeEventHandler("KillRunStatsInitOnDisco", "sysDisconnectionEvent", function() safeKillTimer("RunStatsInit"); safeKillTimer("RunStatsInit2") end, false)
+safeEventHandler("KillRunStatsInitOnDisco", "sysDisconnectionEvent", function() RunStats.Reset(); safeKillTimer("RunStatsInit"); safeKillTimer("RunStatsInit2") end, false)
 
 
 function RunStats.Reset()

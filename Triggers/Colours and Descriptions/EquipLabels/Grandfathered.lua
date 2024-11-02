@@ -1,5 +1,4 @@
 -- Trigger: Grandfathered 
--- Attribute: isActive
 
 
 -- Trigger Patterns:

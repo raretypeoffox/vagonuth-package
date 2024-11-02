@@ -17,6 +17,7 @@ end
 GlobalVar.LastFletch = fletch
 echo("\nAutoFletch Triggered\n")
 echo("\nLast Fletch is: " .. GlobalVar.LastFletch .. "\n")
+display(AutoFletch.ArrowsFletched)
 
 coroutine.wrap(function()
  

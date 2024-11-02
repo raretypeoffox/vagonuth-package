@@ -29,6 +29,11 @@ function MobDeath.UpdateCommandCheck()
   MobDeath.CommandCheck["cast 'ether link'"] = StatTable.EtherLink or 0
   MobDeath.CommandCheck["cast 'ether warp'"] = StatTable.EtherWarp or 0
   
+  MobDeath.CommandCheck["cast 'dagger hand'"] = StatTable.DaggerHand or 0
+  MobDeath.CommandCheck["cast 'stone fist'"] = StatTable.StoneFist or 0
+  
+  MobDeath.CommandCheck["cast 'gravitas'"] = StatTable.Gravitas or 0
+  
   -- Paladin
   if (GlobalVar.PrayerName ~= "") then
     MobDeath.CommandCheck["cast prayer '" .. GlobalVar.PrayerName .. "'"] = StatTable.Prayer or 0
@@ -41,6 +46,9 @@ function MobDeath.UpdateCommandCheck()
   MobDeath.CommandCheck["cast 'kinetic chain'"] = StatTable.KineticChain or 0
   MobDeath.CommandCheck["cast 'stunning weapon'"] = StatTable.StunningWeapon or 0
   MobDeath.CommandCheck["cast savvy"] = StatTable.Savvy or 0
+  
+  -- Rogue-likes
+  MobDeath.CommandCheck["alertness"] = StatTable.Alertness or 0
 end
 
 
@@ -50,7 +58,7 @@ function OnMobDeath()
     MobDeath.UpdateCommandCheck()
     
     -- TODO better implementation
-    if (StatTable.Class == "Paladin" and StatTable.Oath ~= "") then
+    if (StatTable.Class == "Paladin" and StatTable.Oath ~= "" and GlobalVar.PaladinRescue) then
       if (StatTable.Level == 51 and StatTable.SubLevel >= 250 and StatTable.JoinedBoon == nil and StatTable.HeroicBoon == nil and StatTable.Foci) then TryAction("cast 'joined boon'",30) end
       if (StatTable.Level == 125 and StatTable.SharedBoon == nil and StatTable.ValorousBoon == nil and StatTable.FinalBoon == nil and StatTable.Foci) then TryAction("cast 'shared boon'",30) end
     end
@@ -76,8 +84,14 @@ function OnMobDeath()
       return
     end
     
+    -- Quick check to see if we still need to cast certain spells
+    if MobDeath.Queue[1] == "cast 'cure blindness'" and not StatTable.Blindness then
+      table.remove(MobDeath.Queue, 1)
+      return
+    end
+    
+    
     -- We have something in the queue and we passed our checks, let's try casting it!
- 
     pdebug("OnMobDeath(): Queue is positive with # of entries: " .. #MobDeath.Queue)
     pdebug("OnMobDeath(): Next command: " .. MobDeath.Queue[1])
     printGameMessageVerbose("OnMobDeath", "Trying: " .. MobDeath.Queue[1])

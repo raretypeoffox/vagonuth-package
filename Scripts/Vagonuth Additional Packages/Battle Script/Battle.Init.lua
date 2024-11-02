@@ -20,6 +20,19 @@ Battle.ActEventHandler = Battle.ActEventHandler or nil
 
 local ACT_WAIT_TIME_SECONDS = 0.5 -- constant, amount of time to wait before calling another loop of Battle.Act
 
+-- Adds compatability for people not running the inventory package
+function Battle.GetSpellLagMod()
+  if type(_G["GetSpellLagMod"]) == "function" then return GetSpellLagMod() else return 1 end
+end
+
+function Battle.GetSpellCostMod(spell_type)
+  if type(_G["GetSpellCostMod"]) == "function" then return GetSpellCostMod(spell_type) else return 1 end
+end
+
+function Battle.GetSkillLagMod()
+  if type(_G["GetSkillLagMod"]) == "function" then return GetSkillLagMod() else return 1 end
+end
+
 -- Note would cause a bug if Battle.NextAct was called while Battle.NextAction was already set, could build a queue system
 -- Should be fixed with the 'if Battle.NextAction' condition below, not an optimal solution though as doesn't consider lag
 function Battle.NextAct(NextAction, NextActionTime)
@@ -145,10 +158,10 @@ function Battle.AutoCast()
   local autocast_spell = GlobalVar.AutoCaster
   local nextaction = ""
   local surge_level = GlobalVar.SurgeLevel or 1
-  local spelllag = (5 * GetSpellLagMod()) -- assumes in class, ie 5 second, casting
+  local spelllag = (5 * Battle.GetSpellLagMod()) -- assumes in class, ie 5 second, casting
   
-  if GlobalVar.AutoCaster == "acid rain" or GlobalVar.AutoCaster == "meteo storm" or GlobalVar.AutoCaster == "banshee wail" or GlobalVar.AutoCaster == "storm of vengeance" then
-    spelllag = (6 * GetSpellLagMod())  
+  if GlobalVar.AutoCaster == "acid rain" or GlobalVar.AutoCaster == "meteor swarm" or GlobalVar.AutoCaster == "banshee wail" or GlobalVar.AutoCaster == "storm of vengeance" then
+    spelllag = (6 * Battle.GetSpellLagMod())  
   end
   
   -- If Quicken on, reduce spelllag
@@ -159,13 +172,15 @@ function Battle.AutoCast()
   
   if (StatTable.Level == 125) then
     autocast_minmana = 500
-    if (StatTable.Class == "Mage" or StatTable.Class == "Wizard" or StatTable.Class == "Stormlord") then
-      autocast_stopsurge = 7000
+    if (StatTable.Class == "Mage" or StatTable.Class == "Stormlord") then
+      autocast_stopsurge = (9000 * Battle.GetSpellCostMod("arcane")) or 7000
+    elseif (StatTable.Class == "Wizard") then
+      autocast_stopsurge = (10000 * Battle.GetSpellCostMod("arcane")) or 8000
     elseif (StatTable.Class == "Sorcerer") then
-      autocast_stopsurge = 8000
+      autocast_stopsurge = (10000 * Battle.GetSpellCostMod("arcane")) or 8000
     end
   elseif (StatTable.Level == 51) then
-    autocast_minmana = 200
+    autocast_minmana = 100
   elseif (StatTable.Level < 51) then
     autocast_minmana = 50
   end
@@ -190,15 +205,14 @@ function Battle.AutoCast()
         if StatTable.EtherCrash == 1 then 
           surge_level = 5
           AutoCastSetSpell(GlobalVar.AutoCasterSingle)
-        else
-          if StatTable.current_mana > (autocast_minmana * 2) then
-            surge_level = 5
-          else
-            surge_level = math.max(surge_level, 4)
-          end
         end
       end        
       
+
+      -- Add a surge level if current mana exceeds 4x the stop surge mana (eg 8000 mana * 4 = 32000 mana)
+      if surge_level == 2 and tonumber(gmcp.Char.Status.mana) > (autocast_stopsurge * 4) then
+        surge_level = surge_level + 1
+      end
       
       nextaction = "surge " .. surge_level .. getCommandSeparator() .. "cast '" .. autocast_spell .. "'" .. getCommandSeparator() .. "surge off"
       
@@ -212,8 +226,10 @@ function Battle.AutoCast()
 end
 
 function Battle.AutoHeal()
+  GlobalVar.AutoHealExclusionList = GlobalVar.AutoHealExclusionList or {}
+
   --pdebug("Called Battle.AutoHeal()")
-  local spelllag = (5 * GetSpellLagMod()) -- assumes in class, ie 5 second lag (div and comf are always in class)
+  local spelllag = (5 * Battle.GetSpellLagMod()) -- assumes in class, ie 5 second lag (div and comf are always in class)
   
   -- Could make these variable settings in the future
   local MonitorHPPct = (StatTable.Level == 125) and 0.875 or 0.725 -- at what % (expressed in decimal) should we auto heal at
@@ -222,7 +238,7 @@ function Battle.AutoHeal()
   local MinManaPct = (StatTable.Level == 125) and 0.15 or 0.25 -- at what mana level should we stop auto healing at
   local MinMana = (MinManaPct * StatTable.max_mana) or 0
   -- At Lord, save enough mana for create shrine + planeshift
-  --local MinMana = (StatTable.Level == 125) and (2500 * GetSpellCostMod("divine") + 500 * GetSpellCostMod("arcane")) or 300
+  --local MinMana = (StatTable.Level == 125) and (2500 * Battle.GetSpellCostMod("divine") + 500 * Battle.GetSpellCostMod("arcane")) or 300
   
   --lua print(((2500 * GetSpellCostModRacial(StatTable.Race, "divine") + 500 * GetSpellCostModRacial(StatTable.Race, "arcane"))))
   
@@ -236,10 +252,10 @@ function Battle.AutoHeal()
       if StatTable.CriticalInjured > 2 then
         return "augment 2" .. getCommandSeparator() .. "preach comfort" .. getCommandSeparator() .. "augment off", spelllag
       else
-        return "preach comfort", 7 * GetSpellLagMod()
+        return "preach comfort", 7 * Battle.GetSpellLagMod()
       end
     elseif StatTable.Level == 51 and PreachAtHero and StatTable.CriticalInjured > 2 then
-      return "preach divinity", 7 * GetSpellLagMod()
+      return "preach divinity", 7 * Battle.GetSpellLagMod()
     end
   end
   
@@ -254,6 +270,8 @@ function Battle.AutoHeal()
   if not HealTarget or not GlobalVar.GroupMates[HealTarget] or not GlobalVar.GroupMates[HealTarget].hp or not GlobalVar.GroupMates[HealTarget].maxhp then
     return nil, ACT_WAIT_TIME_SECONDS
   end
+  
+  if GlobalVar.AutoHealExclusionList[HealTarget] then return nil, ACT_WAIT_TIME_SECONDS end
   
   local HealTargetHPPct = GlobalVar.GroupMates[HealTarget].hp / GlobalVar.GroupMates[HealTarget].maxhp
 
@@ -273,13 +291,17 @@ function Battle.AutoHeal()
     end
   end
   
-  
+  if StatTable.current_mana < MinMana then
+    TryFunction("LowManaHealBeepMsg", printGameMessage, {"Alert!", "Low mana, not autohealing", "red", "white"}, 300)
+    TryFunction("LowManaHealBeep", QuickBeep, nil, 300)
+  end
+    
   return nil, ACT_WAIT_TIME_SECONDS
 end
 
 function Battle.AutoSkill()
   local nextaction = ""
-  local skilllag = (5 * GetSkillLagMod()) -- assumes in class, ie 5 second, casting- TODO: adjust base time, i.e. 5, for class/skill
+  local skilllag = (5 * Battle.GetSkillLagMod()) -- assumes in class, ie 5 second, casting- TODO: adjust base time, i.e. 5, for class/skill
   
   nextaction = GlobalVar.SkillStyle
 
@@ -344,3 +366,28 @@ Battle.KillEventHandlers()
 Battle.OnCombatEventHandler = registerAnonymousEventHandler("OnCombat", "Battle.OnCombat", false)
 Battle.EndCombatEventHandler = registerAnonymousEventHandler("EndCombat", "Battle.EndCombat", false)
 --Battle.ActEventHandler = registerAnonymousEventHandler("ActCombat", "Battle.Act", false)
+
+
+-- bug found:
+-- was trying to aug 2 comf a group mate in a big gear room
+-- 3 mobs died in quick sucession,
+-- aug 2; cast comf fired off 3 times in a row (once after each death)
+
+--augment 2;cast comfort Jampton;augment off
+
+--Donquixote utters the words, 'brimstone'.
+--Donquixote's brimstone strikes Kinetisch with terminal brutality!
+--Kinetisch is DEAD!!
+
+--Alwyn utters the words, 'meteor swarm'.
+--A torrent of meteors streams from Alwyn's hands at his foes!
+--Alwyn's Meteor Swarm strikes Leger with terminal brutality!
+--augment 2;cast comfort Jampton;augment off
+--Leger is DEAD!!
+
+--Alwyn's Meteor Swarm strikes Leger with >***ERADICATING***< brutality!
+--augment 2;cast comfort Jampton;augment off
+--Leger is DEAD!!
+
+--Pohi's air Banshee Wail strikes Leger with *ERADICATING* force!
+--augment 2;cast comfort Jampton;augment off

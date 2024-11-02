@@ -9,5 +9,4 @@
 -- 0 (regex): ^(\w+) is surrounded by black flames!!!
 
 -- Script Code:
-
 printGameMessage("Demonfire", matches[2] .. " has dfire!", "red", "white")

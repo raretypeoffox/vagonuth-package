@@ -13,6 +13,7 @@
 -- 7 (start of line): You form a magical vortex and step into it...
 -- 8 (start of line): Cast the spell on whom?
 -- 9 (start of line): You sense something large flying at you, and realize, with a thud, that it is the ground!
+-- 10 (start of line): You recall from combat!
 
 -- Script Code:
 raiseEvent("EndCombat")

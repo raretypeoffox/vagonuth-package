@@ -9,7 +9,7 @@
 
 if SafeArea() then return end
 
-if not (StatTable.Class == "Priest") then
+if not (StatTable.Class == "Priest") and not (StatTable.Position == "Sleep") then
   send("emote |BW| intervention|N| is down!")
   return
 end

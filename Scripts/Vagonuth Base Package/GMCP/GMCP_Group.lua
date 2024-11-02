@@ -15,8 +15,8 @@ function GMCP_Group()
     GlobalVar.GroupMates = {}
     GlobalVar.PsiInGroup = false
     
-    local InjuredPercent = 0.85
-    local CriticalPercent = 0.6
+    local InjuredPercent = StaticVars.InjuredPercent
+    local CriticalPercent = StaticVars.CriticalPercent
     
     local smallest_hppct = InjuredPercent -- swap monitors to groupie with lowest hp% < 85%
     local GroupList = gmcp.Char.Group.List or nil
@@ -25,7 +25,7 @@ function GMCP_Group()
     if not GroupList then return end
     
     -- Hide all the group labels
-    for index = 1, 32 do
+    for index = 1, StaticVars.MaxGroupLabels do
       GroupieTable[index]:hide()
     end
 
@@ -39,7 +39,7 @@ function GMCP_Group()
       UpdateGroupMateVitals(Player)
      
       -- Update GUI Groupmate table
-      if GlobalVar.GUI and GroupieTableIndex <= 32 then -- max 32 group labels
+      if GlobalVar.GUI and GroupieTableIndex <= StaticVars.MaxGroupLabels then
           UpdateGroupGUI(GroupieTableIndex, Player)
       end
     

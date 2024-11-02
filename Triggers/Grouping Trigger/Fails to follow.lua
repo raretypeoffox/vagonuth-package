@@ -6,5 +6,5 @@
 -- 0 (regex): ^(\w+) fails to follow$
 
 -- Script Code:
-if not GlobalVar.Silent then send("gtell |BR|" .. matches[2] .. " fails to follow!|N|") end
+printGameMessage("Missing Groupie", matches[2] .. " fails to follow!")
 

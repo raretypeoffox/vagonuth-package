@@ -1,5 +1,4 @@
 -- Trigger: rescue trigger on emote 
--- Attribute: isActive
 
 
 -- Trigger Patterns:

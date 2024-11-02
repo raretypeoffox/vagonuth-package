@@ -7,9 +7,8 @@
 
 -- Trigger Patterns:
 -- 0 (regex): ^You feel more confidence in your ability with (.*).$
--- 1 (start of line): You feel a brief tingling sensation all over your body.
+-- 1 (regex): ^Your mastery of (.*) has improved!$
 
 -- Script Code:
-if (GlobalVar.GUI and matches[2]) then
-  printGameMessage("Tingle!", matches[2], "purple", "yellow")
-end
+printGameMessage("Tingle!", matches[2], "purple", "yellow")
+TingleBeep()

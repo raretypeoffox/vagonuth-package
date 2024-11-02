@@ -1,5 +1,4 @@
 -- Trigger: Please hit enter to continue 
--- Attribute: isActive
 
 
 -- Trigger Patterns:
@@ -10,6 +9,8 @@
 -- 4 (start of line): |()()()()()()()()()()( Press <enter> to continue. )()()()()()()()()()()|
 -- 5 (start of line): |()()()()()()()()()( Press <enter> to continue. )()()()()()()()()()()()|
 -- 6 (start of line):  |()()()()()()()()()( Press <enter> to continue. )()()()()()()()()()()()|
+-- 7 (start of line):        The fun never stops, so stay sharp, stay vigilant, and most
+-- 8 (exact):  ======================================================================
 
 -- Script Code:
 send("look")

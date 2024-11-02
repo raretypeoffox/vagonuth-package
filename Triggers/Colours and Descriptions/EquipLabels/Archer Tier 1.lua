@@ -19,6 +19,7 @@
 -- 13 (substring): pelt of flame's perfection
 -- 14 (substring): hazy crystal sleeves
 -- 15 (substring): lava striders
+-- 16 (substring): mithril crusted tool belt
 
 -- Script Code:
 cecho (string.rep (" ",80-tonumber(string.len(line))) .. "<purple> [Archer T0-1]")

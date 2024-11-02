@@ -3,24 +3,26 @@
 
 
 -- Trigger Patterns:
--- 0 (regex): ^\w+ lordchats .*$
--- 1 (regex): ^\w+ herochats .*$
+-- 0 (regex): ^\w+ lordchats '.*'$
+-- 1 (regex): ^\w+ herochats '.*'$
 -- 2 (regex): ^You chat '.*'$
--- 3 (regex): ^\w+ chats '.*'$
--- 4 (regex): ^\S+ nchat.*'$
--- 5 (regex): ^You lordchat '.*'$
--- 6 (regex): ^You herochat '.*'$
--- 7 (regex): ^\S+ nChat.*'$
--- 8 (regex): ^\w+ quests.*$
--- 9 (regex): ^You quest.*$
--- 10 (start of line): [CREATION INFO]:
--- 11 (start of line): [HERO INFO]:
--- 12 (regex): ^An Immortal herochats '.*'$
--- 13 (regex): ^An Immortal lordchats '.*'$
--- 14 (regex): ^An Immortal chats '.*'$
--- 15 (regex): ^An Immortal nChats '.*'$
--- 16 (start of line): [GROUP INFO]:
--- 17 (start of line): [DEATH INFO]:
+-- 3 (regex): ^\[?\S+\]? n?(c|C)hats '.*'$
+-- 4 (regex): ^You lordchat '.*'$
+-- 5 (regex): ^You herochat '.*'$
+-- 6 (regex): ^\w+ quests '.*'$
+-- 7 (regex): ^You quest '.*'$
+-- 8 (start of line): [CREATION INFO]:
+-- 9 (start of line): [HERO INFO]:
+-- 10 (regex): ^An Immortal herochats '.*'$
+-- 11 (regex): ^An Immortal lordchats '.*'$
+-- 12 (regex): ^An Immortal chats '.*'$
+-- 13 (regex): ^An Immortal nChats '.*'$
+-- 14 (start of line): [GROUP INFO]:
+-- 15 (start of line): [DEATH INFO]:
+-- 16 (regex): ^\w+ teamchats '.*'$
+-- 17 (regex): ^You teamchat '.*'$
+-- 18 (regex): ^\w+ legendchats '.*'$
+-- 19 (regex): ^You legendchat '.*'$
 
 -- Script Code:
 selectString(line,1)

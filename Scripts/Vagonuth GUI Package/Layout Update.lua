@@ -63,6 +63,12 @@ function setNextAvailableLabel(...)
   end
 end
 
+function setNextAvailableLabelIfActive(Stat, labelShort, labelLong, command)
+    if Stat then
+        setNextAvailableLabel(Stat, labelShort, labelLong, command)
+    end
+end
+
 function setNextAvailableLabelExhaust(...)
   for _, label in ipairs(Layout.Labels) do
     if label.hidden then
@@ -137,7 +143,16 @@ function UpdateGUI()
       
       -- Lag / Qi / Savespell
       LagLabel:echo("<center>lag: " .. tonumber(gmcp.Char.Vitals.lag) .. "</center>")
-      
+      if StatTable.Class == "Bladedancer" then
+        if StatTable.BladetranceLevel > 0 then
+          applyLabelStyle(QiLabel, "green", "green")
+          QiLabel:echo("<center>BT " .. StatTable.BladetranceLevel .. "</center>")   
+        else
+          applyLabelStyle(QiLabel, "yellow", "rgba(255, 0, 0, 0.5)")   
+          QiLabel:echo("<center>BT off" .. "</center>")
+        end
+        
+      end
 
 
       if StatTable.Savespell then
@@ -180,7 +195,7 @@ function UpdateGUI()
       setLabelProperties(SteelLabel, StatTable.SteelSkeleton, "Steel", "Steel Skel.", "cast 'steel skeleton'")
       setLabelProperties(IronLabel, StatTable.IronSkin, "Iron", "Iron Skin", "cast 'iron skin'")
       setLabelProperties(ConcentrateLabel, StatTable.Concentrate, "Concen", "Concentrade", "cast concentrate")
-      setLabelProperties(WerreLabel, StatTable.Werrebocler, "Bocler", "Werrebocler", "")
+      setLabelProperties(WerreLabel, StatTable.Werrebocler, "Bocler", "Werrebocler", "cast werrebocler")
       
       -- Custom labels for classes / races (rows 6+)
       
@@ -218,7 +233,11 @@ function UpdateGUI()
         if StatTable.Immolation then setNextAvailableLabel(StatTable.Immolation, "Immo", "Immo", "") end
         if StatTable.AstralPrison then setNextAvailableLabel(StatTable.AstralPrison, "Astral", "Astral", "") end
         
+        if StatTable.EmotiveDrainExhaust then setNextAvailableLabelExhaust(StatTable.EmotiveDrain, StatTable.EmotiveDrainExhaust, "Emotive", "Emotive", "cast 'emotive drain'") end
+        if StatTable.BrimstoneExhaust then setNextAvailableLabelExhaust(nil, StatTable.BrimstoneExhaust, "Brimstone", "Brimstone", "") end
       elseif MyClass == "Rogue" then
+        setNextAvailableLabel(StatTable.Alertness, "Alert", "Alertness", "alertness")
+      elseif MyClass == "Assassin" then
         setNextAvailableLabel(StatTable.Alertness, "Alert", "Alertness", "alertness")
       
       elseif MyClass == "Bladedancer" then
@@ -233,6 +252,7 @@ function UpdateGUI()
           setNextAvailableLabelExhaust(StatTable.VeilTimer, StatTable.VeilExhaust, "Veil", "Veil of Blades", "stance veil of blades") 
           setNextAvailableLabelExhaust(StatTable.UnendTimer, StatTable.UnendExhaust, "Unending", "Unending Dance", "stance unending dance") 
         end
+        if StatTable.IronVeil then setNextAvailableLabel(StatTable.IronVeil, "Iron Veil", "Iron Veil", "") end
         
       elseif(MyClass == "Cleric") then
         setNextAvailableLabel(StatTable.Acumen, "Acumen", "Acumen", "cast acumen")
@@ -262,7 +282,7 @@ function UpdateGUI()
         
         setNextAvailableLabel(GlobalVar.VizFinalRites and "On" or nil, "Final Rites", "Final Rites", "cast 'final rites'")
         if MyLevel == 125 and MySubLevel >= 100 then
-          setNextAvailableLabel(GlobalVar.VizSoulShackle and "On" or nil, "Soul Shackle", "Soul Shackle", "cast 'soul shackle'" .. getCommandSeparator() .. "stance soul") 
+          setNextAvailableLabel(GlobalVar.VizSoulShackle and "On" or nil, "Soul Shackle", "Soul Shackle", "stance soul'" .. getCommandSeparator() .. "cast 'soul shackle'") 
         end
         
       elseif(MyClass == "Priest") then
@@ -276,6 +296,7 @@ function UpdateGUI()
         setNextAvailableLabelExhaust(StatTable.EmuStance, StatTable.EmuStanceExhaust, "Emu Stance", "Emu", "stance emu")
         setNextAvailableLabelExhaust(StatTable.TigerStance, StatTable.TigerStanceExhaust, "Tiger Stance", "Tiger", "stance tiger")
         setNextAvailableLabel(StatTable.DaggerHand, "Dagger", "Dagger Hand", "cast 'dagger hand'")
+        setNextAvailableLabel(StatTable.StoneFist, "Stone Fist", "Stone Fist", "cast 'stone fist'")
         if MyLevel == 125 then
           setNextAvailableLabel(StatTable.BlindDevotion, "Blind Dev.", "Blind Devotation", "cast 'blind devotion'")
           setNextAvailableLabel(StatTable.Consummation, "Consummation", "Consummation", "cast consummation")
@@ -287,6 +308,7 @@ function UpdateGUI()
         setNextAvailableLabelExhaust(StatTable.VampireFang, StatTable.VampireFangExhaust, "Vampire", "Vampire Fang", "stance vampire")
         setNextAvailableLabelExhaust(StatTable.SpectralFang, StatTable.SpectralFangExhaust, "Spectral", "Spectral Fang", "stance spectral")
         setNextAvailableLabel(StatTable.DaggerHand, "Dagger", "Dagger Hand", "cast 'dagger hand'")
+        setNextAvailableLabel(StatTable.StoneFist, "Stone Fist", "Stone Fist", "cast 'stone fist'")
         if MyLevel == 125 then setNextAvailableLabel(StatTable.Consummation, "Consummation", "Consummation", "cast consummation") end
       
       
@@ -344,10 +366,24 @@ function UpdateGUI()
         setNextAvailableLabelExhaust(StatTable.KineticChain, StatTable.KineticChainExhaust, "Kin Chain", "Kinetic Chain", "cast 'kinetic chain'") 
         setNextAvailableLabel(StatTable.FuryOfTheMind, "Fury", "Fury Of The Mind", "cast 'fury of the mind'")
         setNextAvailableLabel(StatTable.MindsEye, "Minds Eye", "Minds Eye", "cast 'minds eye'")
-        setNextAvailableLabel(StatTable.StunningWeapon, "Stun Wpn", "Stun Wpn", "cast 'stunning weapon'")
+        setNextAvailableLabel(StatTable.Orbit, "Orbit", "Orbit", "")
+        
+        if MyLevel == 125 and MySubLevel >= 200 then
+          setNextAvailableLabel(StatTable.Gravitas, "Gravitas", "Gravitas", "cast 'gravitas'")
+        end
+        setNextAvailableLabelIfActive(StatTable.StunningWeapon, "Stun Wpn", "Stun Wpn", "cast 'stunning weapon'")
+        setNextAvailableLabelIfActive(StatTable.DistractingWeapon, "Distract Wpn", "Distract Wpn", "cast 'distracting weapon'")
+        setNextAvailableLabelIfActive(StatTable.DisablingWeapon, "Disable Wpn", "Disable Wpn", "cast 'disabling weapon'")
+        setNextAvailableLabelIfActive(StatTable.RestrictingWeapon, "Rest Wpn", "Restrict Wpn", "cast 'restricting weapon'")
+        setNextAvailableLabelIfActive(StatTable.FellingWeapon, "Fell Wpn", "Fell Wpn", "cast 'felling weapon'")
+        setNextAvailableLabelIfActive(StatTable.ConsciousWeapon, "Consc Wpn", "Conscious Wpn", "cast 'conscious weapon'")
+        setNextAvailableLabelIfActive(StatTable.IntelligentWeapon, "Intell Wpn", "Intell Wpn", "cast 'intelligent weapon'")
+        setNextAvailableLabelIfActive(StatTable.EmpathicResonance, "Emp. Res.", "Emp. Res.", "")
       elseif (StatTable.Class == "Mindbender") then
         setNextAvailableLabel(StatTable.Savvy, "Savvy", "Savvy", "cast savvy")
         setNextAvailableLabel(StatTable.MindsEye, "Minds Eye", "Minds Eye", "cast 'minds eye'")
+        setNextAvailableLabel(StatTable.EmpathicResonance, "Emp. Res.", "Emp. Res.", "cast 'empathic resonance'")
+        
 
       end -- end of MyClass
       
@@ -362,50 +398,58 @@ function UpdateGUI()
         setNextAvailableLabelExhaust(StatTable.RacialRevival, StatTable.RacialRevivalFatigue, "Revival", "Revival", "racial revival")
       elseif (MyRace == "Ignatur") then
         setNextAvailableLabelExhaust(StatTable.RacialFireaura, StatTable.RacialFireauraFatigue, "Fire Aura", "Fire Aura", "racial fireaura")
-        setNextAvailableLabelExhaust(StatTable.RacialInnervate, StatTable.RacialInnervateFatigue, "Innervate (" .. (StatTable.RacialInnervateRegen or 0) .. "%)", "Innervate", "racial innvervate")
+        setNextAvailableLabelExhaust(StatTable.RacialInnervate, StatTable.RacialInnervateFatigue, "Innervate (" .. (StatTable.RacialInnervateRegen or 0) .. "%)", "Innervate", "racial innervate")
         
         
       elseif (MyRace == "Golem") then
         setNextAvailableLabelExhaust(StatTable.RacialGalvanize, StatTable.RacialGalvanizeFatigue, "Galvanize", "Galvanize", "racial galvanize")
-      
+      elseif (MyRace == "Dragon") then
+        setNextAvailableLabelExhaust(nil, StatTable.RacialRoarFatigue, "Roar", "Roar", "racial roar")
       end -- end of MyRace
       
       -- Labels to only show when they affect you
       
       if StatTable.Intervention and MyClass ~= "Priest" then
-        setNextAvailableLabel(StatTable.Intervention, "Interv.", "Intervention", "cast intervention")
-      end 
+        setNextAvailableLabel(StatTable.Intervention, "Interv.", "Intervention", "")
+      end
+      
+      if StatTable.Solitude  and MyClass ~= "Priest" then
+        setNextAvailableLabel(StatTable.Solitude, "Solitude", "Solituden", "")
+      end  
       
       if StatTable.Regeneration then
         setNextAvailableLabel(StatTable.Regeneration, "Regen", "Regen", "cast regeneration")
       end
       
+      
       if MyClass ~= "Cleric" and StatTable.ArtificerBlessingAura then setNextAvailableLabel(StatTable.ArtificerBlessingAura, "Art Bless Aura", "Art Bless Aura", "") end
+      
+
+      -- Misc buffs
+      if StatTable.HandOfGod then setNextAvailableLabel(StatTable.HandOfGod, "HOG!!!", "HOG!!!", "") end
+      if StatTable.Endurance then setNextAvailableLabel(StatTable.Endurance, "Endur.", "Endurance", "cast endurance") end
       
       -- Racial fatigues
 
       if StatTable.RacialBreathFatigue then setNextAvailableLabelDebuff(StatTable.RacialBreathFatigue, "Breath") end
 
       -- Debuffs
-      if StatTable.Calm then setNextAvailableLabelDebuff(StatTable.Calm, "Calm") end
-      if StatTable.Fear then setNextAvailableLabelDebuff(StatTable.Fear, "Fear") end
-      if StatTable.Poison then setNextAvailableLabelDebuff(StatTable.Poison, "Poison") end
-      if StatTable.Curse then setNextAvailableLabelDebuff(StatTable.Curse, "Curse") end
-      if StatTable.Demonfire then setNextAvailableLabelDebuff(StatTable.Demonfire, "Demonfire") end
-      if StatTable.Virus then setNextAvailableLabelDebuff(StatTable.Virus, "Virus") end
-      if StatTable.Biotoxin then setNextAvailableLabelDebuff(StatTable.Biotoxin, "Biotoxin") end
-      if StatTable.Venom then setNextAvailableLabelDebuff(StatTable.Venom, "Venom") end
-      if StatTable.Toxin then setNextAvailableLabelDebuff(StatTable.Toxin, "Toxin") end
-      if StatTable.DoomToxin then 
-        setNextAvailableLabelDebuff(StatTable.DoomToxin, "Doom Toxin")
-        if IsMDAY() then send("gtell |BR|doom toxin!|N|"); send("gtell panacea")
-        else send("emote is afflicted with |BR|DOOM TOXIN|N|!") end
+      local function debuff_label(debuff)
+        if StatTable[debuff] then setNextAvailableLabelDebuff(StatTable[debuff], debuff) end
       end
-      if StatTable.Flash then setNextAvailableLabelDebuff(StatTable.Flash, "Flash") end
-      if StatTable.Weaken then setNextAvailableLabelDebuff(StatTable.Weaken, "Weaken") end
-      if StatTable.Overconfidence then setNextAvailableLabelDebuff(StatTable.Overconfidence, "Overconfidence") end
-      if StatTable.Scramble then setNextAvailableLabelDebuff(StatTable.Scramble, "Scramble") end
       
+      local Debuffs = {"Calm", "Blindness", "Heartbane", "Fear", "Poison", "Curse", "Demonfire", "Virus", 
+      "Biotoxin", "Venom", "Toxin", "DoomToxin", "Flash", "Weaken", "Overconfidence", "Scramble", "Panic", 
+      "Unrest", "WaterBreathingExhaust", "GiantStrengthExhaust", "FlyExhaust", "CureLightExhaust"}
+      
+      for _, debuff in ipairs(Debuffs) do
+        debuff_label(debuff)
+      end
+      
+      if StatTable.DoomToxin then
+        if IsMDAY() then TryAction("gtell |BR|doom toxin!|N|", 60); TryAction("gtell panacea", 60)
+        else TryAction("emote is afflicted with |BR|DOOM TOXIN|N|!", 60) end
+      end      
       
 
 end

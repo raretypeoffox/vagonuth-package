@@ -17,12 +17,12 @@
 
 if matches.mobname == StatTable.CharName then return end
 
-if StatTable.Level == 125 then
+if StatTable.Level == 125  then
 
-  if checkItemIsAlleg(matches.item) then
+  if type(checkItemIsAlleg) == "function" and checkItemIsAlleg(matches.item) then
     printGameMessage("Alleg!", "Looted " .. matches.item, "yellow", "white")
     alleg_item = getAllegKeyword(matches.item)
-    if IsMDAY() then
+    if IsMDAY() or not Grouped() then
       send("put '" .. alleg_item .. "' " .. StaticVars.AllegBagName)
     else
       if GlobalVar.GroupLeader ~= StatTable.CharName then 
@@ -32,11 +32,7 @@ if StatTable.Level == 125 then
     
   elseif StaticVars.Junk[matches.item] then 
     send("drop '" .. StaticVars.Junk[matches.item] .. "'")
-    --if GlobalVar.MDAY then
-    --  send("gtell Dropped junk: " .. matches.item)
-    --else 
     printGameMessageVerbose("Junk", "Dropped " .. matches.item)
-    --end
   end
 end
 

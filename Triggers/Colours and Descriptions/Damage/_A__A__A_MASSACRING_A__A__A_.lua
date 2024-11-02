@@ -6,4 +6,4 @@
 -- 0 (substring):  ***MASSACRING***
 
 -- Script Code:
-cecho (string.rep (" ",85-tonumber(string.len(line))) .."<green> [957 - 1000]")
+cecho (string.rep (" ",85-tonumber(string.len(line))) .."<green> [951 - 1000]")

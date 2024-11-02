@@ -13,6 +13,7 @@ local DoNotArea_RoomList = {
   "Yet another room name",
   "Ponderous Flowers",
   "A menagerie",
+  "A tiny cell",
 }
 
 local DoNotArea_MobList = {
@@ -43,7 +44,7 @@ end
 -- AutoCastSpellSwap()
 -- Called whenever gmcp.Room.Players is updated (eg, on look, on move to new room)
 function AutoCastSpellSwap()
-  if (StatTable.Class ~= "Wizard" and StatTable.Class ~= "Mage") then 
+  if (StatTable.Class ~= "Wizard" and StatTable.Class ~= "Mage" and StatTable.Level ~= 250) then 
     return 
   end
   
@@ -112,7 +113,7 @@ end
 
 -- Called whenever a mob is killed
 function AutoCastOnMobDeath()
-  if (GlobalVar.AutoCaster == GlobalVar.AutoCasterAOE and (StatTable.Class == "Mage" or StatTable.Class == "Wizard")) then
+  if (GlobalVar.AutoCaster == GlobalVar.AutoCasterAOE and (StatTable.Class == "Mage" or StatTable.Class == "Wizard" or StatTable.Level == 250)) then
     GlobalVar.MobCount = GlobalVar.MobCount - 1
     UpdateAutoCastSpell()
   end

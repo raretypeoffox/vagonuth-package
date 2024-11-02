@@ -6,8 +6,11 @@
 -- Script Code:
 args = matches[2] or nil
 
+printMessage("Note", "You can now use autoskill <skill> or as <skill> for short", "yellow", "white")
+
+
 if not args or args == "" then
-  showCmdSyntax("SkillStyle\n\tSyntax: skillstyle <style>", {{"autoskill (on|off)", "whether to attack with skillstyle during battle"},{"skillstyle <style>", "what autoskill style to use in battle (eg smash)"},})
+  showCmdSyntax("SkillStyle\n\tSyntax: skillstyle <style>", {{"autoskill (on|off|<skill>)", "whether to auto use <skill> during battle, turn on / off"},{"skillstyle <style>", "what autoskill style to use in battle (eg smash)"},})
   return
 end
 

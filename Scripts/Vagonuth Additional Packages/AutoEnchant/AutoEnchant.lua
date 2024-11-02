@@ -13,7 +13,7 @@ AutoEnchantTable.Status = AutoEnchantTable.Status or false
 AutoEnchantTable.Item = AutoEnchantTable.Item or ""
 AutoEnchantTable.ItemType = AutoEnchantTable.ItemType or ""
 AutoEnchantTable.ID = AutoEnchantTable.ID or 0
-AutoEnchantTable.Container = "icesphere"
+AutoEnchantTable.Container = AutoEnchantTable.Container or "icesphere"
 AutoEnchantTable.Brills = AutoEnchantTable.Brills or 0
 AutoEnchantTable.debug = AutoEnchantTable.debug or true
 AutoEnchantTable.BaseLevel = 125 --51 for hero, 125 for lord
@@ -67,6 +67,8 @@ function AutoEnchantReset()
 end
 
 function AutoEnchantTry()
+  local AutoEnchantWeaponMaxLevel = 4
+  local AutoEnchantArmorMaxLevel = 2
 
   if (AutoEnchantTable.ID == 0) then
     send("look " .. AutoEnchantTable.Item)
@@ -76,11 +78,11 @@ function AutoEnchantTry()
     send("cast identify " .. AutoEnchantTable.Item)
     -- AutoEnchantTable.ID = 1 --moved to trigger
   else
-    if ((AutoEnchantTable.ItemType == "bow" or AutoEnchantTable.ItemType == "weapon") and AutoEnchantTable.ItemLevel > (AutoEnchantTable.BaseLevel + 4)) then
+    if ((AutoEnchantTable.ItemType == "bow" or AutoEnchantTable.ItemType == "weapon") and AutoEnchantTable.ItemLevel > (AutoEnchantTable.BaseLevel + AutoEnchantWeaponMaxLevel)) then
       AutoEnchantPrint(AutoEnchantTable.ItemType .. " is level " .. AutoEnchantTable.ItemLevel .. ", putting in bag")
       send("put " .. AutoEnchantTable.Item .. " " .. AutoEnchantTable.Container)
       AutoEnchantReset()
-    elseif (AutoEnchantTable.ItemType == "armor" and AutoEnchantTable.ItemLevel > (AutoEnchantTable.BaseLevel + 2)) then
+    elseif (AutoEnchantTable.ItemType == "armor" and AutoEnchantTable.ItemLevel > (AutoEnchantTable.BaseLevel + AutoEnchantArmorMaxLevel)) then
       send("put " .. AutoEnchantTable.Item .. " " .. AutoEnchantTable.Container)
       AutoEnchantReset()
     else
@@ -107,14 +109,17 @@ function AutoEnchantBrill()
 end
 
 function AutoEnchantAddLevel()
+  local WeaponMaxLevel = 2 -- should usually be 4 but switch to 2 when autoweapon being used on special armor (eg gith hands)
+  local ArmorMaxLevel = 2
+
   AutoEnchantTable.ItemLevel = AutoEnchantTable.ItemLevel + 1
   
-  if ((AutoEnchantTable.ItemType == "bow" or AutoEnchantTable.ItemType == "weapon") and AutoEnchantTable.ItemLevel > (AutoEnchantTable.BaseLevel + 4)) then
+  if ((AutoEnchantTable.ItemType == "bow" or AutoEnchantTable.ItemType == "weapon") and AutoEnchantTable.ItemLevel > (AutoEnchantTable.BaseLevel + WeaponMaxLevel)) then
       printGameMessage("AutoEnchant", "Max Level, moving to bag")
       send("put " .. AutoEnchantTable.Item .. " " .. AutoEnchantTable.Container)
       AutoEnchantReset()
       return false
-  elseif (AutoEnchantTable.ItemType == "armor" and AutoEnchantTable.ItemLevel > (AutoEnchantTable.BaseLevel + 2)) then
+  elseif (AutoEnchantTable.ItemType == "armor" and AutoEnchantTable.ItemLevel > (AutoEnchantTable.BaseLevel + ArmorMaxLevel)) then
       printGameMessage("AutoEnchant", "Max Level, moving to bag")
       send("put " .. AutoEnchantTable.Item .. " " .. AutoEnchantTable.Container)
       AutoEnchantReset()

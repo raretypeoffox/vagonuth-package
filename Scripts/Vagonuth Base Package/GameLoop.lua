@@ -51,7 +51,7 @@
         if not Grouped() then return end -- don't autostance if solo'ing as bld at lord
         
         -- Break trance at 700 mana to save mana for swapping stances or planing thorn
-        if StatTable.Bladetrance and StatTable.current_mana < 700 then TryAction("bladetrance break", 10) end
+        if StatTable.BladetranceLevel > 0 and StatTable.current_mana < 700 then TryAction("bladetrance break", 10) end
         
         -- If we've manually set a nextstance, we'll do that one
         if GlobalVar.NextStance and
@@ -88,7 +88,7 @@
                (StatTable.UnendTimer and StatTable.UnendTimer < (StanceTimer + 2)) then
                
           TryAction("stance inspiring dance",10)
-          if StatTable.Bladetrance and StatTable.Bladetrance > 0 then TryAction("bladetrance break", 10) end
+          if StatTable.Bladetrance then TryAction("bladetrance break", 10) end
         
         -- Emote when epiphany is near
         elseif StatTable.InspireTimer and StatTable.InspireTimer == StanceTimer then
@@ -109,7 +109,6 @@
           elseif not StatTable.DervishExhaust then TryAction("stance dervish", 10) end
         end
       
-      
       end
     elseif MyClass == "Warrior" then
       if not GlobalVar.AutoStance then return end -- only swap if GlobalVar.AutoStance is on
@@ -128,8 +127,7 @@
         if StatTable.StanceProtectiveExhaust then UseSkillAfterExhaust(StatTable.StanceSurefoot, StatTable.StanceSurefootExhaust, "stance surefoot") end
       else
         UseSkillAfterExhaust(StatTable.StanceSurefoot, StatTable.StanceSurefootExhaust, "stance surefoot")
-      end
-      
+      end      
       if not StatTable.Alertness and Grouped() and StatTable.current_moves > 1000 and TryLock("GameLoopAlertness", 30) then Battle.DoAfterCombat("alertness") end
       
     elseif MyClass == "Ripper" then
@@ -161,8 +159,21 @@
       end
     elseif MyClass == "Shadowfist" then
       if not GlobalVar.AutoStance then return end -- only swap if GlobalVar.AutoStance is on
-      if StatTable.Level == 51 and StatTable.SubLevel > 100 then
-        UseSkillAfterExhaust(StatTable.SpectralFang, SpectralFangExhaust, "stance spectral fang")
+      if StatTable.ArmorClass > -1000 and StatTable.Level == 51 then
+        if not StatTable.DaggerHand then
+          TryFunction("GameLoopDaggerHand", Battle.DoAfterCombat, {"cast 'dagger hand'"}, 60)       
+        end
+      end
+      if StatTable.Level == 125 or StatTable.SubLevel > 100 then
+      
+        -- Vampire fang will be prioritzed when health is less than 75% max, otherwise spectral is prioritized
+        if not StatTable.VampireFangExhaust and StatTable.current_health < (StatTable.max_health * 0.75) then
+          UseSkillAfterExhaust(StatTable.VampireFang, StatTable.VampireFangExhaust, "stance vampire fang")
+        else
+          UseSkillAfterExhaust(StatTable.SpectralFang, StatTable.SpectralFangExhaust, "stance spectral fang")
+          if StatTable.SpectralFangExhaust then UseSkillAfterExhaust(StatTable.VampireFang, StatTable.VampireFangExhaust, "stance vampire fang") end
+        end
+        
       end    
     elseif MyClass == "Soldier" then
       if not GlobalVar.AutoStance then return end -- only swap if GlobalVar.AutoStance is on
@@ -186,6 +197,8 @@
     elseif MyClass == "Priest" then
          
      
+    elseif MyClass == "Psionicist" then
+
     end -- end of MyClass
  end
  
@@ -201,6 +214,11 @@
    elseif MyRace == "Kzinti" then
    
       if (StatTable.Level == 125 and StatTable.DamRoll > 200) or (StatTable.Level == 51 and StatTable.DamRoll >  100) then
+        UseSkillAfterExhaust(StatTable.RacialFrenzy, StatTable.RacialFrenzyFatigue, "racial frenzy")
+      end
+      
+  elseif MyRace == "Orc" then
+      if (StatTable.Level == 125 and (StatTable.DamRoll > 200 or StatTable.HitRoll > 200)) or (StatTable.Level == 51 and (StatTable.DamRoll >  100 or StatTable.HitRoll > 100)) then
         UseSkillAfterExhaust(StatTable.RacialFrenzy, StatTable.RacialFrenzyFatigue, "racial frenzy")
       end
   elseif MyRace == "Ignatur" then
@@ -219,19 +237,19 @@
   
   local MyClass = StatTable.Class
   local MyRace = StatTable.Race
-  --printGameMessage("GameLoop", "Called")
+  
+  if not MyClass or not MyRace then return end
   
   -- Misc Run Scripts
-  if (StatTable.current_health == StatTable.max_health and StatTable.current_mana == StatTable.max_mana and StatTable.Foci and StatTable.Position == "Sleep" and not SafeArea()) then TryAction("stand",100) end
+  if (StatTable.current_health == StatTable.max_health and StatTable.current_mana == StatTable.max_mana and StatTable.Foci and StatTable.Position == "Sleep" and (not SafeArea() or Grouped())) then TryAction("stand",100) end
   
-  if MyClass ~= "Sorcerer" and MyClass ~= "Shadowfist" and StatTable.Alignment < 750 and StatTable.Level >= 51 then
+  if MyClass ~= "Sorcerer" and MyClass ~= "Shadowfist" and MyRace ~= "Demonseed" and StatTable.Alignment < 750 and StatTable.Level >= 51 then
     if (MyClass == "Priest" and StatTable.Level == 125 and StatTable.CriticalInjured == 0) then
-      TryAction("preach absolve",60)
+      TryAction("quicken 3" .. getCommandSeparator() .. "preach absolve" .. getCommandSeparator() .. "quicken off",60)
     else
-      
-      --printGameMessage("Alignment", "Align has dropped below 750")
+
       if IsMDAY then TryAction("emote alignment has dropped below 750 - please |BW|preach absolve|N|", 600) end
-      --TryAction("gtell Align has dropped below 750 - please |BW|preach absolve|N|", 600)
+
     end
   end
   
@@ -278,20 +296,25 @@
         end
       end
       if (StatTable.Poison or StatTable.Virus or StatTable.Weaken) and (StatTable.CriticalInjured == 0 or not Battle.Combat) then
-        --TryCast("preach panacea", 30)
-        if TryFunction("PreachPanacea", Battle.NextAct, {"preach panacea", 7}, 15) then
+
+        if TryFunction("PreachPanacea", Battle.NextAct, {"quicken 5" .. getCommandSeparator() .. "preach panacea" .. getCommandSeparator() .. "quicken off", 7}, 15) then
           printGameMessage("GameLoop", "Attempting to preach panacea")
         end
       end
     end
       
   end
+  
+  
   -- Call Class and Race specific GameLoops if we are in combat
   if Battle.Combat then
     GameLoopClass(MyClass)
     GameLoopRace(MyRace)
     
-  end --end if Battle.Combat
+  elseif not SafeArea() then -- out of combat stuff, not in safe area
+    if MyClass == "Cleric" then castPantheonSpell() end
+    if MyClass == "Psionicist" then castKineticEnhancers() end
+  end
     
     if StatTable.Level == 125 then
       if StatTable.Curse and StatTable.Curse ~= "continuous" and
@@ -300,7 +323,7 @@
         -- 
         if not Battle.Combat then TryAction("cast 'remove curse'", 60) end
       elseif StatTable.Curse and StatTable.Class == "Priest" then
-        TryAction("preach absolve", 30)   
+        TryAction("quicken 3" .. getCommandSeparator() .. "preach absolve" .. getCommandSeparator() .. "quicken off", 30)   
       end
     end
 

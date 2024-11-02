@@ -1,8 +1,8 @@
 -- Alias: cleardirs
 -- Attribute: isActive
 
--- Pattern: ^cleardirs$
+-- Pattern: ^(i?)(clear|reset)dirs$
 
 -- Script Code:
-print("Directions cleared")
-GlobalVar.LastDirs = {}
+printMessage("Directions" ,"Cleared")
+ClearDirs()

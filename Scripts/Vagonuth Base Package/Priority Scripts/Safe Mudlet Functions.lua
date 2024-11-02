@@ -21,34 +21,36 @@ function safeTempTimer(id, time, func, repeating)
   end
   
   safeTimerTable[id] = tempTimer(time, func, repeating)
+  return safeTimerTable[id]
 end
 
 function safeKillTimer(id)
   if safeTimerTable[id] then
-    killTimer(safeTimerTable[id])
+    local retval = killTimer(safeTimerTable[id])
     safeTimerTable[id] = nil
-    return true
+    return retval
   end
   return false
 end
 
 
 function safeEventHandler(id, event_name, func, one_shot)
-  local one_shot = one_shot or false
+  one_shot = one_shot or false
   
   -- If the event exists, kill it
   if safeEventTable[id] then
     killAnonymousEventHandler(safeEventTable[id])
   end
-
+  
   safeEventTable[id] = registerAnonymousEventHandler(event_name, func, one_shot)
+  return safeEventTable[id]
 end
 
 function safeKillEventHandler(id)
   if safeEventTable[id] then
-    killAnonymousEventHandler(safeEventTable[id])
+    local retval = killAnonymousEventHandler(safeEventTable[id])
     safeEventTable[id] = nil
-    return true
+    return retval
   end
   return false
 end
@@ -78,13 +80,14 @@ function safeTempTrigger(id, pattern, func, triggerType, expireAfter)
 
   -- Call the appropriate function from the lookup table
   safeTriggerTable[id] = triggerFunctions[triggerType](pattern, func, expireAfter)
+  return safeTriggerTable[id]
 end
 
 function safeKillTrigger(id)
   if safeTriggerTable[id] then
-    killTrigger(safeTriggerTable[id])
+    local retval = killTrigger(safeTriggerTable[id])
     safeTriggerTable[id] = nil
-    return true
+    return retval
   end
   return false
 end
@@ -95,13 +98,14 @@ function safeTempAlias(id, pattern, func)
   end
 
   safeAliasTable[id] = tempAlias(pattern, func)
+  return safeAliasTable[id]
 end
 
 function safeKillAlias(id)
   if safeAliasTable[id] then
-    killAlias(safeAliasTable[id])
+    local retval = killAlias(safeAliasTable[id])
     safeAliasTable[id] = nil
-    return true
+    return retval
   end
   return false
 end

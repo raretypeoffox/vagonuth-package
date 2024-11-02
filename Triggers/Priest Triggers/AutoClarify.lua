@@ -6,15 +6,19 @@
 -- 0 (regex): ^(\w+) starts to panic!$
 -- 1 (regex): ^(\w+) is surrounded by a pink outline.$
 -- 2 (regex): ^The eyes of (\w+) dim and turn milky white.$
+-- 3 (regex): ^(\w+)'s body withers before your eyes!$
+-- 4 (regex): ^Bhyss has come for you, (w\+)$
+-- 5 (regex): ^A smarmy grin crosses (\w+)'s face!$
+-- 6 (regex): ^(\w+) pales as (he|she|it) (see|sees) (his|her|its) death before (him|her|it).$
 
 -- Script Code:
 if not IsGroupMate(matches[2]) then return; end
 
 -- Check if we have a feared tank, if so, clarify immediately
-if matches[1]:sub(-#"panic!") == "panic!" then 
-  for _, class in ipairs({"War", "Rip", "Bod", "Mon", "Shf", "Bzk"}) do
+if string.find(matches[1], "death before") then 
+  for _, class in ipairs({"War", "Rip", "Bod", "Mon", "Shf", "Bzk", "Bld", "Pal"}) do
     if GlobalVar.GroupMates[GMCP_name(matches[2])].class == class then
-        TryAction("preach clarify", 5)
+        TryAction("quicken 5" .. getCommandSeparator() .. "preach clarify"  .. getCommandSeparator() .. "preach clarify"   .. getCommandSeparator() .. "quicken off", 5)
         return
     end
   end

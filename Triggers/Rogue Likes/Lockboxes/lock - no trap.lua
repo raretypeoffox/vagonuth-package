@@ -3,7 +3,7 @@
 
 
 -- Trigger Patterns:
--- 0 (substring): The a small wooden lockbox is not trapped
+-- 0 (start of line): The a small wooden lockbox is not trapped
 
 -- Script Code:
 send("hold chest")

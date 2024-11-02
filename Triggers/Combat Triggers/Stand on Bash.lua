@@ -6,4 +6,4 @@
 -- 0 (substring): bashed into you and you go down!
 
 -- Script Code:
-send("stand")
+send("stand;quicken off")

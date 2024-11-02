@@ -4,17 +4,20 @@
 -- Script Code:
 GlobalVar.LastDirs = GlobalVar.LastDirs or {}
 GlobalVar.LastPop = GlobalVar.LastPop or nil
+GlobalVar.DirCount = GlobalVar.DirCount or 0
 
+local MAXDIRS = 30
 
 function AddDir(dir)
   if not GlobalVar.LastDirs then GlobalVar.LastDirs = {} end
   
-  if #GlobalVar.LastDirs == 10 then
+  if #GlobalVar.LastDirs >= MAXDIRS then
     GlobalVar.LastPop = GlobalVar.LastDirs[1]
     table.remove(GlobalVar.LastDirs, 1)
   end
   
   table.insert(GlobalVar.LastDirs, dir:sub(1,1))
+  GlobalVar.DirCount = GlobalVar.DirCount + 1
 end
 
 function RemoveDir(dir)
@@ -26,13 +29,14 @@ function RemoveDir(dir)
     table.remove(GlobalVar.LastDirs)
   end
   
-  if #GlobalVar.LastDirs == 9 and GlobalVar.LastPop then table.insert(GlobalVar.LastDirs, 1, GlobalVar.LastPop) end
+  if #GlobalVar.LastDirs == (MAXDIRS -1) and GlobalVar.LastPop then table.insert(GlobalVar.LastDirs, 1, GlobalVar.LastPop) end
   
   return
 end
 
 function ClearDirs()
   GlobalVar.LastDirs = {}
+  GlobalVar.DirCount = 0
   return 
 end
 
@@ -92,5 +96,8 @@ function ShowDirs()
 
   local string_format = FormatDirsAlt(GlobalVar.LastDirs)
   cecho(string_format)
+  cecho("\nTotal Dirs:\t" .. GlobalVar.DirCount .. "\n")
 
 end
+
+safeEventHandler("OnPlaneResetDirs", "OnPlane", function() ClearDirs() end)

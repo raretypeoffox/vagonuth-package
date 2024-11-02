@@ -4,7 +4,7 @@
 -- Script Code:
 
 VagoPackage = VagoPackage or {}
-VagoPackage.Version = "v1.0.2"
+VagoPackage.Version = "v1.0.3"
 VagoPackage.OnlinePath = "https://github.com/raretypeoffox/vagonuth-package/releases/latest/download/"
 VagoPackage.OnlineVersionFile = "https://raw.githubusercontent.com/raretypeoffox/vagonuth-package/main/versions.lua"
 VagoPackage.ProfileName = getProfileName():lower()
@@ -25,8 +25,13 @@ function VagoPackage:CheckVersion()
     local pos = table.index_of(versions, VagoPackage.Version) or 0
     local line = ""
     if pos ~= #versions then
-        cecho("<white>Newer version of Vagonuth AVATAR Package available\n")
-        cecho("<white>Type the command <yellow>download <white>to update\n")
+        if GlobalVar and GlobalVar.DownloadMessage == pos then
+          return
+        else
+          cecho("<white>Newer version of Vagonuth AVATAR Package available\n")
+          cecho("<white>Type the command <yellow>download <white>to update\n")
+          GlobalVar.DownloadMessage = pos
+        end
       end
 end
 

@@ -2,6 +2,9 @@
 -- Attribute: isActive
 
 -- Script Code:
+
+cs = getCommandSeparator() -- shortcut for getCommandSeparator()
+
 -- format_int(number), where number is an integer, returns a formatted string
 function format_int(number)
   -- Handle non-numeric inputs
@@ -167,6 +170,8 @@ function printMessage(title, message, colour)
 end
 
 function printGameMessage(title, message, colour, colour_message)
+  if not GlobalVar.GUI then printMessage(title, message, colour); return end
+  
   colour = colour or "white"
   colour_message = colour_message or ("ansi_" .. colour)
   
@@ -183,6 +188,7 @@ end
 
 -- Only calls a functon if it exists
 -- usage: safeCall(function_name, arg1, arg2, etc)
+-- returns functions return value, otherwise returns nil if func not found
 function safeCall(func, ...)
     if type(func) == "function" then
         return func(...)  -- Call the function and return its result, if any
@@ -209,5 +215,71 @@ function Connected()
   local _, _, ret = getConnectionInfo()
   return ret
 end
+
+function RemoveArticle(inputString)
+    -- Check if the input is valid (a non-nil string)
+    if type(inputString) ~= "string" then
+        return nil, "Error: Input is not a valid string."
+    end
+
+    -- Pattern to match leading articles "a", "an", or "the" followed by a space
+    local pattern = "^(%a+%s)"
+    
+    -- Remove the matching pattern from the string
+    local cleanedString = inputString:gsub(pattern, function(article)
+        if article:lower() == "a " or article:lower() == "an " or article:lower() == "the " then
+            return ""
+        else
+            return article
+        end
+    end)
+
+    -- Return the cleaned string
+    return cleanedString
+end
+
+function splitArgumentIntoTwo(input)
+    local arg1, arg2
+
+    -- Check for both "words" enclosed in single quotes
+    local match1, match2 = input:match("^'(.-)'%s+'(.-)'$")
+    if match1 and match2 then
+        arg1 = "'" .. match1 .. "'"
+        arg2 = "'" .. match2 .. "'"
+    else
+        -- Check for the pattern with the first "word" in single quotes
+        match1, match2 = input:match("^'(.-)'%s+(%S+)$")
+        if match1 and match2 then
+            arg1 = "'" .. match1 .. "'"
+            arg2 = match2
+        else
+            -- Check for the pattern with the second "word" in single quotes
+            match1, match2 = input:match("^(%S+)%s+'(.-)'$")
+            if match1 and match2 then
+                arg1 = match1
+                arg2 = "'" .. match2 .. "'"
+            else
+                -- Check for the pattern with exactly two words
+                match1, match2 = input:match("^(%S+)%s+(%S+)$")
+                if match1 and match2 then
+                    arg1 = match1
+                    arg2 = match2
+                else
+                    -- Check for a single word
+                    match1 = input:match("^(%S+)$")
+                    if match1 then
+                        arg1 = match1
+                    else
+                        -- Return an error if no pattern matches
+                        return nil, "Invalid input format. Use one or two words, or enclose multiple words in single quotes."
+                    end
+                end
+            end
+        end
+    end
+
+    return arg1, arg2
+end
+
 
 

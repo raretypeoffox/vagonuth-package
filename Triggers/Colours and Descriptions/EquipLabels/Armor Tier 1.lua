@@ -17,7 +17,7 @@
 -- 11 (substring): a gold belly chain
 -- 12 (substring): the shield of Shadows
 -- 13 (substring): the Shield of Lords
--- 14 (substring):  soggy robe of wizardry
+-- 14 (substring): soggy robe of wizardry
 -- 15 (substring): Bonk's Battle Buckler
 
 -- Script Code:

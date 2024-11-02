@@ -58,9 +58,9 @@ function PSITrigger.Update()
       -- Record that we've looked up this Psi already
       PSITrigger.TriedLookUp[char] = true
 
-      if PSIWeaponLookup[char] then -- If we have weapon details for this Psi, create a trigger
-        local w1name, w1keyword = PSIWeaponLookup[char].w1name or nil, PSIWeaponLookup[char].w1keyword or nil
-        local w2name, w2keyword = PSIWeaponLookup[char].w2name or nil, PSIWeaponLookup[char].w2keyword or nil
+      if PSITrigger.PsiTriggers[char] then -- If we have weapon details for this Psi, create a trigger
+        local w1name, w1keyword = PSITrigger.PsiTriggers[char].w1name or nil, PSITrigger.PsiTriggers[char].w1keyword or nil
+        local w2name, w2keyword = PSITrigger.PsiTriggers[char].w2name or nil, PSITrigger.PsiTriggers[char].w2keyword or nil
 
         if w1name and w1keyword then
           PSITrigger.Create(char, w1name, w1keyword)

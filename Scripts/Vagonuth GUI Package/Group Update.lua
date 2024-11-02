@@ -9,8 +9,8 @@
 
 local SmallScreen = true
 
- -- called on update to GMCP_Group()
- function UpdateGroupGUI(GroupieTableIndex, Player)
+-- called on update to GMCP_Group()
+function UpdateGroupGUI(GroupieTableIndex, Player)
   if AR.Status then
       GroupieTable[GroupieTableIndex].NameLabel:echo("<left>" .. (AR.RescueList[string.lower(Player.name)] and "<b><span style='color: rgb(10,126,242)'>*</span></b>" or "<span style='color: rgb(0,0,0)'>*</span>") .. (Player.leader and "<b><left><span style='color: rgb(255,0,0)'>"..Player.name.."</span></b>" or Player.name) .. "</left>")
   else

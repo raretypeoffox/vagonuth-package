@@ -46,16 +46,6 @@ function ArrayHasValue(tab, val)
     return false
 end
 
-
-function TableHasIndex(tab, index)
-  for i, _ in pairs(tab) do
-    if i == index then
-      return true
-    end
-  end
-    return false
-end
-
 function compareTables(t1, t2)
   if type(t1) ~= "table" or type(t2) ~= "table" then
     return false

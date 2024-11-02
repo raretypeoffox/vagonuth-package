@@ -3,7 +3,7 @@
 
 
 -- Trigger Patterns:
--- 0 (substring): You successfully dismantle the 
+-- 0 (start of line): You successfully dismantle the 
 
 -- Script Code:
 send("hold chest")

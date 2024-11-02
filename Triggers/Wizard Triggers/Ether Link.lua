@@ -8,4 +8,8 @@
 -- Script Code:
 if not StatTable.Fortitude then return end
 
-Battle.DoAfterCombat("cast 'ether link'")
+--Battle.DoAfterCombat("cast 'ether link'")
+
+TryAction("cast 'ether link'",5)
+
+OnMobDeathQueue("cast 'ether link'")

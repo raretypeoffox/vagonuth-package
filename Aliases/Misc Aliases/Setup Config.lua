@@ -24,7 +24,24 @@ local LordSetup = {
 "",
 }
 
-for i,v in ipairs(NewCharSetup) do send(v,false) end
+local count = 0
 
-if (StatTable.Level == 125) then for i,v in ipairs(LordSetup) do send(v,false) end end
+coroutine.wrap(function()
+  
+  local count = 0
+  for i,v in ipairs(NewCharSetup) do
+    count = count + 1
+    if count % 48 == 0 then wait(1) end 
+    send(v,false) 
+  end
+
+  if (StatTable.Level == 125) then 
+    for i,v in ipairs(LordSetup) do
+      count = count + 1
+      if count % 48 == 0 then wait(1) end  
+      send(v,false) 
+    end 
+  end
+  
+end)()
 

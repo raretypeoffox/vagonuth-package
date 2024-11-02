@@ -9,6 +9,8 @@
 -- Script Code:
 -- Rewrite 28 Aug 2023
 
+
+
 AutoCross = AutoCross or false
 
 function KillSancSelfAtLordTimer()
@@ -40,11 +42,19 @@ function SancSelfAtLord()
       end
     end
   end)
+end
 
+local function PreachSancOnRun()
+  if StatTable.Sanctuary then return end -- we got sanc somewhere else
+  if Battle.Combat and not StatTable.Solitude then
+    send("quicken 9" .. getCommandSeparator() .. "cast inno" .. getCommandSeparator() .. "quicken off")
+  end
+  send("preach sanc")
 end
 
 if SafeArea() then return end
 if not StatTable.Fortitude and StatTable.Level < 125 then return end
+if StatTable.Level == 250 then CastAfterCombat("sanctuary"); return end
 
 if not GlobalVar.Silent then send("emote is no longer in |BW|Sanctuary|N|.",false) end
 
@@ -55,11 +65,9 @@ if StatTable.Level == 125 then
 
   -- If we're a Priest, we'll preach sanc (though we need to be at least Lord 25 to do so)
   if StatTable.SubLevel < 25 or not Grouped() then return end
-
-  if Battle.Combat and not StatTable.Solitude then
-    send("quicken 9" .. getCommandSeparator() .. "cast inno" .. getCommandSeparator() .. "quicken off")
-  end
-  send("preach sanc")
+  StatTable.Sanctuary = nil
+  PreachSancOnRun()
+  safeTempTimer("PreachSancOnRun", 15, function() PreachSancOnRun() end) -- do a check in 15 seconds to make sure we did indeed preach sanc
   return
 else -- Hero and Low mort
 

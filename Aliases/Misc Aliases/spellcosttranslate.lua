@@ -1,7 +1,7 @@
 -- Alias: spellcosttranslate
 -- Attribute: isActive
 
--- Pattern: ^spellcosttranslate (\d+) (.*)$
+-- Pattern: ^spellcosttrans (\d+) (.*)$
 
 -- Script Code:
 local race = matches[3]

@@ -18,8 +18,13 @@ if plane == "Kzinti Homeworld" then plane = "kzinti" end
 
 
 if GlobalVar.GroupLeader == GMCP_name(multimatches[2].player) and plane == "Thorngate" then
-  printGameMessageVerbose("AutoPlane", "Leader planed to thorngate, following")
-  send("cast plane thorn")
+  if GroupSize() == 2 then -- don't following when duo'ing
+    beep()
+    printGameMessage("Beep", "Leader has planed to thorngate, NOT following")
+  else
+    printGameMessageVerbose("AutoPlane", "Leader planed to thorngate, following")
+    send("cast plane thorn")
+  end
   local tempTriggerID = tempBeginOfLineTrigger("You failed your planeshift due to lack of concentration!", function() send("cast plane thorn") end)
   tempBeginOfLineTrigger("You form a magical vortex and step into it...", function() killTrigger(tempTriggerID) end, 1) 
   
@@ -35,6 +40,12 @@ elseif GlobalVar.GroupLeader == GMCP_name(multimatches[2].player) and StatTable.
   local wait = math.max(8-math.floor(StatTable.current_health/10000),1)
 
   printGameMessageVerbose("AutoPlane", "Leader planed, following in " .. wait .. " seconds")
+  
+  if GlobalVar.AutoCast == false and IsClass({"Sorcerer", "Wizard", "Mage", "Psionicist", "Mindbender"}) then
+    beep()
+    printGameMessage("Beep", "Autocast off and planing with leader")
+  end
+  
   
   local tempTriggerID = tempBeginOfLineTrigger("You failed your planeshift due to lack of concentration!", function() send("cast plane " .. plane) end)
   tempBeginOfLineTrigger("You form a magical vortex and step into it...", function() killTrigger(tempTriggerID) end, 1)

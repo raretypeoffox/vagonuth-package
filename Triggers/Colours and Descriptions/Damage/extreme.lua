@@ -7,4 +7,4 @@
 -- 1 (substring): EXTREME
 
 -- Script Code:
-cecho (string.rep (" ",85-tonumber(string.len(line))) .."<purple> [33000 - 50000]")
+cecho (string.rep (" ",85-tonumber(string.len(line))) .."<purple> [34000 - 50000]")

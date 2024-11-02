@@ -23,12 +23,10 @@ function Init.GlobalVars()
   GlobalVar = GlobalVar or {}
   GlobalVar.Saved = GlobalVar.Saved or {}
 
-  GlobalVar.GUI = GlobalVar.GUI or true  
-  
-  GlobalVar.MDAY = GlobalVar.MDAY or false
+  GlobalVar.GUI = GlobalVar.GUI or true
   
   GlobalVar.Silent = GlobalVar.Silent or false
-  GlobalVar.PerformanceMode = GlobalVar.PerformanceMode or (GlobalVar.MDAY and true or false)
+  GlobalVar.PerformanceMode = GlobalVar.PerformanceMode or false
   GlobalVar.Debug = GlobalVar.Debug or false
   GlobalVar.Verbose = GlobalVar.Verbose or true
   
@@ -67,7 +65,8 @@ function Init.GlobalVars()
   GlobalVar.AutoSkill = false
   GlobalVar.SkillStyle = ""
   
-
+  GlobalVar.AutoFrenzy = true
+  
   -- Cleric / Druid Variables
   GlobalVar.AutoHeal = false
   GlobalVar.AutoHealTarget = nil
@@ -83,6 +82,7 @@ function Init.GlobalVars()
   
     -- Paladin Variables
   GlobalVar.PrayerName = ""
+  GlobalVar.PaladinRescue = true
 
   -- Troll Variables
   GlobalVar.AutoRevive = false -- will switch to true on Init call so that it waits 5 seconds
@@ -92,6 +92,11 @@ function Init.GlobalVars()
   GlobalVar.BrandishStaff = ""
   GlobalVar.BrandishArmor = ""
   GlobalVar.BrandishCharges = 0
+  
+  AutoCross = false
+  
+  --Psi Triggers
+  GlobalVar.Mindtricks = 0
 
   -- Variables to reset on reconnect (won't run on initial Init)
   if AR then AR.Status = false end
@@ -156,6 +161,9 @@ function Init.Profile(timeout)
     -- Skill Variables
     GlobalVar.AutoSkill = false
     GlobalVar.SkillStyle = ""
+    
+    -- AutoFrenzy
+    GlobalVar.AutoFrenzy = IsClass(StaticVars.FrenzyClasses) and true or false
 
     -- AutoCast
     if MyClass == "Mage" then
@@ -224,7 +232,7 @@ function Init.Profile(timeout)
     elseif MyClass == "Mindbender" then
       if MyLevel == 125 then
         GlobalVar.AutoCast = true
-        GlobalVar.AutoCaster = "mindwipe"
+        GlobalVar.AutoCaster = "fracture"
         GlobalVar.SurgeLevel = 2      
       elseif MyLevel == 51 then      
         GlobalVar.AutoCast = true
@@ -292,6 +300,7 @@ function Init.Profile(timeout)
       end
     end
 
+    
     -- Race
     if (MyRace == "Troll") then
       GlobalVar.AutoRevive = true
@@ -356,9 +365,11 @@ function SaveProfileVars()
   GlobalVar.Saved.AutoStance = GlobalVar.AutoStance or false
   GlobalVar.Saved.AutoPlane = GlobalVar.AutoPlane or false
   GlobalVar.Saved.Silent = GlobalVar.Silent or false
-  GlobalVar.Saved.MDAY = GlobalVar.MDAY or false
   GlobalVar.Saved.FontSize = GlobalVar.FontSize or nil
   GlobalVar.Saved.Debug = GlobalVar.Debug or false
+  GlobalVar.Saved.AutoFrenzy = GlobalVar.AutoFrenzy or true
+  GlobalVar.Saved.PaladinRescue = GlobalVar.PaladinRescue or true
+  GlobalVar.Saved.DownloadMessage = GlobalVar.DownloadMessage or nil
   local location = getMudletHomeDir() .. "/ProfileVariables.lua"
   table.save(location, GlobalVar.Saved)
 end
@@ -378,9 +389,11 @@ function LoadProfileVars()
   GlobalVar.AutoStance = GlobalVar.Saved.AutoStance or false
   GlobalVar.AutoPlane = GlobalVar.Saved.AutoPlane or false
   GlobalVar.Silent = GlobalVar.Saved.Silent or false
-  GlobalVar.MDAY = GlobalVar.Saved.MDAY or false
   GlobalVar.FontSize = GlobalVar.Saved.FontSize or nil
   GlobalVar.Debug = GlobalVar.Saved.Debug or false
+  GlobalVar.AutoFrenzy = GlobalVar.Saved.AutoFrenzy or true
+  GlobalVar.PaladinRescue =  GlobalVar.Saved.PaladinRescue or true
+  GlobalVar.DownloadMessage = GlobalVar.Saved.DownloadMessage or nil
 end
 
 LoadProfileVars()

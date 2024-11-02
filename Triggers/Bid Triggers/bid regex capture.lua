@@ -4,7 +4,7 @@
 
 
 -- Trigger Patterns:
--- 0 (regex): ^ \s?\s?\s?(?<bid_id>\d+) \| \s*(?<bid_current>[0-9,]*) \| \s?\s?\s?(?<bid_time>\d+) \| \s?\s?\s?\s?(?<bid_level>\d+) \| \s*(?<bid_min>[0-9,]*)\s?\|?\s?(?<bid_highest>\*You are the highest bidder\*)?$
+-- 0 (regex): ^ \s?\s?\s?(?<bid_id>\d+) \| \s*(?<bid_current>[0-9,]*) \| \s?\s?\s?(?<bid_time>\d+) \| \s?\s?\s?\s?(?<bid_level>\d+) \| \s*(?<bid_min>[0-9,]*)\s?\|?\s?(?<bid_highest>\*You are the highest bidder\*)?(?<bid_posted>\*You are auctioning this item\*)?$
 -- 1 (regex): ^     > (?<bid_itemname>.*)
 
 -- Script Code:
@@ -38,16 +38,16 @@ local item_name = multimatches[2].bid_itemname
 --print(string.gsub(multimatches[1].bid_min, ",", ""))
 
 
-
 local time_desc = ""
-local time_mins = tonumber(multimatches[1].bid_time)%60
-if (tonumber(multimatches[1].bid_time) > 60) then
+local bid_time = math.floor(tonumber(multimatches[1].bid_time)*(118/125))
+local time_mins = bid_time%60
+if (bid_time > 60) then
   if time_mins < 10 then
-    time_desc = math.floor(tonumber(multimatches[1].bid_time)/60) .. ":0" .. time_mins
+    time_desc = math.floor(bid_time/60) .. ":0" .. time_mins
   else
-    time_desc = math.floor(tonumber(multimatches[1].bid_time)/60) .. ":" .. time_mins
+    time_desc = math.floor(bid_time/60) .. ":" .. time_mins
   end
-  if (tonumber(multimatches[1].bid_time) < 60*10) then time_desc = " " .. time_desc end
+  if (bid_time < 60*10) then time_desc = " " .. time_desc end
 else
   if time_mins < 10 then
     time_desc = "<hot_pink>00:0" .. time_mins
@@ -57,7 +57,7 @@ else
 end
 
 
-if (tonumber(multimatches[1].bid_level) == 125) then
+if (tonumber(multimatches[1].bid_level) >= 100) then
   item_name = "<light_slate_blue>" .. multimatches[2].bid_itemname
 else
   item_name = "<white>" .. multimatches[2].bid_itemname
@@ -67,12 +67,17 @@ if (multimatches[1].bid_highest~="") then
   item_name = item_name .. "\t<ansi_light_yellow>*HIGHEST BIDDER*"
 end
 
+if (multimatches[1].bid_posted~="") then
+  item_name = item_name .. "\t<ansi_light_green>*YOU POSTED THIS ITEM*"
+end
+
+
 
 print("")
 cecho("<yellow>(" .. multimatches[1].bid_id .. ")\t<ansiLightGreen>" .. time_desc .. "\t" .. item_name)
 print("")
 
-if (bid_cur > bid_min) then
+if (bid_cur >= bid_min) then
   cecho("\t\t<ansi_light_yellow>" .. multimatches[1].bid_current)
 else
   cecho("\t\t<ansi_yellow>" .. multimatches[1].bid_min)

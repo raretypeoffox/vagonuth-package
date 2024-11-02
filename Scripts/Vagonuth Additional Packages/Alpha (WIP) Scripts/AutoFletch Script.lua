@@ -18,6 +18,8 @@ ArrowTable = ArrowTable or {}
 
 -- We are writing a script to cycle through the different arrow types 
 
+-- TODO: add poison for terror arrows
+
 
 
 function AutoFletch.SetUpExhaustTable(char_name)
@@ -27,6 +29,21 @@ function AutoFletch.SetUpExhaustTable(char_name)
     end
 
     if AutoFletch.ExhaustTable[char_name] then return true end
+
+    AutoFletch.ExhaustTable[char_name] = {}
+
+    for _, arrow in ipairs(ArrowTable) do
+        AutoFletch.ExhaustTable[char_name][arrow] = {qty = 0, time = 0, amount = 0}
+    end
+
+    return true
+end
+
+function AutoFletch.ResetExhaustTable(char_name)
+    if not char_name then
+        error("AutoFletch.SetUpExhaustTable: char_name is nil")
+        return false
+    end
 
     AutoFletch.ExhaustTable[char_name] = {}
 
@@ -79,11 +96,15 @@ function AutoFletch.SetNextSpecialAmmo(char_name)
     
     if min < 6 then return true end
 
-    -- will enable future code here that will allow us to swap between different characters
-    -- for now, print a message and end
     printMessage("AutoFletch", "Finished crafting all special arrows on this character.")
     
+    -- We finished all our special arrows:
+    -- stop fletching
     AutoFletch.SpecialAmmoCleanUp()
+    -- in 50 mins, clear exhaust table and attempt to restart (these are broken into two because AutoFletch.Restart can be killed by OnQuit
+    safeTempTimer("AutoFletch.ClearExhaustTable", 50*60, function() AutoFletch.ResetExhaustTable(char_name); end)
+    safeTempTimer("AutoFletch.Restart", 50*60, function() AutoFletch.SpecialAmmoInit() end)
+    safeEventHandler("AutoFletch.KillRestartOnQuit", "OnQuit", function() safeKillTimer("AutoFletch.Restart") end, true)
 
 
 end
@@ -157,6 +178,8 @@ function AutoFletch.SpecialAmmoInit(ammo, tier)
         printMessage("AutoFletch", "Error, already running.")
         return
     end
+    
+    if StatTable.Position == "Sleep" then send("stand") end
 
     if IsNotClass({"Archer", "Assassin", "Fusilier"}) then
         printMessage("AutoFletch", "You are not an Archer, Assassin, or Fusilier -- cannot fletch special ammo.")
@@ -183,14 +206,12 @@ function AutoFletch.SpecialAmmoInit(ammo, tier)
       AutoFletch.SpecialAmmoCleanUp()
     end, "regex")
     
-    
+    send("config -savespell", false)
     AutoFletch.Status = true
     AutoFletch.NextSpecialFletch = "Sableroix"
     AutoFletch.SetArrowTypesTable()
     AutoFletch.SetUpExhaustTable(char_name)
     AutoFletch.SpecialAmmo(char_name, ammo, tier)
-    
-    --tempTimer(2, function() AutoFletch.SpecialAmmo(char_name, ammo, tier) end)
 
 end
 
@@ -211,6 +232,11 @@ function AutoFletch.SpecialAmmoCleanUp()
 
     -- Kill all Timers (except cooldown timers)
     safeKillTimer("AutoFletch.SendFletchCmd")
+    safeKillTimer("AutoFletch.Restart")
+    
+    -- Kill all Event handlers
+    safeKillEventHandler("AutoFletch.KillRestartOnQuit")
+    
     
     send("remove fletch")
 end
@@ -265,6 +291,9 @@ function AutoFletch.SetArrowTypesTable()
         if level == 125 and sublevel >= 150 then
             table.insert(ArrowTable, "glass")
         end
+        --if level == 125 and sublevel >= 200 then
+        --    table.insert(ArrowTable, "terror")
+        --end
     elseif class == "Fusilier" then
         if level == 125 or (level == 51 and sublevel >= 250) then
             table.insert(ArrowTable, "explosive")

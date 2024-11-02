@@ -33,13 +33,14 @@ safeTempTimer("SalvHelpTrigger", SalvTimer, function()
   if NumberOfSalvParticipants < 5 then
     send("cast salvation " .. SalvTarget)
     printGameMessage("Salv Trigger", "Attempting to salv " .. SalvTarget)
+  else
+  
+    -- printGameMessage for debug, remove later
+    printGameMessage("Salv Trigger", "Didn't salv " .. SalvTarget .. ", already 5 participants")
+    
+    safeKillTrigger("NumOfSalvTrigger")
   end
-  
-  -- printGameMessage for debug, remove later
-  printGameMessage("Salv Trigger", "Didn't salv " .. SalvTarget .. ", already 5 participants")
-  
-  safeKillTrigger("NumOfSalvTrigger")
-end)
+  end)
 
 
 

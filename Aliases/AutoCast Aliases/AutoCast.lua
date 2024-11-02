@@ -11,7 +11,15 @@ args = string.lower(args)
 if (args == "on") then
   AutoCastON()  
 elseif (args == "off") then
-  AutoCastOFF()  
+  AutoCastOFF()
+  if GlobalVar.AutoTarget then
+    GlobalVar.AutoTarget = false
+    printGameMessage("AutoTarget", "AutoTarget turned off with AutoCast")
+  end
+  
+  if StatTable.Level == 125 and GlobalVar.SurgeLevel > 1 then
+    send("surge " .. GlobalVar.SurgeLevel)
+  end  
 elseif (args == "") then
   print("AutoCast - automatically casts spell during combat")
   print("Synax: autocast (on|off|spellname)")

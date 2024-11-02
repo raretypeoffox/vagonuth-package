@@ -68,6 +68,7 @@ function Battle.OnLook()
   
 end
 
+
 local DeceptList = {
 -- fire elemental description: TODO determine which ones refer to Large and Huge Elementals
 "Impossibly large flames burn with a deadly rage.",
@@ -76,6 +77,10 @@ local DeceptList = {
 "Flames flow violently in an attempt to consume you.",
 "Jets of flame explode suddenly engulfing everything here.",
 "Winds of fire try to destroy the man and anything else entering here.",
+"Burning violently a being of elemental fury moves towards you.", -- can be large or huge
+"Impossibly large flames burn with a deadly rage.",
+"A burst of fire whirls around on burning wings.",
+
 
 --earth elemental descriptions: TODO determine which are telepaths, territorial and huge
 "This large Earth Elemental looks enraged.",
@@ -97,7 +102,8 @@ function Battle.DeceptCheck(mobname, mobnum)
   if Battle.Combat then return end
 
   if ArrayHasValue(DeceptList, mobname) then
-    TryAction("cast deception " .. mobnum, 15)
+    cs = getCommandSeparator()
+    TryAction("quicken 9" .. cs .. "cast deception " .. mobnum .. cs .. "cast deception " .. mobnum .. cs .. "quicken off", 15)
   end
 end
 

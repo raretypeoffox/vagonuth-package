@@ -15,6 +15,19 @@ function GMCP_Room()
     Victim1Label:setClickCallback("")
     Victim2Label:setClickCallback("")
     Victim3Label:setClickCallback("")
+    
+    if GlobalVar.RoomBlockedCasting then
+      AutoCastON()
+      GlobalVar.RoomBlockedCasting = nil
+    end
   end
  
 end
+
+
+safeTempTrigger("RoomBlocksSpellCasting", "This room blocks your mind from spellcasting!", function()
+  if GlobalVar.AutoCast then
+    AutoCastOFF()
+    GlobalVar.RoomBlockedCasting = true
+   end
+end, "begin")

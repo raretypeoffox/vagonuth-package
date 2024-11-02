@@ -3,7 +3,7 @@
 
 
 -- Trigger Patterns:
--- 0 (regex): The a small wooden lockbox looks like it is armed with a (\w+) trap.
+-- 0 (regex): ^The a small wooden lockbox looks like it is armed with a (\w+) trap.
 
 -- Script Code:
 send("hold trap")

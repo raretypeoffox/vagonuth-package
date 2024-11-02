@@ -17,6 +17,11 @@ function VictoryBeep()
   playSoundFile({name = getMudletHomeDir().. "/Vagonuth-Package/victorybeep.mp3", volume = 75})
 end
 
+function TingleBeep()
+  if GlobalVar.Silent then return end
+  playSoundFile({name = getMudletHomeDir().. "/Vagonuth-Package/tingle.mp3", volume = 75})
+end
+
 
 function IsGroupMate(groupie_name) 
   groupie_name = GMCP_name(groupie_name)
@@ -60,6 +65,7 @@ function SafeArea()
       gmcp.Room.Info.zone == "{ LORD } Dev     Rietta's Wonders" or 
       gmcp.Room.Info.zone == "{ LORD } Crom    Thorngate" or
       gmcp.Room.Info.zone == "{ LORD } Vorak   Lord Mud School" or
+      gmcp.Room.Info.zone == "{ LORD } Odin    Labyrinth of Bo'vul" or
       gmcp.Room.Info.zone == "{ LORD } Crom    The House of Bandu") then
     return true
   else
@@ -159,6 +165,25 @@ function BldDancing()
   end
 end
 
+function ReverseDir(dir)
+
+  local reversedir  = {
+            n = "s",
+            e = "w",
+            s = "n",
+            w = "e",
+            u = "d",
+            d = "u",
+            }
+            
+  if reversedir[dir] == nil then
+    error("Invalid direction provided to ReverseDir - acceptable characters: n, w, e, s, d, u")
+    return
+  end
+  
+  return reversedir[dir]
+end
+
 
 -- Beginning Speedwalk
 
@@ -173,7 +198,7 @@ function speedwalktimer()
   end
 end
 
-
+-- todo could do a check to make sure its less than 48 sends / wait after 48 sends (see setup alias code)
 function speedwalk(dirString, backwards, delay)
   local dirString = dirString:lower()
   walklist      = {}
@@ -192,7 +217,7 @@ function speedwalk(dirString, backwards, delay)
         count = (count == "" and 1 or count)
       for i=1, count do
         if delay then walklist[#walklist+1] = direction 
-        else if direction ~= "" then send(direction) end
+        else if direction ~= "" then send(direction, false) end
         end
       end
     end
@@ -201,7 +226,7 @@ function speedwalk(dirString, backwards, delay)
         count = (count == "" and 1 or count)
       for i=1, count do
         if delay then walklist[#walklist+1] = reversedir[direction]
-        else if reversedir[direction] ~= "" then send(reversedir[direction]) end
+        else if reversedir[direction] ~= "" then send(reversedir[direction], false) end
         end
       end
     end

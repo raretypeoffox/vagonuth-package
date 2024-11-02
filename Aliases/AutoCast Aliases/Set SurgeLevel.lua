@@ -1,7 +1,7 @@
 -- Alias: Set SurgeLevel
 -- Attribute: isActive
 
--- Pattern: ^(1|2|3|4|5)$
+-- Pattern: ^(?i)s?(1|2|3|4|5)$
 
 -- Script Code:
 GlobalVar.SurgeLevel = tonumber(matches[2])

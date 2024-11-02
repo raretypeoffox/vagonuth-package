@@ -7,7 +7,7 @@
 
 -- Script Code:
 if not GlobalVar.AutoCast then return end
-if GlobalVar.Silent then return end
+if GlobalVar.Silent and not IsMDAY() then return end
 
 if GlobalVar.SurgeLevel == 1 then
   send("gtell Surge off")

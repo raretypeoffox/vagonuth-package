@@ -4,9 +4,6 @@
 -- Script Code:
 -- Requires PInfo Script
 
--- TODOs:
--- Allow for a way to fix the list mid lotto
-
 AutoLotto = AutoLotto or {}
 AutoLotto.Status = AutoLotto.Status or false
 AutoLotto.LottoItems = AutoLotto.LottoItems or {}
@@ -161,7 +158,6 @@ function AutoLotto.DisplayItems()
   for i = 1, #AutoLotto.LottoItems do
     if AutoLotto.LottoItems[i].quantity > 0 then
       local str = string.format("%-2s.%3sx)  %s", ((i < 10) and " " .. i or i), "(" .. AutoLotto.LottoItems[i].quantity, RemoveColourCodes(AutoLotto.LottoItems[i].name))
-      print(str)
     end
   end
   
@@ -204,6 +200,9 @@ function AutoLotto.Start()
   AutoLotto.Status = true
   AutoLotto.LastPlayer = ""
   AutoLotto.Round = 1
+  
+  send("visible")
+  send("rest")
 
   safeEventHandler("ProcessLotto", "OnLotto", function() AutoLotto.ProcessLotto() end, true)
   
@@ -344,7 +343,7 @@ function AutoLotto.GiveItemToPlayer(item_index, player_name)
   local was_asleep = (StatTable.Position == "Sleep" and true or false)
   if was_asleep then send("rest") end
   
-  send("get " .. item.id[1] .. " " .. AutoLotto.BagKeyword)
+  send("get " .. item.id[1] .. " " .. AutoLotto.BagID) -- used to be AutoLotto.BagKeyword
   send("give " .. item.id[1] .. " " .. player_name)
   send("gtell |BY|" .. player_name .. "|N| has picked #" .. item_index .. " (|BY|" .. item.name .. "|N|)")
   
@@ -390,7 +389,7 @@ function AutoLotto.OneItemLeftCheck()
   
   for i = 1, AutoLotto.TotalItems do
     AutoLotto.PlayerPick, AutoLotto.Increment = AutoLotto.NextWinnerIncrement(AutoLotto.PlayerPick, AutoLotto.Increment)
-    send("get " .. AutoLotto.LottoItems[index].id[1] .. " " .. AutoLotto.BagKeyword)
+    send("get " .. AutoLotto.LottoItems[index].id[1] .. " " .. AutoLotto.BagID) -- used to be AutoLotto.BagKeyword
     send("give " .. AutoLotto.LottoItems[index].id[1] .. " " .. AutoLotto.LottoList[AutoLotto.PlayerPick])
     table.remove(AutoLotto.LottoItems[index].id, 1) 
     send("gtell |BY|" .. AutoLotto.LottoList[AutoLotto.PlayerPick].. "|N| received |BY|" .. AutoLotto.LottoItems[index].name .. "|N|!")

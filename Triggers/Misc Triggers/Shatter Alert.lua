@@ -20,7 +20,14 @@ if StatTable.Class == "Psionicist" or StatTable.Class == "Mindbender" then
   AutoCastOFF()
   local quicken = false
   if StatTable.current_mana > 10000 then send("quicken 5"); quicken = true end
-  send("cast shatterspell " .. matches[2])
+  shatter_enemy = string.lower(shatter_enemy)
+  shatter_enemy = " " .. shatter_enemy .. " "
+  shatter_enemy = string.gsub(shatter_enemy, " of ", " ")
+  shatter_enemy = string.gsub(shatter_enemy, " the ", " ")
+  shatter_enemy = string.gsub(shatter_enemy, " with ", " ")
+  shatter_enemy = string.gsub(shatter_enemy, " a ", " ")
+  shatter_enemy = string.gsub(shatter_enemy, '^%s*(.-)%s*$', '%1')
+  send("cast shatterspell " .. shatter_enemy)
   if quicken then send("quicken off") end
   
 end

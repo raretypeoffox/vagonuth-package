@@ -11,7 +11,7 @@ if SafeArea() then return end
 send("get crystal")
 
 safeTempTrigger("GetCrystalBallID", "You get crystal ball.", function()
-  if IsMDAY() then
+  if IsMDAY() or not Grouped() then
     send("put 'crystal ball' " .. StaticVars.AllegBagName)
   else
     if GlobalVar.GroupLeader ~= StatTable.CharName then 

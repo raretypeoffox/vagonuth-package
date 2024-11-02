@@ -74,37 +74,37 @@ function MobListUpdate()
   if not MobList[gmcp.Room.Info.zone] then
     MobList[gmcp.Room.Info.zone] = {}
   end
-
+  
+  local debug_timer = os.clock()
+  
   for k,_ in pairs(Players) do
   
     -- Mobs have numbered "names" vs PCs who have real names, can eliminate PCs by removing non-numbered names
     if (tonumber(Players[k].name) ~= nil) then 
-        local i, j = 0, 0
-        s = Players[k].fullname
-        --print("MobListUpdate(): \t", s)
-        -- Strip brackets, first for single words, second for double words (eg White Aura), likely a better way to do this
-        s = string.gsub(s,"%((%a+)%)","")
-        s = string.gsub(s,"%((%a+ %a+)%)","")
-        -- Strip leading and trailing white space
-        s = string.gsub(s, '^%s*(.-)%s*$', '%1')
-        -- Find the start/end of the pattern: "is here, fighting"
-        i, j = string.find(s,"is here, fighting")
-        m, n = string.find(s,"is resting here.")
-        
-        -- If Mob isn't fighting, isn't resting and isn't on the exclusion list
-        if (i == nil and m == nil and not ArrayHasSubstring(MobListExclusions, s)) then
-        
-          if not TableHasIndex(MobList[gmcp.Room.Info.zone],s) then
-            MobListAdd(s, Players[k].race, Players[k].spec)
-            SaveMobList()
-          else
-            -- Used during the transition to tracking race &amp; specs
-            MobList[gmcp.Room.Info.zone][s].race = Players[k].race
-            MobList[gmcp.Room.Info.zone][s].spec = Players[k].spec
-            SaveMobList()
-          end
+      local i, j = 0, 0
+      s = Players[k].fullname
+
+      -- Strip brackets, first for single words, second for double words (eg White Aura), likely a better way to do this
+      s = string.gsub(s,"%((%a+)%)","")
+      s = string.gsub(s,"%((%a+ %a+)%)","")
+      -- Strip leading and trailing white space
+      s = string.gsub(s, '^%s*(.-)%s*$', '%1')
+      -- Find the start/end of the pattern: "is here, fighting"
+      i, j = string.find(s,"is here, fighting")
+      m, n = string.find(s,"is resting here.")
+      
+      -- If Mob isn't fighting, isn't resting and isn't on the exclusion list
+      if (i == nil and m == nil and not ArrayHasSubstring(MobListExclusions, s)) then
+        if not MobList[gmcp.Room.Info.zone][s] then
+          MobListAdd(s, Players[k].race, Players[k].spec)
+          SaveMobList()
         end
+      end
+      
     end
+  end
+  if GlobalVar.Debug then
+    printMessage("DEBUG", string.format("MobListUpdate ran in %.4f seconds\n", (os.clock() - debug_timer)))
   end
 end
 

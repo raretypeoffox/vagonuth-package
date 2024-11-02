@@ -12,6 +12,8 @@
 --          is only attacking one groupmate and if so, to rescue the groupmate when the mob is low
 -- Con:     works less reliably when using skills with lag as it goes off of the look command
 
+if not GlobalVar.PaladinRescue then return end
+
 target = string.lower(gmcp.Char.Status.opponent_name)
 
 

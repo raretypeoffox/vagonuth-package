@@ -37,7 +37,7 @@ end
 
 local function whereami()
   TryLook()
-  display(gmcp.Room.Info)
+  --display(gmcp.Room.Info)
   
   if (gmcp.Room.Info.name == "On a Cloud" and gmcp.Room.Info.zone == "{ 1   4} Crom    The Meadow") then cloud2sanc() end
 
@@ -59,8 +59,12 @@ if (StatTable.Level < 125) then
   send("down")
   send("east")
   send("east")
-  AskBotsForHeals()  
-  send("sleep")
+  if Grouped() then  
+    safeTempTimer("AskForHealsOnDeath", 3, function() AskBotsForHeals() end)
+  else
+    send("cast eulo")
+  end
+  tempTimer(30, function() send("sleep") end)
   
   
   

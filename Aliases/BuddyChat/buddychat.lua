@@ -1,7 +1,7 @@
 -- Alias: buddychat
 -- Attribute: isActive
 
--- Pattern: ^(b|bud) (.*)
+-- Pattern: ^(?i)(b|bud) (.*)$
 
 -- Script Code:
 if GlobalVar.BuddyChatName and GlobalVar.BuddyChatColour then

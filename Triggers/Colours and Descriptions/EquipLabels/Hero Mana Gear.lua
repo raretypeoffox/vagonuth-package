@@ -18,6 +18,7 @@
 -- 12 (substring): the Grey Orb of Stone
 -- 13 (substring): a mystical desert stone
 -- 14 (substring): a red velvet cape
+-- 15 (substring): an ancient ring
 
 -- Script Code:
 cecho (string.rep (" ",80-tonumber(string.len(line))) .. "<purple> [Hero Mana]")

@@ -15,6 +15,8 @@
 
 -- Produces a lot of spam reporting. Testing out if "vanishes" is for more important items
 
-if not GlobalVar.Silent then
-  send("gtell |BW|" .. matches[2] .. "|N| just got |BR|stomped|N|! I hope you have insurance...",false)
-end
+--if not GlobalVar.Silent then
+--  send("gtell |BW|" .. matches[2] .. "|N| just got |BR|stomped|N|! I hope you have insurance...",false)
+--end
+
+printGameMessage("Stomp!", matches[2] .. " just got destroyed by a mob!", "red", "white")

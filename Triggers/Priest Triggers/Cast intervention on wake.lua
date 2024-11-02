@@ -6,6 +6,6 @@
 -- 0 (start of line): You wake and stand up.
 
 -- Script Code:
-if not SafeArea() and StatTable.Foci and not StatTable.Intervention then
+if not SafeArea() and StatTable.Foci and not StatTable.Intervention and StatTable.max_health < 10000 then
   send("cast intervention")
 end

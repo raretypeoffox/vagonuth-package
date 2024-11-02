@@ -47,6 +47,9 @@ local AffectsLookup = {
   ["Spell: blind devotion"] = "BlindDevotion",
   ["Spell: consummation"] = "Consummation",
   ["Spell: solitude"] = "Solitude",
+  ["Spell: protection good"] = "ProtectionGood",
+  ["Spell: protection evil"] = "ProtectionEvil",
+  
   ["Exhausted Spell: solitude"] = "SolitudeTimer",
   ["Exhausted Spell: square"] = "SquareExhaust",
   ["Exhausted Spell: echelon"] = "EchelonExhaust",
@@ -57,6 +60,7 @@ local AffectsLookup = {
   ["Spell: echelon"] = "StanceEchelon",
   ["Spell: phalanx"] = "StancePhalanx",
   ["Spell: column"] = "StanceColumn",
+  
   ["Spell: ether link"] = "EtherLink",
   ["Spell: ether warp"] = "EtherWarp",
   --["Spell: ether crash"] = "EtherCrash",
@@ -71,6 +75,8 @@ local AffectsLookup = {
   ["Exhausted Spell: water breathing"] = "WaterBreathingExhaust",
   ["Exhausted Spell: giant strength"] = "GiantStrengthExhaust",
   ["Exhausted Spell: fly"] = "FlyExhaust",
+  
+  -- bladedancer
   ["Spell: bladedance"] = "BladedanceTimer",
   ["Spell: dervish dance"] = "DervishTimer",  
   ["Spell: inspiring dance"] = "InspireTimer",
@@ -83,6 +89,7 @@ local AffectsLookup = {
   ["Exhausted Spell: inspiring dance"] = "InspireExhaust",
   ["Exhausted Spell: unending dance"] = "UnendExhaust",
   ["Exhausted Spell: veil of blades"] = "VeilExhaust",
+  ["Spell: iron veil"] = "IronVeil",
   ["Spell: furious rampage"] = "Rampage",
 
   ["Spell: artificer blessing"] = "ArtificerBlessing",
@@ -92,6 +99,7 @@ local AffectsLookup = {
   ["Spell: divine grace"] = "DivineGrace",
   ["Spell: glorious conquest"] = "GloriousConquest",
   ["Spell: grim harvest"] = "GrimHarvest",
+  ["Spell: grim harvest aura"] = "GrimHarvestAura",
   ["Spell: hallowed nimbus"] = "HallowedNimbus",
   ["Spell: protective vigil"] = "ProtectiveVigil",
   ["Spell: sylvan benediction"] = "SylvanBenediction",
@@ -107,6 +115,8 @@ local AffectsLookup = {
   ["Exhausted Spell: tainted genius"] = "TaintedExhaust",
   ["Exhausted Spell: unholy bargain"] = "UnholyBargainExhaust",
   ["Exhausted Spell: brimstone"] = "BrimstoneExhaust",
+  ["Exhausted Spell: emotive drain"] = "EmotiveDrainExhaust",
+  
   ["Spell: regeneration"]  = "Regeneration",
   ["Spell: protective stance"] = "StanceProtective",
   ["Exhausted Spell: protective stance"] = "StanceProtectiveExhaust",
@@ -137,11 +147,31 @@ local AffectsLookup = {
   ["Spell: vampire fang"] = "VampireFang",
   ["Spell: spectral fang"] = "SpectralFang",
   ["Spell: dagger hand"] = "DaggerHand",
+  ["Spell: stone fist"] = "StoneFist",
+  
   ["Spell: kinetic chain"] = "KineticChain",
   ["Exhausted Spell: kinetic chain"] = "KineticChainExhaust",
+  ["Spell: gravitas"] = "Gravitas",
+  ["Exhausted Spell: gravitas"] = "GravitasExhaust",
   ["Spell: fury of the mind"] = "FuryOfTheMind",
   ["Spell: minds eye"] = "MindsEye",
   ["Spell: stunning weapon"] = "StunningWeapon",
+  ["Spell: distracting weapon"] = "DistractingWeapon",
+  ["Spell: disabling weapon"] = "DisablingWeapon",
+  ["Spell: restricting weapon"] = "RestrictingWeapon",
+  ["Spell: felling weapon"] = "FellingWeapon",
+  ["Spell: conscious weapon"] = "ConsciousWeapon",
+  ["Spell: intelligent weapon"] = "IntelligentWeapon",
+  ["Spell: orbit"] = "Orbit",
+  ["Spell: empathic resonance"] = "EmpathicResonance",
+  
+  -- migraine exhausts
+  ["Exhausted Spell: water breathing"] = "WaterBreathingExhaust",
+  ["Exhausted Spell: giant strength"] = "GiantStrengthExhaust",
+  ["Exhausted Spell: fly"] = "FlyExhaust",
+  ["Exhausted Spell: cure light"] = "CureLightExhaust",
+  
+  -- racials
   ["Spell: racial revival"] = "RacialRevival",
   ["Racial revival fatigue"] = "RacialRevivalFatigue",
   ["Spell: racial fire aura"] = "RacialFireaura",
@@ -152,6 +182,9 @@ local AffectsLookup = {
   ["Racial breath fatigue"] = "RacialBreathFatigue",
   ["Spell: racial frenzy"] = "RacialFrenzy",
   ["Racial frenzy fatigue"] = "RacialFrenzyFatigue",
+  ["Racial roar fatigue"] = "RacialRoarFatigue",
+  
+  -- debuffs
   ["Spell: calm"] = "Calm",
   ["Spell: fear"] = "Fear",
   ["Spell: poison"] = "Poison",
@@ -167,6 +200,9 @@ local AffectsLookup = {
   ["Spell: blindness"] = "Blindness",
   ["Spell: overconfidence"] = "Overconfidence",
   ["Spell: scramble"] = "Scramble",
+  ["Spell: panic"] = "Panic",
+  ["Spell: heartbane"] = "Heartbane",
+  ["Spell: unrest"] = "Unrest",
   
   ["Spell: hand of god"] = "HandOfGod",
   

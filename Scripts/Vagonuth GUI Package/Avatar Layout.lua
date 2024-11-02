@@ -190,8 +190,8 @@ function LoadLayout()
   
   
   GroupieTable = {}
-  --group is set to max 32 currently. pending better way to handle this
-  for i=1,32 do
+  --group is set to max StaticVars.MaxGroupLabels (default 32)
+  for i=1, StaticVars.MaxGroupLabels do
   
     GroupieTable[i] = Geyser.Container:new({name="groupy"..tostring(i),height="10",width="90%"},GroupContainerInner)
     GroupieTable[i].NameLabel = createLabel("NameLabel"..tostring(i), "0", "0", "22%", "90%", "yellow", "<left> Name </left>", GroupieTable[i], 0, nil)
@@ -448,7 +448,7 @@ function LoadLayout()
   local autoSkillStyleSheet = GlobalVar.AutoSkill and styleSheetOn or styleSheetOff
   local autoSkillMessage = GlobalVar.AutoSkill and "<center>AutoSkill " .. GlobalVar.SkillStyle .. "</center>" or "<center>AutoSkill OFF</center>"
 
-  AutoSkillLabel = createLabel("AutoSkillLabel", CentrePanelSize*17, 0, CentrePanelSize*2, 25, "white", autoSkillMessage, CharPanel, nil, autoSkillStyleSheet)
+  AutoSkillLabel = createLabel("AutoSkillLabel", CentrePanelSize*17, 0, CentrePanelSize*3, 25, "white", autoSkillMessage, CharPanel, nil, autoSkillStyleSheet)
   AutoSkillLabel:setClickCallback("AutoSkillToggle")
   
 
@@ -463,7 +463,7 @@ function LoadLayout()
   local autoCastStyleSheet = GlobalVar.AutoCast and styleSheetOn or styleSheetOff
   local autoCastMessage = GlobalVar.AutoCast and "<center>AutoCast - ".. GlobalVar.AutoCaster .. "</center>" or "<center>AutoCast OFF</center>"
 
-  AutoCastLabel = createLabel("AutoCastLabel", CentrePanelSize*17, 25, CentrePanelSize*2, 25, "white", autoCastMessage, CharPanel, nil, autoCastStyleSheet)
+  AutoCastLabel = createLabel("AutoCastLabel", CentrePanelSize*17, 25, CentrePanelSize*3, 25, "white", autoCastMessage, CharPanel, nil, autoCastStyleSheet)
   AutoCastLabel:setClickCallback("AutoCastToggle")
   
   LagLabel = createLabel("LagLabel", 10, 55, CentrePanelSize*1.5, 20, "white", "<center>Comm Lag</center>", Bottom_container, nil, styleSheetOff)

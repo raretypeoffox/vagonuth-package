@@ -15,9 +15,9 @@ if (StatTable.Class == "Mage" or StatTable.Class == "Cleric" or StatTable.Class 
 
   if StatTable.current_mana > 100 then
     send("cast portal " .. matches[2])
-    send("gtell ool")
+    if not GlobalVar.Silent then send("gtell ool") end
   else
-    if not GlobalVar.Silent then print("Group Portal: mana less than 100, portal not cast") end
+    printGameMessage("Group Portal", "mana less than 100, portal not cast")
   end
 end
 

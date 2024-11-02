@@ -5,8 +5,10 @@
 -- Trigger Patterns:
 -- 0 (regex): ^\*?(\w+)\*? tells the group '(\w+)'s pick\. Check my pinfo and gt # to pick\.( Upcoming: )?(\w+)?,? ?(\w+)?,? ?(\w+)?
 -- 1 (regex): ^\*?(\w+)\*? tells the group '(\w+) - Pick an item from Pinfo \w+( - Upcoming: )?(\w+)?,? ?(\w+)?,? ?(\w+)?
--- 2 (regex): ^\*(\w+)\*? tells the group '(\w+)'s pick.'
--- 3 (regex): ^\*(\w+)\*? tells the group '(\w+)'s pick! Check pinfo \w+ and gtell <#> or gtell pass. Next up: (\w+)?,? ?(w\+)?, ?(\w+)?,? ?(\w+)?
+-- 2 (regex): ^\*?(\w+)\*? tells the group '(\w+)'s pick.'
+-- 3 (regex): ^\*?(\w+)\*? tells the group '(\w+)'s pick! Check pinfo \w+ and gtell <#> or gtell pass. Next up: (\w+)?,? ?(w\+)?, ?(\w+)?,? ?(\w+)?
+-- 4 (regex): ^\*?(\w+)\*? tells the group '(\w+)'s pick. Upcoming winners: (\w+)?,? ?(w\+)?, ?(\w+)?,? ?(\w+)?
+-- 5 (regex): ^\*?(\w+)\*? tells the group '(\w+)'s pick. Please 'playerinfo \w+' for a list. Grouptell commands: 'info <item #>' for additional information \(if available\)., 'pass' to pass.'
 
 -- Script Code:
 local lottobot = matches[2] -- can't use matches inside tempTimer

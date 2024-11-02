@@ -8,6 +8,6 @@
 -- Script Code:
 if not (gmcp.Room.Info.zone == "{ ALL  } AVATAR  Sanctum" or gmcp.Room.Info.zone == "{ LORD } Dev     Rietta's Wonders") then
   if StatTable.Fortitude then
-    OnMobDeathQueue("sneak")
+    TryQueue("sneak",60)
   end
 end

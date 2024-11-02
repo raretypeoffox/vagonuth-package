@@ -1,5 +1,4 @@
 -- Trigger: stuning weapon 
--- Attribute: isActive
 
 
 -- Trigger Patterns:

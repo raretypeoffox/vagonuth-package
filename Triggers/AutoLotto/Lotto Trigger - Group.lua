@@ -21,7 +21,12 @@ safeTempTrigger("LottoCaptureEndID", "^$", function()
   
   local msg = ""
   for i = 1, #LottoCapture do
-    msg = msg .. i .. ". " .. LottoCapture[i] .. " "
+    if LottoCapture[i] == StatTable.CharName then 
+      winner = "<yellow>" .. LottoCapture[i] .. "<white>"
+    else
+      winner = LottoCapture[i]
+    end
+    msg = msg .. i .. ". " .. winner .. " "
   end
   
   printGameMessage("Lotto!", msg, "yellow", "white")

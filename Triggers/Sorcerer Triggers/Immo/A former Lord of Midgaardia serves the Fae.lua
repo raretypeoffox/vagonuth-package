@@ -7,5 +7,5 @@
 
 -- Script Code:
 ImmoMob("orc")
+ImmoMob("gnome")
 
--- maybe gnome too?
