@@ -39,13 +39,23 @@
 -- v1.1.0
 -- significant improvement to lord monks (qi, preachup, gameloop)
 -- improvements to mnd (psyphon, expanded decept list)
+-- added: drider autopoison/expunge
 -- added: verbose (on|off) - turns on/off extra messages to GameMessage
+-- update: monitor no longer switches on preachup if you're already monitoring someone
+-- update: classes that can self spell certain spells (bark, steel) now do so on mday
+-- update: pantheon, unholy rampage now works like grim harvest
+-- minor update: minor optimization to gmcp updates
+-- minor update: autoheal ON/OFF now shows where "Qi" label used to be (for healer types)
+-- minor update: added gulch keys
+-- minor update: psi's now try to shatter forcefields
 -- minor update: alleg/junk now passed/dropped on rc
 -- minor update: alleg now picked up when decept causes mob to drop it
 -- minor update: added hive mind to layout/preachup
 -- minor update: tweaked autofrenzy logic
+-- minor update: additional game messages
 -- bug fix: alias formatting when there's args
 -- bug fix: mnd was over surging
+-- bug fix: hellbreach tokens are now touched again
 
 
 -- Long-term Todo
