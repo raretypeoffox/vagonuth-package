@@ -3,11 +3,13 @@
 
 
 -- Trigger Patterns:
--- 0 (start of line): A blood stained portal to Overgrowth has congealed here!
--- 1 (start of line): A blood stained portal to
--- 2 (substring): A portal congealed from blood.
+-- 0 (regex): ^A blood stained portal to (.*) has congealed here!
+-- 1 (substring): A portal congealed from blood.
 
 -- Script Code:
--- need more trigger text
-
+-- A blood stained portal to Darker Castle has congealed here!
 send("get portal")
+
+if matches[2] then
+  printGameMessage("Portal!", "A portal to " .. matches[2] .. " popped here!")
+end

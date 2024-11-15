@@ -3,78 +3,83 @@
 
 -- Script Code:
 CustomPreachup = {
-["Jayla"] = "stance unending",
-["Zhonya"] = "stance unending",
 ["Xanur"] = "cast 'minds eye'",
---["Zephyra"] = "cast solitude",
+["Zephyra"] = "cast solitude",
 ["Qhax"] = "cast prayer soothe",
-["Azarael"] = "cast frenzy",
-["Thistleshade"] = "cast frenzy",
-["Bruzzorli"] = "cast frenzy",
+}
+
+CustomFrenzyList = {
+  "Azarael",
+  "Thistleshade",
+  "Bruzzorli",
 }
 
 function CustomMDAYPreachup()
-  CustomPreachup["Olodagh"] = "tell xanur steel"
-  CustomPreachup["Glugruk"] = "tell xanur steel"
-  CustomPreachup["Azalad"] = "tell xanur steel"
-  CustomPreachup["Zallah"] = "tell xanur steel"
-  CustomPreachup["Zhonya"] = CustomPreachup["Zhonya"] .. getCommandSeparator() .. "tell xanur steel"
-  CustomPreachup["Jayla"] = CustomPreachup["Jayla"] .. getCommandSeparator() .. "tell xanur steel"
-  CustomPreachup["Olodagh"] = CustomPreachup["Olodagh"] .. getCommandSeparator() .. "tell kindroth bark"
-  CustomPreachup["Glugruk"] = CustomPreachup["Glugruk"] .. getCommandSeparator() .. "tell kindroth bark"
-  CustomPreachup["Azalad"] = CustomPreachup["Azalad"] .. getCommandSeparator() .. "tell kindroth bark"
-  CustomPreachup["Zallah"] = CustomPreachup["Zallah"] .. getCommandSeparator() .. "tell kindroth bark"
-  CustomPreachup["Zhonya"] = CustomPreachup["Zhonya"] .. getCommandSeparator() .. "tell kindroth bark"
-  CustomPreachup["Jayla"] = CustomPreachup["Jayla"] .. getCommandSeparator() .. "tell kindroth bark"
-  CustomPreachup["Forgeflare"] = "stance veil" .. getCommandSeparator() .. "bt enter" .. getCommandSeparator() .. "bt deepen" .. getCommandSeparator() .. "bt deepen"
+  CustomPreachup["Xanur"] = "cast 'minds eye'" .. cs .."cast steel olodagh" .. cs .. "cast steel glugruk" .. cs .. "cast steel azalad" .. cs .. "cast steel zallah"
+  CustomPreachup["Neuralisk"] = "cast steel zhonya" .. cs .. "cast steel xykoi" .. cs .. "cast steel jayla" .. cs .. "cast steel forgeflare" .. cs .. "cast steel markath" .. cs .. "cast steel zeno"
+  CustomPreachup["Kindroth"] = "cast barkskin olodagh" .. cs .. "cast barkskin glugruk" .. cs .. "cast barkskin azalad" .. cs .. "cast barkskin zallah"
+  CustomPreachup["Ilthuryn"] =  "cast barkskin zhonya" .. cs .. "cast barkskin xykoi" .. cs .. "cast barkskin jayla" .. cs .. "cast barkskin forgeflare"
+  CustomPreachup["Vagouth"] =  "cast barkskin zapwick" .. cs .. "cast barkskin zapwizz" .. cs .. "cast barkskin zapwow" .. cs .. "cast barkskin aeryn"
+  CustomPreachup["Aphroros"] = "cast barkskin zeno" .. cs .. "cast barkskin markath" .. cs .. "cast barkskin zephyra" .. cs .. "cast barkskin ayas"
+  CustomPreachup["Forgeflare"] = "stance veil" .. cs .. "bt enter" .. cs .. "bt deepen" .. cs .. "bt deepen"
+  CustomPreachup["Xamur"] = "cast frenzy"
 end
 
 
 
-function PreachUp(AskForFrenzy)
-  AskForFrenzy = AskForFrenzy or GlobalVar.AutoFrenzy
+function PreachUp()
   cecho("<white>AutoPreachUp Script<ansi_white>: attempting to get spells from bots, checking if bots are on this plane")
   if StatTable.Position ~= "Stand" then send("stand") end
   TryLook()
   getOnlinePlayers()
   if IsMDAY() then CustomMDAYPreachup() end
   
-  tempTimer(2, function() LookForPreachupBots(AskForFrenzy) end)
+  tempTimer(2, function() LookForPreachupBots() end)
   raiseEvent("OnPreachUp")
 end
 
 function PreachUpAutoMonitor()
   local monitor_name = nil
   local is_bodyguard = StatTable.Class == "Bodyguard"
+  local is_berserker = StatTable.Class == "Berserker"
+
   local lowest_maxhp = is_bodyguard and math.huge or nil
+  
+  if StatTable.Monitor and IsGroupMate(StatTable.Monitor) then return end --we're already monitoring someone in the group
 
   for _, v in ipairs(gmcp.Char.Group.List) do
     if v.name ~= StatTable.CharName then
       if is_bodyguard then
+        -- Bodyguard logic: find the group member with the lowest max HP
         local maxhp = tonumber(v.maxhp)
         if maxhp and maxhp < lowest_maxhp then
           lowest_maxhp = maxhp
           monitor_name = v.name
         end
+      elseif is_berserker and v.class == "Cle" then
+        -- Berserker logic: prioritize cleric ("Cle")
+        monitor_name = v.name
+        break
       elseif v.class == "Bld" then
+        -- Default logic: prioritize bladedancer ("Bld")
         monitor_name = v.name
         break
       end
     end
   end
 
+
   if not monitor_name then return nil end
   if monitor_name == "Someone" then printGameMessage("PreachUp", "Couldn't monitor, groupie is invis"); return nil; end
 
   
-  local monitor_type = is_bodyguard and "splat" or "bladedancer"
+  local monitor_type = is_bodyguard and "splat" or (is_berserker and "cleric" or "bladedancer")
   printGameMessage("PreachUp", "Monitoring the " .. monitor_type .. ": " .. monitor_name)
   return monitor_name
 end
 
 
-function LookForPreachupBots(AskForFrenzy)
-  AskForFrenzy = AskForFrenzy or GlobalVar.AutoFrenzy
+function LookForPreachupBots() 
   local Players = gmcp.Room.Players
   local DruidInRoom = false
   local PsiInRoom = false
@@ -122,17 +127,27 @@ function LookForPreachupBots(AskForFrenzy)
     end
     -- give the bots time to plane
     tempTimer(8, function() if StatTable.Position ~= "Stand" then send("stand") end; TryLook() end)
-    tempTimer(10, function() printGameMessageVerbose("PreachUp", "Asking bots to plane"); GetSpellsAtPreachup(AskForFrenzy) end)
+    tempTimer(10, function() printGameMessageVerbose("PreachUp", "Asking bots to plane"); GetSpellsAtPreachup() end)
   end
 end 
 
-function GetSpellsAtPreachup(AskForFrenzy)
-  AskForFrenzy = AskForFrenzy or GlobalVar.AutoFrenzy
+-- Helper function to iterate over a bot list and ask for a spell
+local function AskBotForSpell(commandList, Players, botList, spell)
+  for _, player in ipairs(botList) do
+    if Players[player] then
+      table.insert(commandList, "tell " .. player .. " " .. spell)
+      break
+    end
+  end
+end
+
+function GetSpellsAtPreachup()
   local Players = gmcp.Room.Players
-  local commands
+  local commands = {}
   local MyClass = StatTable.Class
   local MyLevel = StatTable.Level
   local MySubLevel = StatTable.SubLevel
+  local isMDAY = IsMDAY()
   
   printGameMessageVerbose("PreachUp", "Getting spells from bots")
 
@@ -147,43 +162,34 @@ function GetSpellsAtPreachup(AskForFrenzy)
   end
   
   if not StatTable.Barkskin then
-    for _, player in ipairs(StaticVars.DruidBots) do
-      if Players[player] then
-        table.insert(commands, "tell " .. player .. " bark")
-        break
-      end
+    if IsMDAY and ((IsClass({"Archer", "Druid", "Fusilier"}) and (MyLevel == 125 or MySubLevel > 69)) or (IsClass({"Wizard"}) and MyLevel == 125)) then
+      table.insert(commands, "cast barkskin")
+    else
+      AskBotForSpell(commands, Players, StaticVars.DruidBots, "bark")
     end
   end
   
   if not StatTable.SteelSkeleton then
-    for _, player in ipairs(StaticVars.PsiBots) do
-      if Players[player] then
-        table.insert(commands, "tell " .. player .. " steel")
-        break
-      end
+    if IsMDAY and ((IsClass({"Psionicist", "Mindbender"}) and MyLevel >= 50) or (IsClass({"Black Circle Initiate"}) and MyLevel == 125)) then
+      table.insert(commands, "cast 'steel skeleton'")
+    else
+      AskBotForSpell(commands, Players, StaticVars.PsiBots, "steel")
     end
   end 
   
-  if not StatTable.DarkEmbrace and ArrayHasValue(StaticVars.DarkRaces, StatTable.Race) then
-    for _, player in ipairs(StaticVars.PsiBots) do
-      if Players[player] then
-        table.insert(commands, "tell " .. player .. " de")
-        break
-      end
+  if not StatTable.DarkEmbrace and IsRace(StaticVars.DarkRaces) then
+    if IsMDAY and IsNotClass({"Paladin", "Priest", "Berserker", "Druid"}) and (MyLevel == 125 or MySubLevel > 29) then
+      table.insert(commands, "cast 'dark embrace'")
+    else
+      AskBotForSpell(commands, Players, StaticVars.PsiBots, "de")
     end
   end
   
-  if StatTable.Race ~= "High Elf" and AskForFrenzy then
-    -- On MDAY we'll frenzy ourself to spare the bots. Otherwise, ask bots for frenzy
-    if IsMDAY() and StatTable.Class ~= "Berserker" and (MyLevel > 51 or MySubLevel > 41) then
+  if StatTable.Race ~= "High Elf" and GlobalVar.AutoFrenzy and (IsClass(StaticVars.FrenzyClasses) or ArrayHasValue(CustomFrenzyList, StatTable.CharName)) then
+    if IsMDAY and IsNotClass({"Berserker","Priest"}) and (MyLevel == 125 or MySubLevel > 41) then
       table.insert(commands, "cast frenzy")
     else
-      for _, player in ipairs(StaticVars.DruidBots) do
-        if Players[player] then
-          table.insert(commands, "tell " .. player .. " frenzy")
-          break
-        end
-      end
+      AskBotForSpell(commands, Players, StaticVars.DruidBots, "frenzy")
     end
   end
   
@@ -221,7 +227,9 @@ function GetSpellsAtPreachup(AskForFrenzy)
       --table.insert(commands, "quicken off")
       if MySubLevel > 200 and not StatTable.Gravitas then table.insert(commands, "cast 'gravitas'") end
     end
-    
+  elseif MyClass == "Mindbender" and MyLevel == 125 then
+    if not StatTable.MindHive then table.insert(commands, "cast 'hive mind'") end
+  
   elseif MyClass == "Mage" and MyLevel >= 51 then
     if (MyLevel == 125 or MySubLevel > 101) and not StatTable.Savvy then table.insert(commands, "cast savvy") end
     if (StatTable.max_mana > 5000) and not StatTable.Mystical then table.insert(commands, "cast mystical") end 
@@ -234,6 +242,7 @@ function GetSpellsAtPreachup(AskForFrenzy)
   elseif MyClass == "Stormlord" and MyLevel >= 51 then
     if (MyLevel == 125 or MySubLevel > 101) and not StatTable.Savvy then table.insert(commands, "cast savvy") end
     if (MyLevel == 125 and not StatTable.GaleStratum) then table.insert(commands, "cast stratum gale") end
+    
   elseif MyClass == "Sorcerer" and MyLevel >= 51 then
     if (StatTable.max_mana > 5000) and not StatTable.Savvy then table.insert(commands, "cast savvy") end
     if (StatTable.max_mana > 5000) and not StatTable.Mystical then table.insert(commands, "cast mystical") end
@@ -242,16 +251,41 @@ function GetSpellsAtPreachup(AskForFrenzy)
     if MyLevel >= 51 and not StatTable.SummonNecrit then table.insert(commands, "cast 'summon necrit'") end
   elseif MyClass == "Black Circle Initiate" and MyLevel >= 51 then
     if not StatTable.Nightcloak then table.insert(commands, "cast nightcloak") end
-  elseif MyClass == "Monk" or MyClass == "Shadowfist" then
-    if MyLevel == 51 and MySubLevel > 150 and StatTable.ArmorClass < -500 then -- only cast if in hit mode
-      table.insert(commands, "cast 'dagger hand'")
+  elseif MyClass == "Bladedancer" and MyLevel == 125 then
+    if not BldDancing() then
+      table.insert(commands, "stance unending")
     end
+  elseif MyClass == "Monk" then
+    if MyLevel == 125 then
+      if not StatTable.BlindDevotion then table.insert(commands, "cast 'blind devotion'") end
+      if not StatTable.Consummation then table.insert(commands, "cast consummation") end
+      if not StatTable.StoneFist then table.insert(commands, "cast 'stone fist'") end
+    elseif MyLevel == 51 then
+      if MySubLevel > 150 and StatTable.ArmorClass < -500 then -- only cast if in hit mode
+        table.insert(commands, "cast 'dagger hand'")
+      end
+    end
+  elseif MyClass == "Shadowfist" then
+    if MyLevel == 125 then
+      if not StatTable.Consummation then table.insert(commands, "cast consummation") end
+      if not StatTable.StoneFist then table.insert(commands, "cast 'stone fist'") end
+    elseif MyLevel == 51 then
+      if MySubLevel > 150 and StatTable.ArmorClass < -500 then -- only cast if in hit mode
+        table.insert(commands, "cast 'dagger hand'")
+      elseif MySubLevel > 200 then
+        table.insert(commands, "cast 'stone fist'")
+      end
+    end 
   end
   
   if MyLevel == 125 and (MyClass == "Assassin" or MyClass == "Rogue" or MyClass == "Black Circle Initiate") then 
     table.insert(commands, "sn") 
     table.insert(commands, "alertness")  
   end
+  
+  if StatTable.Race == "Drider" then table.insert(commands, "racial imbue") end
+  
+  
   if MyLevel == 125 and MyClass == "Berserker" then table.insert(commands, "rest"); table.insert(commands, "gtell remember to send the bzk :)")  end
   
   if MyLevel == 125 and IsNotClass({"Soldier", "Berserker", "Shadowfist", "Black Circle Initiate"}) and StatTable.current_mana > 2000 and Grouped() then table.insert(commands, "cast 'detect haven'") end
@@ -266,7 +300,7 @@ function GetSpellsAtPreachup(AskForFrenzy)
   end
   
   safeCall(ClearGurneyTriggers)
-  if GroupLeader() then sendGMCP("Char.Group.List"); tempTimer(4, [[GroupOrder()]]) end
+  if GroupLeader() and SafeArea() then sendGMCP("Char.Group.List"); tempTimer(4, [[GroupOrder()]]) end
   
   -- For solo preachups
   if not Grouped() then
@@ -304,7 +338,7 @@ function GetSpellsAtPreachup(AskForFrenzy)
     GlobalVar.SurgeLevel = 2
   end 
   
-  -- monitor the bld
+  -- choose a monitor target
   local monitor_name = PreachUpAutoMonitor()
   if monitor_name then table.insert(commands, "monitor " .. monitor_name) end 
 

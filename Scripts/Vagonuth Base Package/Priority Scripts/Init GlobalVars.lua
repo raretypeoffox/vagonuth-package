@@ -161,9 +161,6 @@ function Init.Profile(timeout)
     -- Skill Variables
     GlobalVar.AutoSkill = false
     GlobalVar.SkillStyle = ""
-    
-    -- AutoFrenzy
-    GlobalVar.AutoFrenzy = IsClass(StaticVars.FrenzyClasses) and true or false
 
     -- AutoCast
     if MyClass == "Mage" then
@@ -358,6 +355,7 @@ tempTimer(0, function() Init.ProfileOnLogin() end)
 
 -- Saved Variables
 function SaveProfileVars()
+  GlobalVar.Saved = {}
   GlobalVar.Saved.BuddyChatName = GlobalVar.BuddyChatName or nil
   GlobalVar.Saved.BuddyChatColour = GlobalVar.BuddyChatColour or nil
   GlobalVar.Saved.Silent = GlobalVar.Silent or false
@@ -367,21 +365,25 @@ function SaveProfileVars()
   GlobalVar.Saved.Silent = GlobalVar.Silent or false
   GlobalVar.Saved.FontSize = GlobalVar.FontSize or nil
   GlobalVar.Saved.Debug = GlobalVar.Debug or false
+  GlobalVar.Saved.Verbose = GlobalVar.Verbose or false
   GlobalVar.Saved.AutoFrenzy = GlobalVar.AutoFrenzy or true
   GlobalVar.Saved.PaladinRescue = GlobalVar.PaladinRescue or true
   GlobalVar.Saved.DownloadMessage = GlobalVar.DownloadMessage or nil
   local location = getMudletHomeDir() .. "/ProfileVariables.lua"
   table.save(location, GlobalVar.Saved)
+
 end
 
 function LoadProfileVars()
   local location = getMudletHomeDir() .. "/ProfileVariables.lua"
+  GlobalVar.Saved = GlobalVar.Saved or {}
   if io.exists(location) then
     table.load(location, GlobalVar.Saved)
   else
     tempTimer(10, function() Init.FirstTime() end)
     SaveProfileVars()
   end
+  GlobalVar.Saved = GlobalVar.Saved or {}
   GlobalVar.BuddyChatName = GlobalVar.Saved.BuddyChatName or nil
   GlobalVar.BuddyChatColour = GlobalVar.Saved.BuddyChatColour or nil
   GlobalVar.Silent = GlobalVar.Saved.Silent or false
@@ -391,6 +393,7 @@ function LoadProfileVars()
   GlobalVar.Silent = GlobalVar.Saved.Silent or false
   GlobalVar.FontSize = GlobalVar.Saved.FontSize or nil
   GlobalVar.Debug = GlobalVar.Saved.Debug or false
+  GlobalVar.Verbose = GlobalVar.Saved.Verbose or false
   GlobalVar.AutoFrenzy = GlobalVar.Saved.AutoFrenzy or true
   GlobalVar.PaladinRescue =  GlobalVar.Saved.PaladinRescue or true
   GlobalVar.DownloadMessage = GlobalVar.Saved.DownloadMessage or nil

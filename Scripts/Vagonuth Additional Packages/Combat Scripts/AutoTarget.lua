@@ -56,6 +56,14 @@ local TargetExclusions = {
 
 -- Astral
 "A githzerai plots his escape plan.",
+"Made of solid red light, a guardian golem glares at you.",
+"Made of solid orange light, a guardian golem glares at you.",
+"Made of solid yellow light, a guardian golem glares at you.",
+"Made of solid green light, a guardian golem glares at you.",
+"Made of solid blue light, a guardian golem glares at you.",
+"Made of solid indigo light, a guardian golem glares at you.",
+"Made of solid violet light, a guardian golem glares at you.",
+
 
 -- Astral Invasion
 "A Fae Cleric rolls his eyes at you, and casts a protection spell on himself.",

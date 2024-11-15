@@ -6,3 +6,4 @@
 -- 0 (start of line): The Frozen Demon Tourach is DEAD!!
 
 -- Script Code:
+send("get sword cor")

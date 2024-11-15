@@ -33,6 +33,10 @@ function firstToUpper(str)
     return (str:gsub("^%l", string.upper))
 end
 
+function firstToLower(str)
+  return (str:gsub("^%u", string.lower))
+end
+
 -- Returns char_name in GMCP format (for matching data)
 -- could be done directly in a function with: string.lower(StatTable.CharName):gsub("^%l", string.upper)
 function GMCP_name(char_name)

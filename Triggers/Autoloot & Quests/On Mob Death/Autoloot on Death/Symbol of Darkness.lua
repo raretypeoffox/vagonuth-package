@@ -6,3 +6,4 @@
 -- 0 (start of line): Belag is DEAD!!
 
 -- Script Code:
+send("get symbol corpse")

@@ -26,7 +26,8 @@ function AR.Rescue(name)
   if not AR.Status then return false end -- AutoRescue off, return
   
   name = string.lower(name)
-  if not AR.RescueList[name] then return false end -- Groupmate not on rescue list, return
+  if not AR.RescueList[name] then return false end -- name is not on rescue list, return
+  if not GlobalVar.GroupMates[firstToUpper(name)] then AR.Debug(name .. " not a groupmate or you don't have detects up"); return end
 
 
   local currentHPpct = (StatTable.current_health / StatTable.max_health)

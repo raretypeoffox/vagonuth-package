@@ -1,12 +1,12 @@
 -- Alias: Pantheon Alias
 -- Attribute: isActive
 
--- Pattern: ^(?i)(pantheon|panth) ?(.*)?$
+-- Pattern: ^(?i)(panth|pantheon)(?: (.*))?$
 
 -- Script Code:
-local arg = string.lower(matches[3])
+local args = (matches[3] or ""):lower()
 
-if arg == "" then
+if args == "" then
     showCmdSyntax("Pantheon\n\tSyntax: panth <spell>", {
     {"panth <spell>", "Sets the Cleric pantheon spell to be autocast"},
     {"panth clear", "Clears the pantheon spell previously set"},
@@ -20,6 +20,6 @@ elseif arg == "clear" then
   printMessage("Pantheon", "Spell cleared")
   GlobalVar.PantheonSpell = nil
 else
-  GlobalVar.PantheonSpell = arg
+  GlobalVar.PantheonSpell = args
   printMessage("Pantheon", "Pantheon spell set to: <yellow>" .. GlobalVar.PantheonSpell)
 end

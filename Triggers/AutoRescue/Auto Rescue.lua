@@ -15,6 +15,7 @@ local AOE_attacks = {
   "meteor swarm",
   "acid rain",
   "shard storm",
+  "cataclysm",
   
   
   

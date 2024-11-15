@@ -6,3 +6,4 @@
 -- 0 (start of line): A treasure seeking adventurer is DEAD!!
 
 -- Script Code:
+send("get key corpse")

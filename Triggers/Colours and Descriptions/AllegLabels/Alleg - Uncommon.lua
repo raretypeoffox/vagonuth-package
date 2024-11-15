@@ -43,6 +43,7 @@
 -- 37 (substring): a viper fang
 -- 38 (substring): a pair of wind-ravaged boots
 -- 39 (substring): a stone disc
+-- 40 (substring): shaleskin arm guard 
 
 -- Script Code:
 cecho (string.rep (" ",80-tonumber(string.len(line))) .. "<yellow> [ALLEG - Uncommon]")

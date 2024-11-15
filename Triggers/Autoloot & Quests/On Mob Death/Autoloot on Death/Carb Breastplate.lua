@@ -7,3 +7,4 @@
 -- 1 (start of line): Panther is DEAD!!
 
 -- Script Code:
+send("get carb corpse")

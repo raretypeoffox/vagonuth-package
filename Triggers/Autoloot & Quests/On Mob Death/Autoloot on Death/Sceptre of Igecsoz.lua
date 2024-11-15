@@ -6,3 +6,4 @@
 -- 0 (start of line): Queen Hcuyj is DEAD!!  
 
 -- Script Code:
+send("get sceptre cor")

@@ -36,6 +36,17 @@
 -- Fixed bug: auto pass / bag alleg now checks to see if Alleg Script exists first
 -- WIP: improved lord psi triggers (eg preventing enemy gravitas)
 
+-- v1.1.0
+-- significant improvement to lord monks (qi, preachup, gameloop)
+-- improvements to mnd (psyphon, expanded decept list)
+-- added: verbose (on|off) - turns on/off extra messages to GameMessage
+-- minor update: alleg/junk now passed/dropped on rc
+-- minor update: alleg now picked up when decept causes mob to drop it
+-- minor update: added hive mind to layout/preachup
+-- minor update: tweaked autofrenzy logic
+-- bug fix: alias formatting when there's args
+-- bug fix: mnd was over surging
+
 
 -- Long-term Todo
 -- customizable variables
@@ -43,6 +54,7 @@
 -- have a script create a script outside of main package on first installation
 -- python script to convert between .lua and .xml
 -- make scan while move client side alias
+-- inprogress: make list of mobs with weapon for decept / shatter (mnk)
 
 -- BUGS:
 -- 

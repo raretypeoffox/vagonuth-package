@@ -1,5 +1,4 @@
 -- Trigger: an object falls, shattering against the ground. 
--- Attribute: isActive
 
 
 -- Trigger Patterns:

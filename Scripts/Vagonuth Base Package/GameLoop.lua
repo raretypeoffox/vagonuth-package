@@ -156,12 +156,53 @@
       if not GlobalVar.AutoStance then return end -- only swap if GlobalVar.AutoStance is on
       if AR.Status and (StatTable.Level == 125 or StatTable.SubLevel > 101) then
         UseSkillAfterExhaust(StatTable.BearStance, StatTable.BearStanceExhaust, "stance bear")
+        if not StatTable.BearStance then UseSkillAfterExhaust(StatTable.EmuStance, StatTable.EmuStanceExhaust, "stance emu") end
+      end
+      if StatTable.Level == 125 then
+        if not StatTable.StoneFist then Battle.DoAfterCombat("cast 'stone fist'") end
+        
+        -- qi loop      
+        local chakra = Battle.EnemiesChakra[gmcp.Char.Status.opponent_name] or nil
+        
+        if StatTable.OuterQi >= 10 then
+           if tonumber(gmcp.Char.Status.opponent_level) > 180 then --or StatTable.OuterQi == 23 (ie max)
+              if StatTable.SubLevel >= 250 then
+                TryAction("qi wave", 5)
+              else
+                TryAction("qi blast", 5)
+              end
+           end
+        end
+        
+        if StatTable.SubLevel >= 200 and not StatTable.FlowLikeWater and not StatTable.FlowLikeWaterExhaust then
+          if StatTable.InnerQi >= 5 then
+            Battle.DoAfterCombat("cast 'flow like water'")
+          else
+            return
+          end
+        
+        -- if there are groupies to rescue or we're in lag, try again later.
+        -- TODO: perhaps check if we're the only tank?
+        elseif (AR.Status and table.size(AR.RescueStack) > 0) or tonumber(gmcp.Char.Vitals.lag) > 0 then
+          return
+        elseif chakra and StatTable.SubLevel >= 100 and StatTable.InnerQi >= 7 then
+          TryAction("qi invert " .. (chakra and chakra or ""), 15)
+        elseif chakra and StatTable.InnerQi >= 7 then
+          TryAction("qi strike " .. (chakra and chakra or ""), 15)
+        elseif StatTable.StoneFist and StatTable.InnerQi >= 7 then
+          TryAction("qi punch", 5)
+        elseif StatTable.DaggerHand and StatTable.InnerQi >= 7 then
+          TryAction("qi thrust", 5)  
+        else
+          TryAction("kick", 5)
+        end
+        
       end
     elseif MyClass == "Shadowfist" then
       if not GlobalVar.AutoStance then return end -- only swap if GlobalVar.AutoStance is on
       if StatTable.ArmorClass > -1000 and StatTable.Level == 51 then
         if not StatTable.DaggerHand then
-          TryFunction("GameLoopDaggerHand", Battle.DoAfterCombat, {"cast 'dagger hand'"}, 60)       
+          Battle.DoAfterCombat("cast 'dagger hand'")     
         end
       end
       if StatTable.Level == 125 or StatTable.SubLevel > 100 then
@@ -186,7 +227,6 @@
          not StatTable.SylvanBenediction and not StatTable.UnholyRampage then
          
          if TryLock("GameLoopPantheon", 30) then 
-           printMessage("TESTING", "Cleric Pantheon down, would cast after battle")
            Battle.DoAfterCombat("cast '" .. GlobalVar.Pantheon .. "'") 
          end
       end
@@ -198,6 +238,12 @@
          
      
     elseif MyClass == "Psionicist" then
+    
+    
+    elseif MyClass == "Mindbender" then
+      if StatTable.Level == 125 and not StatTable.HiveMind and StatTable.current_mana > 1000 then
+        Battle.DoAfterCombat("cast 'hive mind'") 
+      end
 
     end -- end of MyClass
  end
@@ -243,13 +289,20 @@
   -- Misc Run Scripts
   if (StatTable.current_health == StatTable.max_health and StatTable.current_mana == StatTable.max_mana and StatTable.Foci and StatTable.Position == "Sleep" and (not SafeArea() or Grouped())) then TryAction("stand",100) end
   
-  if MyClass ~= "Sorcerer" and MyClass ~= "Shadowfist" and MyRace ~= "Demonseed" and StatTable.Alignment < 750 and StatTable.Level >= 51 then
+  if MyClass ~= "Sorcerer" and MyClass ~= "Shadowfist" and MyRace ~= "Demonseed" and
+     StatTable.Alignment < 750 and StatTable.Level >= 51 and
+     (not AltList or not AltList.Chars[StatTable.CharName].Insig or not AltList.Chars[StatTable.CharName].Insig.AcolyteOfTheTemple) then
+    
     if (MyClass == "Priest" and StatTable.Level == 125 and StatTable.CriticalInjured == 0) then
       TryAction("quicken 3" .. getCommandSeparator() .. "preach absolve" .. getCommandSeparator() .. "quicken off",60)
     else
 
-      if IsMDAY then TryAction("emote alignment has dropped below 750 - please |BW|preach absolve|N|", 600) end
-
+      if IsMDAY() then 
+        TryAction("emote alignment has dropped below 750 - please |BW|preach absolve|N|", 600) 
+      else
+        TryFunction("printAlignmentWarningID", printGameMessage, {"Warning!", "Alignment is below 750!"}, 600)
+      end
+      
     end
   end
   
@@ -288,18 +341,20 @@
       UseSkillAfterExhaust(StatTable.Intervention, StatTable.InterventionExhaust, "cast intervention " .. (GlobalVar.InterventionTarget and GlobalVar.InterventionTarget or ""))    
     end
     
-   if StatTable.Level == 125 then
+   if StatTable.Level == 125 and gmcp.Char.Vitals.lag == "0" then
       if (StatTable.Fear or StatTable.Blindness or StatTable.Flash or StatTable.Scramble or StatTable.Overconfidence) and (StatTable.CriticalInjured == 0 or not Battle.Combat) then
         --TryCast("preach clarify", 30)
         if TryFunction("PreachClarify", Battle.NextAct, {"preach clarify", 7}, 15) then
           printGameMessage("GameLoop", "Attempting to preach clarify")
         end
-      end
-      if (StatTable.Poison or StatTable.Virus or StatTable.Weaken) and (StatTable.CriticalInjured == 0 or not Battle.Combat) then
+      elseif (StatTable.Poison or StatTable.Virus or StatTable.Weaken) and (StatTable.CriticalInjured == 0 or not Battle.Combat) then
 
         if TryFunction("PreachPanacea", Battle.NextAct, {"quicken 5" .. getCommandSeparator() .. "preach panacea" .. getCommandSeparator() .. "quicken off", 7}, 15) then
           printGameMessage("GameLoop", "Attempting to preach panacea")
         end
+      elseif StatTable.InjuredCount > 0 and (StatTable.current_mana / StatTable.max_mana) > 0.5 and not SafeArea() then
+        if StatTable.Augment then TryAction("augment off", 120) end
+        TryCast("cast comfort " .. GlobalVar.VizMonitor, 10)      
       end
     end
       

@@ -49,7 +49,7 @@ function Battle.NextAct(NextAction, NextActionTime)
   
   -- There was already a Battle.NextAction queued up. Send it out now so that we don't lose it.
   if Battle.NextAction then
-    send(Battle.NextAction)
+    TryAction(Battle.NextAction, NextActionTime)
   end
   
   -- This is reached when we are in combat
@@ -178,6 +178,8 @@ function Battle.AutoCast()
       autocast_stopsurge = (10000 * Battle.GetSpellCostMod("arcane")) or 8000
     elseif (StatTable.Class == "Sorcerer") then
       autocast_stopsurge = (10000 * Battle.GetSpellCostMod("arcane")) or 8000
+    elseif StatTable.Class == "Mindbender" then
+      autocast_stopsurge = (9000 * Battle.GetSpellCostMod("psionic")) or 7000
     end
   elseif (StatTable.Level == 51) then
     autocast_minmana = 100
@@ -227,6 +229,7 @@ end
 
 function Battle.AutoHeal()
   GlobalVar.AutoHealExclusionList = GlobalVar.AutoHealExclusionList or {}
+  local shadowed = (gmcp.Room.Info.zone == "{ LORD } Ctibor  Netherworld" and true or false)
 
   --pdebug("Called Battle.AutoHeal()")
   local spelllag = (5 * Battle.GetSpellLagMod()) -- assumes in class, ie 5 second lag (div and comf are always in class)
@@ -248,13 +251,13 @@ function Battle.AutoHeal()
   
   -- If we're a Priest, check to see if we should be preaching
   if StatTable.Class == "Priest" and StatTable.current_mana > MinMana then
-    if StatTable.Level == 125 and StatTable.InjuredCount > 2 then
+    if (StatTable.Level == 125 and not shadowed) and StatTable.InjuredCount > 2  then
       if StatTable.CriticalInjured > 2 then
         return "augment 2" .. getCommandSeparator() .. "preach comfort" .. getCommandSeparator() .. "augment off", spelllag
       else
         return "preach comfort", 7 * Battle.GetSpellLagMod()
       end
-    elseif StatTable.Level == 51 and PreachAtHero and StatTable.CriticalInjured > 2 then
+    elseif (StatTable.Level == 51 or shadowed) and PreachAtHero and StatTable.CriticalInjured > 2 then
       return "preach divinity", 7 * Battle.GetSpellLagMod()
     end
   end
@@ -276,7 +279,7 @@ function Battle.AutoHeal()
   local HealTargetHPPct = GlobalVar.GroupMates[HealTarget].hp / GlobalVar.GroupMates[HealTarget].maxhp
 
   if HealTargetHPPct < MonitorHPPct and StatTable.current_mana > MinMana then
-    if StatTable.Level == 125 then
+    if StatTable.Level == 125 and not shadowed then
       if HealTargetHPPct < (MonitorHPPct * 0.5) and StatTable.current_mana > (MinMana * 2) then
         return "augment 3" .. getCommandSeparator() .. "cast comfort " .. HealTarget .. getCommandSeparator() .. "augment off", spelllag
       elseif HealTargetHPPct < (MonitorHPPct * 0.75) and StatTable.current_mana > (MinMana * 2) then
@@ -284,7 +287,7 @@ function Battle.AutoHeal()
       else
         return "cast comfort " .. HealTarget, spelllag
       end
-    elseif StatTable.Level == 51 then
+    elseif StatTable.Level == 51 or shadowed then
       return "cast divinity " .. HealTarget, spelllag
     else
       return "cast 'cure light' " .. HealTarget, spelllag

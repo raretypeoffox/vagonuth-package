@@ -17,6 +17,8 @@
 StatTable = StatTable or {}
 StatTable.BladetranceLevel = StatTable.BladetranceLevel or 0
 
+local last_ran_vitals = os.clock()
+
 local AffectsLookup = {
   ["Spell: sneak"] = "Sneak",
   ["Spell: shadow form"] = "Sneak",
@@ -91,7 +93,8 @@ local AffectsLookup = {
   ["Exhausted Spell: veil of blades"] = "VeilExhaust",
   ["Spell: iron veil"] = "IronVeil",
   ["Spell: furious rampage"] = "Rampage",
-
+  
+  -- cleric
   ["Spell: artificer blessing"] = "ArtificerBlessing",
   ["Spell: artificer blessing aura"] = "ArtificerBlessingAura", 
   ["Spell: discordia"] = "Discordia",
@@ -104,6 +107,7 @@ local AffectsLookup = {
   ["Spell: protective vigil"] = "ProtectiveVigil",
   ["Spell: sylvan benediction"] = "SylvanBenediction",
   ["Spell: unholy rampage"] = "UnholyRampage",  
+  ["Spell: unholy rampage aura"] = "UnholyRampageAura", 
     
   ["Spell: saving grace"] = "SavingGrace",
   ["Spell: death shroud"] = "DeathShroud",
@@ -136,6 +140,8 @@ local AffectsLookup = {
   ["Spell: shared boon"] = "SharedBoon",
   ["Spell: valorous boon"] = "ValorousBoon",
   ["Spell: final boon"] = "FinalBoon",
+  
+  -- monk / shf
   ["Spell: bear stance"] = "BearStance",
   ["Spell: emu stance"] = "EmuStance",
   ["Spell: tiger stance"] = "TigerStance",
@@ -148,7 +154,11 @@ local AffectsLookup = {
   ["Spell: spectral fang"] = "SpectralFang",
   ["Spell: dagger hand"] = "DaggerHand",
   ["Spell: stone fist"] = "StoneFist",
+  ["Spell: flow like water"] = "FlowLikeWater",
+  ["Exhausted Spell: flow like water"] = "FlowLikeWaterExhaust",
   
+  
+  -- Psi's / Mnd's
   ["Spell: kinetic chain"] = "KineticChain",
   ["Exhausted Spell: kinetic chain"] = "KineticChainExhaust",
   ["Spell: gravitas"] = "Gravitas",
@@ -164,6 +174,8 @@ local AffectsLookup = {
   ["Spell: intelligent weapon"] = "IntelligentWeapon",
   ["Spell: orbit"] = "Orbit",
   ["Spell: empathic resonance"] = "EmpathicResonance",
+  ["Spell: hive mind"] = "HiveMind",
+  ["Exhausted Spell: psyphon"] = "PsyphonExhaust",
   
   -- migraine exhausts
   ["Exhausted Spell: water breathing"] = "WaterBreathingExhaust",
@@ -183,6 +195,7 @@ local AffectsLookup = {
   ["Spell: racial frenzy"] = "RacialFrenzy",
   ["Racial frenzy fatigue"] = "RacialFrenzyFatigue",
   ["Racial roar fatigue"] = "RacialRoarFatigue",
+  ["Racial expunge fatigue"] = "RacialExpungeFatigue",
   
   -- debuffs
   ["Spell: calm"] = "Calm",
@@ -203,13 +216,21 @@ local AffectsLookup = {
   ["Spell: panic"] = "Panic",
   ["Spell: heartbane"] = "Heartbane",
   ["Spell: unrest"] = "Unrest",
+  ["Spell: faerie fire"] = "FaerieFire",
+  ["Spell: plague"] = "Plague",
   
   ["Spell: hand of god"] = "HandOfGod",
   
 }
 
 function GMCP_Vitals()
-
+    local tick_time = os.clock() - last_ran_vitals
+    if tick_time < 0.5 then
+      --printMessage("Debug", "Tick time less than 0.5s ( " .. tick_time .. " ), returning earlying")
+      return
+    end
+    last_ran_vitals = os.clock()
+    
     StatTable.CharName = GMCP_name(gmcp.Char.Status.character_name)
     StatTable.Race, StatTable.Class = gmcp.Char.Status.race, gmcp.Char.Status.class
     StatTable.Level, StatTable.SubLevel = tonumber(gmcp.Char.Status.level), tonumber(gmcp.Char.Status.sublevel)
@@ -279,6 +300,9 @@ function GMCP_Vitals()
     end
 
     if(GlobalVar.GUI) then UpdateGUI() end 
+  --if GlobalVar.Debug then
+  --  printMessage("DEBUG", string.format("GMCP_Vitals() ran in %.4f seconds (last ran %.4f)\n", (os.clock() - last_ran_vitals), tick_time))
+  --end
 
 end
     

@@ -6,3 +6,4 @@
 -- 0 (start of line): The animated crab shell is DEAD!!
 
 -- Script Code:
+send("get corpse")

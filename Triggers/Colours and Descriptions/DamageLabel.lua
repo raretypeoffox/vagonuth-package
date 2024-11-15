@@ -14,7 +14,7 @@
 if matches.dmgdesc == "terminal" or matches.dmgdesc == "your" then return end
 
 if not DamageVerbTable[matches.dmgdesc] then 
-  if Battle.Combat then 
+  if Battle.Combat and GlobalVar.Debug then 
     printMessage("DamageLabel Error", "Unknown verb: " .. matches.dmgdesc) 
   end
   return

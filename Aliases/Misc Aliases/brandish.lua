@@ -1,16 +1,20 @@
 -- Alias: brandish
 -- Attribute: isActive
 
--- Pattern: ^bra ?(\w*)? ?(\w*)?
+-- Pattern: ^(?i)bra(?: (\w+)? ?(\w+)?)?$
 
 -- Script Code:
 GlobalVar = GlobalVar or {}
+
+-- old pattern
+-- ^bra ?(\w*)? ?(\w*)?
+-- if (matches[1] == "brandish") then send("brandish",false) return end
+
 -- Defaults
 GlobalVar.BrandishStaff = GlobalVar.BrandishStaff or "staff"
 GlobalVar.BrandishArmor = GlobalVar.BrandishArmor or "seal"
 GlobalVar.BrandishCharges = GlobalVar.BrandishCharges or 0
 
-if (matches[1] == "brandish") then send("brandish",false) return end
 
 local cmd_name = "Brandish Management System\n\tSyntax: bra (command) (arg)"
 
@@ -20,11 +24,12 @@ local syntax_tbl = {
   {nil,nil},
   {"bra staff <staffname>","sets staff you'll brandish"},
   {"bra armor <armorname>","sets held armor slot that you'll wear after brandishing"},
-  {"bra charges <#>","set the number of brandish charges"}
+  {"bra charges <#>","set the number of brandish charges"},
+  {"bra show", "shows number of charges left"},
 }
 
 
-if (matches[2] == "") then -- 0 args provided
+if (matches[2] == "" or matches[2] == nil) then -- 0 args provided
   if (GlobalVar.BrandishStaff == "") then
     print("Brandish Error: please set staff")
     print("Note: can be overridden by typing brandish")
@@ -54,7 +59,7 @@ if (matches[2] == "") then -- 0 args provided
       
     end
   end  
-elseif (matches[3] == "") then -- 1 arg provided
+elseif (matches[3] == "" or matches[3] == nil) then -- 1 arg provided
   if (matches[2] == "show") then
     print("Charges left: " .. GlobalVar.BrandishCharges)
   else

@@ -7,7 +7,7 @@
 
 -- Script Code:
 if (matches.item == "a hellbreach amulet") then 
-  send("touch token")
+  send("touch amulet")
   return 
 end
 

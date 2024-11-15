@@ -6,3 +6,4 @@
 -- 0 (start of line): The Beast LeMans is DEAD!!
 
 -- Script Code:
+send("get seal cor")

@@ -4,14 +4,21 @@
 -- gmcp.Char.Group.List
 
 -- Script Code:
+local last_ran = os.clock()
 
 function GMCP_Group()
-
+    local tick_time = os.clock() - last_ran
+    if tick_time < 0.5 then
+      --printMessage("Debug", "Tick time less than 0.5s ( " .. tick_time .. " ), returning earlying")
+      return
+    end
+    last_ran = os.clock()
     local GroupieTableIndex = 0
     
     StatTable.InjuredCount = 0
     StatTable.CriticalInjured = 0
     GlobalVar.VizMonitor = ""
+    LastGroupUpdate = deepcopy(GlobalVar.GroupMates) or {}
     GlobalVar.GroupMates = {}
     GlobalVar.PsiInGroup = false
     
@@ -30,10 +37,15 @@ function GMCP_Group()
     end
 
     for _, Player in ipairs(GroupList) do
-      GroupieTableIndex = GroupieTableIndex + 1
+      GroupieTableIndex = GroupieTableIndex + 1    
       
       -- Clean's the players name if they are currently coloured
       Player.name = GMCP_name(RemoveColourCodes(Player.name))
+      
+      -- We're blind! Let's see if we can figure out who is who anyways
+      if Player.name == "Someone" then
+        Player.name = UpdateGroupMatesFindSomeone(Player, LastGroupUpdate)
+      end
       
       -- Update GroupMates table
       UpdateGroupMateVitals(Player)
@@ -80,6 +92,20 @@ function GMCP_Group()
       end
       
     end -- end for loop
+  --if GlobalVar.Debug then
+  --  printMessage("DEBUG", string.format("GMCP_Group() ran in %.4f seconds (last ran %.4f)\n", (os.clock() - last_ran), tick_time))
+  --end
+end
+
+function UpdateGroupMatesFindSomeone(Player, LastGroupUpdate)
+  if TableSize(LastGroupUpdate) == 0 then return "Someone" end
+  
+  for player_name, playertbl in pairs(LastGroupUpdate) do
+    if playertbl.class == Player.class and playertbl.maxhp == tonumber(Player.maxhp) and playertbl.maxmp == tonumber(Player.maxmp) then  
+      return player_name
+    end         
+  end 
+  return "Someone"
 end 
 
 function UpdateGroupMateVitals(Player)

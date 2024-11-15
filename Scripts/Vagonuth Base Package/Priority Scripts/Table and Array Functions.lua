@@ -127,7 +127,7 @@ end
 -- https://stackoverflow.com/questions/640642/how-do-you-copy-a-lua-table-by-value
 function deepcopy(o, seen)
   seen = seen or {}
-  if not o  then return nil end
+  if not o  then return {} end
   if seen[o] then return seen[o] end
 
   local no

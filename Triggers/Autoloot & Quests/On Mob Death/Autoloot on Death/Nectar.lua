@@ -7,4 +7,3 @@
 
 -- Script Code:
 send("get nectar corpse")
-send("put nectar urn")

@@ -6,3 +6,4 @@
 -- 0 (start of line): Atropos is DEAD!!
 
 -- Script Code:
+send("get golden corpse")

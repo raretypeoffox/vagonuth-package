@@ -6,3 +6,4 @@
 -- 0 (start of line): Lachesis is DEAD!!
 
 -- Script Code:
+send("get rod corpse")

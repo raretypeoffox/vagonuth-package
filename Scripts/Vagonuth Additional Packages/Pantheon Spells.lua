@@ -17,7 +17,7 @@ local PantheonSpells = {
 
 
 GlobalVar.PantheonSpell = GlobalVar.PantheonSpell or nil
-GlobalVar.PantheonGrimHarvestCounter = GlobalVar.PantheonGrimHarvestCounter or 0
+GlobalVar.PantheonCounter = GlobalVar.PantheonCounter or 0
 
 function checkPantheonSpells()
   for _, spell in ipairs(PantheonSpells) do
@@ -47,20 +47,24 @@ function PantheonSpellSetInit()
       printGameMessage("Pantheon", "Default set to " .. StaticVars.Default_Pantheon[charname])
     end
     
-    safeEventHandler("PantheonGrimHarvestID", "OnMobDeath", "PantheonGrimHarvestCaster", false)
+    safeEventHandler("PantheonActiID", "OnMobDeath", "PantheonActivator", false)
   else
     safeKillEventHandler("PantheonGrimHarvestID")
   end
 end
 
-function PantheonGrimHarvestCaster()
-  if not StatTable.GrimHarvest then return end
-  if StatTable.GrimHarvestAura then GlobalVar.PantheonGrimHarvestCounter = 0; return end
+function PantheonActivator()
+  if not StatTable.GrimHarvest and not StatTable.UnholyRampage then return end
+  if (StatTable.GrimHarvest and StatTable.GrimHarvestAura) or (StatTable.UnholyRampage and StatTable.UnholyRampageAura) then GlobalVar.PantheonCounter = 0; return end
   
-  GlobalVar.PantheonGrimHarvestCounter = GlobalVar.PantheonGrimHarvestCounter + 1
+  GlobalVar.PantheonCounter = GlobalVar.PantheonCounter + 1
   
-  if GlobalVar.PantheonGrimHarvestCounter >= StaticVars.GrimHarvestNumber then
-    Battle.DoAfterCombat("cast 'grim harvest' activate")
+  if GlobalVar.PantheonCounter >= StaticVars.PantheonNumber then
+    if StatTable.GrimHarvest then
+      Battle.DoAfterCombat("cast 'grim harvest' activate")
+    elseif StatTable.UnholyRampage then
+      Battle.DoAfterCombat("cast 'unholy rampage' activate")
+    end
   end
   
 end

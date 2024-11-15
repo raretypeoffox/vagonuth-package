@@ -1,10 +1,10 @@
 -- Alias: Kinetic Enhancer Alias
 -- Attribute: isActive
 
--- Pattern: ^(?i)(kinetic|kin) ?(.*)?$
+-- Pattern: ^(?i)kin(?: (.*))?$
 
 -- Script Code:
-local args = string.lower(matches[3])
+local args = (matches[2] or ""):lower()
 
 if args == "" then
     showCmdSyntax("Kinetic Enhancers\n\tSyntax: kin <spell> <spell>", {
@@ -40,3 +40,5 @@ else
     printMessage("Kinetic Enhancer Two", "Spell set to: <yellow>" .. GlobalVar.KineticEnhancerTwo)
   end
 end
+
+--^(?i)(kinetic|kin) ?(.*)?$

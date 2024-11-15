@@ -6,3 +6,4 @@
 -- 0 (start of line): Statue of Utami is DEAD!!
 
 -- Script Code:
+send("get scept cor")

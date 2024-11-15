@@ -6,3 +6,4 @@
 -- 0 (start of line): Zurik the Elder Shaman is DEAD!!
 
 -- Script Code:
+send("get cowl cor")

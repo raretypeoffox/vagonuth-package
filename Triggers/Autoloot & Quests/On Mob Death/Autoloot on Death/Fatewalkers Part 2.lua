@@ -6,3 +6,4 @@
 -- 0 (start of line): Clotho is DEAD!!
 
 -- Script Code:
+send("get thread corpse")

@@ -36,7 +36,7 @@ StaticVars.Default_Pantheon = {
   ["Hezzur"] = "glorious conquest",
 }  -- Make sure to use normal capitalization, eg, first letter capitalized, remainder lower case
 
-StaticVars.GrimHarvestNumber = 4 -- number of mobs to wait for before activating grim harvest
+StaticVars.PantheonNumber = 4 -- number of mobs to wait for before activating grim harvest or unholy rampage
 
 
 -- Edit to the name you want pgem's passed to on MDAY
@@ -220,11 +220,18 @@ StaticVars.Junk = {
 ["skeletal bow"] = "skeletal bow",
 ["black buckler"] = "black spike buckler skin lordgear",
 ["two-handed broad sword"] = "broad sword",
+["blade of the Crusaders"] = "crusader blade lordgear",
+["stone demonhide"] = "stone demonhide",
+["crimson spear"] = "crimson spear",
+["blue-green demonscale wrap"] = "blue-green demonscale wrap",
+["Staff of Torment"] = "staff torment",
 
 
-
-
-
+-- situtionally decent items, you may want to comment out if you're new:
+["Great Shield, \"Tyranny\""] = "great shield tyranny lordgear",
+["lord's head chalice"] = "chalice head lord",
+["sword of ascension"] = " sword ascension",
+["white dragonscale vambrace"] = "white dragonscale vambrace",
 
 }
 

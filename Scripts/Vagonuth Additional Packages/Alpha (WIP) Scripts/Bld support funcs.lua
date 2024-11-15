@@ -20,6 +20,15 @@ function BldDanceCheck()
   end
 end
 
+function BldDancing()
+  local dance, _ = BldDanceCheck()
+  if dance == "NotDance" then
+    return false
+  else
+    return true
+  end
+end
+
 function BldTest()
   dance, timer = BldDanceCheck()
   print(dance,timer)

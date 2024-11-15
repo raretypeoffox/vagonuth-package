@@ -8,6 +8,7 @@
 -- Script Code:
 local function set_save_spell(wait)
   local wait = wait or 8
+  if not gmcp.Char or gmcp.Char.Status or not gmcp.Char.Status.level then return end
   if (tonumber(gmcp.Char.Status.level) == 125) then
     safeTempTimer("ConfigSavespellOnLogin", wait,[[send("config -savespell")]])
   else
@@ -25,7 +26,7 @@ else
   set_save_spell()
 end
 
-  safeTempTrigger("SetSaveSpell", "Ok, your savespell is now set to", function() safeKillTimer("ConfigSavespellOnLogin"); safeKillTimer("SetSaveSpellDelayed"); end, "begin", 1) -- kills the timer if we manually set our savespell 
+safeTempTrigger("SetSaveSpell", "Ok, your savespell is now set to", function() safeKillTimer("ConfigSavespellOnLogin"); safeKillTimer("SetSaveSpellDelayed"); end, "begin", 1) -- kills the timer if we manually set our savespell 
   
   
 

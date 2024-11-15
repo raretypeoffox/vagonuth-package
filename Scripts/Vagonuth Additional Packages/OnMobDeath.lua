@@ -33,6 +33,7 @@ function MobDeath.UpdateCommandCheck()
   MobDeath.CommandCheck["cast 'stone fist'"] = StatTable.StoneFist or 0
   
   MobDeath.CommandCheck["cast 'gravitas'"] = StatTable.Gravitas or 0
+  MobDeath.CommandCheck["cast 'hive mind'"] = StatTable.HiveMind or 0
   
   -- Paladin
   if (GlobalVar.PrayerName ~= "") then
@@ -65,7 +66,6 @@ function OnMobDeath()
 
     if (MobDeath.LastCommand ~= "") then
       if (MobDeath.CommandCheck[MobDeath.LastCommand] == 0) then
-        pdebug("OnMobDeath(): last command of " .. MobDeath.LastCommand .. " wasn't cast successfully, trying agian")
         printGameMessageVerbose("OnMobDeath", "Trying again: " .. MobDeath.LastCommand)
         OnMobDeathQueuePriority(MobDeath.LastCommand)
       end

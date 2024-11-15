@@ -19,4 +19,4 @@
 --  send("gtell |BW|" .. matches[2] .. "|N| just got |BR|stomped|N|! I hope you have insurance...",false)
 --end
 
-printGameMessage("Stomp!", matches[2] .. " just got destroyed by a mob!", "red", "white")
+printGameMessageVerbose("Stomp!", matches[2] .. " just got destroyed by a mob!", "red", "white")

@@ -266,3 +266,18 @@ function IsNotClass(classList)
     return not IsClass(classList)
 end
 
+-- Function to check if StatTable.Race is in the provided list of Racees
+function IsRace(RaceList)
+    for _, Race in ipairs(RaceList) do
+        if StatTable.Race == Race then
+            return true
+        end
+    end
+    return false
+end
+
+-- Function to check if StatTable.Race is not in the provided list of Racees
+function IsNotRace(RaceList)
+    return not IsRace(RaceList)
+end
+

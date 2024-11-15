@@ -3,7 +3,7 @@
 
 
 -- Trigger Patterns:
--- 0 (substring): The automaton falls to pieces
+-- 0 (start of line): The automaton falls to pieces
 
 -- Script Code:
 send("get bit")

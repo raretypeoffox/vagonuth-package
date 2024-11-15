@@ -143,15 +143,31 @@ function UpdateGUI()
       
       -- Lag / Qi / Savespell
       LagLabel:echo("<center>lag: " .. tonumber(gmcp.Char.Vitals.lag) .. "</center>")
-      if StatTable.Class == "Bladedancer" then
+      
+      if StatTable.Class == "Monk" then
+        QiLabel:show()
+        applyLabelStyle(QiLabel, "green", "green")
+        QiLabel:echo("<center>" .. StatTable.InnerQi .. " / " .. StatTable.OuterQi .. "</center>")     
+      elseif StatTable.Class == "Bladedancer" then
+        QiLabel:show()
         if StatTable.BladetranceLevel > 0 then
           applyLabelStyle(QiLabel, "green", "green")
           QiLabel:echo("<center>BT " .. StatTable.BladetranceLevel .. "</center>")   
         else
           applyLabelStyle(QiLabel, "yellow", "rgba(255, 0, 0, 0.5)")   
-          QiLabel:echo("<center>BT off" .. "</center>")
+          QiLabel:echo("<center>BT off</center>")
         end
-        
+      elseif IsClass({"Priest", "Cleric", "Druid", "Paladin"}) then
+        QiLabel:show()
+        if GlobalVar.AutoHeal then
+          applyLabelStyle(QiLabel, "green", "green")
+          QiLabel:echo("<center>AH ON</center>")   
+        else
+          applyLabelStyle(QiLabel, "yellow", "rgba(255, 0, 0, 0.5)")   
+          QiLabel:echo("<center>AH off</center>")
+        end
+      else
+        QiLabel:hide()
       end
 
 
@@ -300,6 +316,7 @@ function UpdateGUI()
         if MyLevel == 125 then
           setNextAvailableLabel(StatTable.BlindDevotion, "Blind Dev.", "Blind Devotation", "cast 'blind devotion'")
           setNextAvailableLabel(StatTable.Consummation, "Consummation", "Consummation", "cast consummation")
+          setNextAvailableLabelExhaust(StatTable.FlowLikeWater, StatTable.FlowLikeWaterExhaust, "Flow", "Flow", "cast 'flow like water'")
         end
         
       elseif(MyClass == "Shadowfist") then        
@@ -382,8 +399,9 @@ function UpdateGUI()
       elseif (StatTable.Class == "Mindbender") then
         setNextAvailableLabel(StatTable.Savvy, "Savvy", "Savvy", "cast savvy")
         setNextAvailableLabel(StatTable.MindsEye, "Minds Eye", "Minds Eye", "cast 'minds eye'")
+        setNextAvailableLabel(StatTable.HiveMind, "Hive Mind", "Hive Mind", "cast 'hive mind'")
         setNextAvailableLabel(StatTable.EmpathicResonance, "Emp. Res.", "Emp. Res.", "cast 'empathic resonance'")
-        
+        if StatTable.PsyphonExhaust then setNextAvailableLabelDebuff(StatTable.PsyphonExhaust, "Psyphon") end
 
       end -- end of MyClass
       
@@ -439,7 +457,7 @@ function UpdateGUI()
       end
       
       local Debuffs = {"Calm", "Blindness", "Heartbane", "Fear", "Poison", "Curse", "Demonfire", "Virus", 
-      "Biotoxin", "Venom", "Toxin", "DoomToxin", "Flash", "Weaken", "Overconfidence", "Scramble", "Panic", 
+      "Biotoxin", "Venom", "Toxin", "DoomToxin", "Flash", "Weaken", "Overconfidence", "Scramble", "Panic", "FaerieFire", "Plague",
       "Unrest", "WaterBreathingExhaust", "GiantStrengthExhaust", "FlyExhaust", "CureLightExhaust"}
       
       for _, debuff in ipairs(Debuffs) do

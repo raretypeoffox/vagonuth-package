@@ -36,7 +36,9 @@ function TankDirectionCleanup()
 end
 
 function TankDirectionInit()
+    if not StatTable.CharName then printMessage("DEBUG ERROR", "TankDirectionInit() has no charname!!", "yellow") end
     if not StatTable or not StatTable.CharName then return end
+    printMessage("DEBUG", "TankDirectionInit() successfully called", "yellow")
     
     -- Initialize the pattern
     local pattern = "^\\*(?<leader>\\w+)\\* tells the group '(?i)" .. string.sub(StatTable.CharName, 1, 3)

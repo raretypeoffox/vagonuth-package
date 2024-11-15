@@ -6,3 +6,4 @@
 -- 0 (start of line): Aruna is DEAD!!
 
 -- Script Code:
+send("get bone corpse")

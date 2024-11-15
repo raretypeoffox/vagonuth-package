@@ -7,3 +7,4 @@
 
 -- Script Code:
 send("inno")
+tempTimer(3, [[send("inno")]])

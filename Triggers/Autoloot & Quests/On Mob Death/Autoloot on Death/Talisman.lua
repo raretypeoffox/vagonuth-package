@@ -1,4 +1,5 @@
 -- Trigger: Talisman 
+-- Attribute: isActive
 
 
 -- Trigger Patterns:
@@ -6,3 +7,4 @@
 -- 1 (start of line): Groundskeeper Skaggs is DEAD!!
 
 -- Script Code:
+send("get talis corpse")

@@ -6,3 +6,4 @@
 -- 0 (start of line): Stinkin' Human is DEAD!!
 
 -- Script Code:
+send("get all corpse")

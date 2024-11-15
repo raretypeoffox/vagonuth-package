@@ -6,3 +6,4 @@
 -- 0 (start of line): The Sad Man is DEAD!!
 
 -- Script Code:
+send("get helm corpse")

@@ -101,9 +101,10 @@ function AutoFletch.SetNextSpecialAmmo(char_name)
     -- We finished all our special arrows:
     -- stop fletching
     AutoFletch.SpecialAmmoCleanUp()
+    send("sleep")
     -- in 50 mins, clear exhaust table and attempt to restart (these are broken into two because AutoFletch.Restart can be killed by OnQuit
     safeTempTimer("AutoFletch.ClearExhaustTable", 50*60, function() AutoFletch.ResetExhaustTable(char_name); end)
-    safeTempTimer("AutoFletch.Restart", 50*60, function() AutoFletch.SpecialAmmoInit() end)
+    safeTempTimer("AutoFletch.Restart", 50*60, function() send("stand"); AutoFletch.SpecialAmmoInit() end)
     safeEventHandler("AutoFletch.KillRestartOnQuit", "OnQuit", function() safeKillTimer("AutoFletch.Restart") end, true)
 
 
