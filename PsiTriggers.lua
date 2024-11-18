@@ -24,7 +24,7 @@ return {{[ [[Fango]] ] = {2},[ [[Ghaik]] ] = {3},[ [[Rancor]] ] = {4},[ [[Kaki]]
 {[ [[w2name]] ] = [[Renamed Chakram Two]],[ [[w1keyword]] ] = [[mainchak]],[ [[w1name]] ] = [[Renamed Chakram One]],[ [[w2keyword]] ] = [[offchak]],},
 {[ [[w2keyword]] ] = [[eanruigo]],[ [[w1keyword]] ] = [[eanruigw]],[ [[w1name]] ] = [[Chondrite Longsword]],[ [[w2name]] ] = [[Chondrite Shortsword]],},
 {[ [[w2keyword]] ] = [[mandeljarofff]],[ [[w1keyword]] ] = [[mandeljar]],[ [[w1name]] ] = [[Mandel's Greater Sword]],[ [[w2name]] ] = [[Mandel's Great Sword]],},
-{[ [[w1name]] ] = [[Scevine's attack statue]],[ [[w1keyword]] ] = [[statue]],},
+{[ [[w2name]] ] = [[frostbite]],[ [[w1keyword]] ] = [[icicle]],[ [[w1name]] ] = [[an icicle]],[ [[w2keyword]] ] = [[sludgeoffh]],},
 {[ [[w1name]] ] = [[CLICK CLICK]],[ [[w1keyword]] ] = [[calpchak]],},
 {[ [[w2name]] ] = [[Loradon's Justice]],[ [[w1keyword]] ] = [[islene]],[ [[w1name]] ] = [[Islene's Fury]],[ [[w2keyword]] ] = [[loradon]],},
 {[ [[w2name]] ] = [[zygarth]],[ [[w1keyword]] ] = [[zygarth]],[ [[w1name]] ] = [[Zygarth's silver sword]],},
