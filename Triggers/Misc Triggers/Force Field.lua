@@ -10,7 +10,7 @@ local shatter_enemy = matches[2]
 
 if IsGroupMate(shatter_enemy) then return end
 
-printGameMessage("Forcefield!!", "Psi/Mnd to shatter " .. shatter_enemy, "red", "white")
+printGameMessage("Forcefield", "Psi/Mnd to shatter " .. shatter_enemy)
 
 if IsClass({"Psionicist","Mindbender"}) then
   if GlobalVar.AutoCast then

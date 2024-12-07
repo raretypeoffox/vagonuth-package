@@ -17,8 +17,6 @@
 StatTable = StatTable or {}
 StatTable.BladetranceLevel = StatTable.BladetranceLevel or 0
 
-local last_ran_vitals = os.clock()
-
 local AffectsLookup = {
   ["Spell: sneak"] = "Sneak",
   ["Spell: shadow form"] = "Sneak",
@@ -156,6 +154,10 @@ local AffectsLookup = {
   ["Spell: stone fist"] = "StoneFist",
   ["Spell: flow like water"] = "FlowLikeWater",
   ["Exhausted Spell: flow like water"] = "FlowLikeWaterExhaust",
+  ["Spell: burning fury"] = "BurningFury",
+  ["Exhausted Spell: burning fury"] = "BurningFuryExhaust",
+
+  
   
   
   -- Psi's / Mnd's
@@ -223,14 +225,7 @@ local AffectsLookup = {
   
 }
 
-function GMCP_Vitals()
-    local tick_time = os.clock() - last_ran_vitals
-    if tick_time < 0.5 then
-      --printMessage("Debug", "Tick time less than 0.5s ( " .. tick_time .. " ), returning earlying")
-      return
-    end
-    last_ran_vitals = os.clock()
-    
+function GMCP_Vitals()    
     StatTable.CharName = GMCP_name(gmcp.Char.Status.character_name)
     StatTable.Race, StatTable.Class = gmcp.Char.Status.race, gmcp.Char.Status.class
     StatTable.Level, StatTable.SubLevel = tonumber(gmcp.Char.Status.level), tonumber(gmcp.Char.Status.sublevel)
@@ -300,9 +295,6 @@ function GMCP_Vitals()
     end
 
     if(GlobalVar.GUI) then UpdateGUI() end 
-  --if GlobalVar.Debug then
-  --  printMessage("DEBUG", string.format("GMCP_Vitals() ran in %.4f seconds (last ran %.4f)\n", (os.clock() - last_ran_vitals), tick_time))
-  --end
 
 end
     

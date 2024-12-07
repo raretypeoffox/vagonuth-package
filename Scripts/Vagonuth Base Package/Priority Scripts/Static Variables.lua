@@ -225,6 +225,8 @@ StaticVars.Junk = {
 ["crimson spear"] = "crimson spear",
 ["blue-green demonscale wrap"] = "blue-green demonscale wrap",
 ["Staff of Torment"] = "staff torment",
+["sturdy scimitar"] = "scimitar",
+["reinforced buckler"] = "buckler shield",
 
 
 -- situtionally decent items, you may want to comment out if you're new:

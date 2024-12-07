@@ -28,7 +28,7 @@
     
     if StatTable.Level == 125 then
     -- Use Unholy Bargain when avail and at max health
-      if not StatTable.UnholyBargainExhaust and StatTable.current_health == StatTable.max_health and StatTable.current_moves > 2000 and StatTable.current_mana < (StatTable.max_mana - 1000) and not GroupLeader() then
+      if not StatTable.UnholyBargainExhaust and StatTable.current_health >= StatTable.max_health and StatTable.current_moves > 2000 and StatTable.current_mana < (StatTable.max_mana - 1000) and not GroupLeader() then
         TryQueue("cast 'unholy bargain'", 60)
       end      
     end
@@ -174,12 +174,9 @@
            end
         end
         
-        if StatTable.SubLevel >= 200 and not StatTable.FlowLikeWater and not StatTable.FlowLikeWaterExhaust then
-          if StatTable.InnerQi >= 5 then
-            Battle.DoAfterCombat("cast 'flow like water'")
-          else
-            return
-          end
+        if StatTable.SubLevel >= 200 and not StatTable.FlowLikeWater and not StatTable.FlowLikeWaterExhaust and StatTable.InnerQi >= 5 then
+          Battle.DoAfterCombat("cast 'flow like water'")
+
         
         -- if there are groupies to rescue or we're in lag, try again later.
         -- TODO: perhaps check if we're the only tank?
@@ -200,13 +197,10 @@
       end
     elseif MyClass == "Shadowfist" then
       if not GlobalVar.AutoStance then return end -- only swap if GlobalVar.AutoStance is on
-      if StatTable.ArmorClass > -1000 and StatTable.Level == 51 then
-        if not StatTable.DaggerHand then
-          Battle.DoAfterCombat("cast 'dagger hand'")     
-        end
-      end
-      if StatTable.Level == 125 or StatTable.SubLevel > 100 then
       
+      if StatTable.Level == 51 and StatTable.SubLevel > 100 then
+        if not StatTable.DaggerHand then Battle.DoAfterCombat("cast 'dagger hand'") end
+        
         -- Vampire fang will be prioritzed when health is less than 75% max, otherwise spectral is prioritized
         if not StatTable.VampireFangExhaust and StatTable.current_health < (StatTable.max_health * 0.75) then
           UseSkillAfterExhaust(StatTable.VampireFang, StatTable.VampireFangExhaust, "stance vampire fang")
@@ -215,7 +209,51 @@
           if StatTable.SpectralFangExhaust then UseSkillAfterExhaust(StatTable.VampireFang, StatTable.VampireFangExhaust, "stance vampire fang") end
         end
         
-      end    
+      elseif StatTable.Level == 125 then
+        if not StatTable.StoneFist then Battle.DoAfterCombat("cast 'stone fist'") end
+
+        -- Vampire fang will be prioritzed when health is less than 75% max, otherwise spectral is prioritized
+        if not (StatTable.VampireFang or StatTable.SpectralFang) then
+          if not StatTable.VampireFangExhaust and (StatTable.current_health < (StatTable.max_health * 0.75) or StatTable.SpectralFangExhaust) then
+            Battle.DoAfterCombat("stance vampire fang")
+          elseif not StatTable.SpectralFangExhaust then
+            Battle.DoAfterCombat("stance spectral fang")
+          end
+        end
+        
+        -- qi loop      
+        local chakra = Battle.EnemiesChakra[gmcp.Char.Status.opponent_name] or nil
+        
+        -- outer qi logic
+        if StatTable.OuterQi >= 10 then
+          if tonumber(gmcp.Char.Status.opponent_level) > 180 then --or StatTable.OuterQi == 23 (ie max)
+            if StatTable.SubLevel >= 250 then
+              TryAction("qi wave", 5)
+            else
+              TryAction("qi blast", 5)
+            end
+          end
+        end
+
+        -- inner qi logic
+        if StatTable.SubLevel >= 200 and not StatTable.BurningFury and not StatTable.BurningFuryExhaust and StatTable.InnerQi >= 5 then
+            Battle.DoAfterCombat("cast 'burning fury'")
+        -- if there are groupies to rescue or we're in lag, try again later.
+        -- TODO: perhaps check if we're the only tank?
+        elseif (AR.Status and table.size(AR.RescueStack) > 0) or tonumber(gmcp.Char.Vitals.lag) > 0 then
+          return
+        elseif chakra and StatTable.SubLevel >= 100 and StatTable.InnerQi >= 7 then
+          TryAction("qi drain " .. (chakra and chakra or ""), 15)
+        elseif chakra and StatTable.InnerQi >= 7 then
+          TryAction("qi strike " .. (chakra and chakra or ""), 15)
+        elseif StatTable.StoneFist and StatTable.InnerQi >= 7 then
+          TryAction("qi punch", 5)
+        elseif StatTable.DaggerHand and StatTable.InnerQi >= 7 then
+          TryAction("qi thrust", 5)  
+        else
+          TryAction("vital strike", 5)
+        end
+      end
     elseif MyClass == "Soldier" then
       if not GlobalVar.AutoStance then return end -- only swap if GlobalVar.AutoStance is on
       if StatTable.Level == 125 then
@@ -308,8 +346,8 @@
   
   
   -- Monitor rescue
-  if AR.Status and AR.MonitorRescue then
-    if StatTable.current_mon > 0 and StatTable.max_mon > 0 and StatTable.Monitor ~= "" then
+  if AR.Status and AR.MonitorRescue and IsGroupMate(StatTable.Monitor) then
+    if tonumber(gmcp.Char.Vitals.monhp) and StatTable.current_mon > 0 and StatTable.max_mon > 0 and StatTable.Monitor ~= "" then
         local MonitorHPpct = StatTable.current_mon / StatTable.max_mon
         if MonitorHPpct < AR.MontorRescueHPpct then
             TryAction("rescue " .. StatTable.Monitor, 5)
@@ -352,9 +390,9 @@
         if TryFunction("PreachPanacea", Battle.NextAct, {"quicken 5" .. getCommandSeparator() .. "preach panacea" .. getCommandSeparator() .. "quicken off", 7}, 15) then
           printGameMessage("GameLoop", "Attempting to preach panacea")
         end
-      elseif StatTable.InjuredCount > 0 and (StatTable.current_mana / StatTable.max_mana) > 0.5 and not SafeArea() then
-        if StatTable.Augment then TryAction("augment off", 120) end
-        TryCast("cast comfort " .. GlobalVar.VizMonitor, 10)      
+      --elseif StatTable.InjuredCount > 0 and (StatTable.current_mana / StatTable.max_mana) > 0.5 and not SafeArea() then
+        --if StatTable.Augment then TryAction("augment off", 120) end
+        --TryCast("cast comfort " .. GlobalVar.VizMonitor, 10)      
       end
     end
       

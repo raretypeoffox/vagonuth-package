@@ -4,15 +4,7 @@
 -- gmcp.Char.Group.List
 
 -- Script Code:
-local last_ran = os.clock()
-
 function GMCP_Group()
-    local tick_time = os.clock() - last_ran
-    if tick_time < 0.5 then
-      --printMessage("Debug", "Tick time less than 0.5s ( " .. tick_time .. " ), returning earlying")
-      return
-    end
-    last_ran = os.clock()
     local GroupieTableIndex = 0
     
     StatTable.InjuredCount = 0
@@ -92,9 +84,6 @@ function GMCP_Group()
       end
       
     end -- end for loop
-  --if GlobalVar.Debug then
-  --  printMessage("DEBUG", string.format("GMCP_Group() ran in %.4f seconds (last ran %.4f)\n", (os.clock() - last_ran), tick_time))
-  --end
 end
 
 function UpdateGroupMatesFindSomeone(Player, LastGroupUpdate)

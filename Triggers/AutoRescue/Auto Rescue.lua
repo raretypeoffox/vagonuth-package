@@ -16,6 +16,7 @@ local AOE_attacks = {
   "acid rain",
   "shard storm",
   "cataclysm",
+  "vampire touch",
   
   
   

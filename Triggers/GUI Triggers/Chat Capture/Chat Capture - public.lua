@@ -23,6 +23,8 @@
 -- 17 (regex): ^You teamchat '.*'$
 -- 18 (regex): ^\w+ legendchats '.*'$
 -- 19 (regex): ^You legendchat '.*'$
+-- 20 (regex): ^Father Tybmas herochats '.*'$
+-- 21 (regex): ^Father Tybmas lordchats '.*'$
 
 -- Script Code:
 selectString(line,1)

@@ -57,6 +57,14 @@
 -- bug fix: mnd was over surging
 -- bug fix: hellbreach tokens are now touched again
 
+-- v1.1.1 hotfix
+-- fixed monk not kicking before flow up
+-- fixed psi trigger download
+-- fixed overoptimization of gmcp updates
+-- fixed rapture bug for low hero psi's
+-- removed healing outside of combat (prs test feature)
+
+
 
 -- Long-term Todo
 -- customizable variables

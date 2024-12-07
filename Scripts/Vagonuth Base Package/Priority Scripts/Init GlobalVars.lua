@@ -99,7 +99,7 @@ function Init.GlobalVars()
   GlobalVar.Mindtricks = 0
 
   -- Variables to reset on reconnect (won't run on initial Init)
-  if AR then AR.Status = false end
+  if AR then AR.Status = false; AR.MonitorRescue = false end
   if Battle then Battle.Combat = false end
   
   if Layout then

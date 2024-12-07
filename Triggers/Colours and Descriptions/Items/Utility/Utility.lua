@@ -13,6 +13,7 @@
 -- 7 (substring): the red-eyed jewel
 -- 8 (substring): blood-mithril core
 -- 9 (substring): ritual purification wand
+-- 10 (substring): dragonfish skeleton
 
 -- Script Code:
 cecho (string.rep (" ",80-tonumber(string.len(line))) .. "<blue> [Utility]")

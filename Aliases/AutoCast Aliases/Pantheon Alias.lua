@@ -16,7 +16,7 @@ if args == "" then
     end
 elseif StatTable.Class ~= "Cleric" then
   printMessage("Pantheon", "Only clerics can cast pantheon spells", "yellow", "ansi_white")
-elseif arg == "clear" then
+elseif args == "clear" then
   printMessage("Pantheon", "Spell cleared")
   GlobalVar.PantheonSpell = nil
 else

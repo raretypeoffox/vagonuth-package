@@ -144,7 +144,7 @@ function UpdateGUI()
       -- Lag / Qi / Savespell
       LagLabel:echo("<center>lag: " .. tonumber(gmcp.Char.Vitals.lag) .. "</center>")
       
-      if StatTable.Class == "Monk" then
+      if IsClass({"Monk", "Shadowfist"}) then
         QiLabel:show()
         applyLabelStyle(QiLabel, "green", "green")
         QiLabel:echo("<center>" .. StatTable.InnerQi .. " / " .. StatTable.OuterQi .. "</center>")     
