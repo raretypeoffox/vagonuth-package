@@ -50,5 +50,5 @@ return {{[ [[Fango]] ] = {2},[ [[Ghaik]] ] = {3},[ [[Rancor]] ] = {4},[ [[Kaki]]
 {[ [[w2keyword]] ] = [[eanruigo]],[ [[w1keyword]] ] = [[eanruigw]],[ [[w1name]] ] = [[- - - CALP IS RISEN - - -]],[ [[w2name]] ] = [[- - - - ALL HAIL! - - - -]],},
 {[ [[w2name]] ] = [[Ore's stone disc]],[ [[w1keyword]] ] = [[oreweap1]],[ [[w1name]] ] = [[Ore's stone circle]],[ [[w2keyword]] ] = [[oreweap2]],},
 {[ [[w2name]] ] = [[GTI RighT]],[ [[w1keyword]] ] = [[gti]],[ [[w1name]] ] = [[GTI LefT]],[ [[w2keyword]] ] = [[gti]],},
-{[ [[w1name]] ] = [[Arccot's offhand shestopyor]],[ [[w1keyword]] ] = [[arccotoff]],},
+{[ [[w2name]] ] = [[a pernach named "arccotmain"]],[ [[w1keyword]] ] = [[arccotoff]],[ [[w1name]] ] = [[Arccot's offhand shestopyor]],[ [[w2keyword]] ] = [[arccotmain]],},
 }
