@@ -42,7 +42,7 @@ return {{[ [[Fango]] ] = {2},[ [[Ghaik]] ] = {3},[ [[Rancor]] ] = {4},[ [[Kaki]]
 {[ [[w1name]] ] = [[Fire]],[ [[w1keyword]] ] = [[tranquil]],},
 {[ [[w2name]] ] = [[a tan ham crank]],[ [[w1keyword]] ] = [[snuffle]],[ [[w1name]] ] = [[manna hat rack]],[ [[w2keyword]] ] = [[spuati]],},
 {[ [[w2name]] ] = [[Loradon's Justice]],[ [[w1keyword]] ] = [[islene]],[ [[w1name]] ] = [[Islene's Fury]],[ [[w2keyword]] ] = [[loradon]],},
-{[ [[w2name]] ] = [[frostbite]],[ [[w1keyword]] ] = [[icicle]],[ [[w1name]] ] = [[an icicle]],[ [[w2keyword]] ] = [[sludgeoffh]],},
+{[ [[w2name]] ] = [[frostbite]],[ [[w1keyword]] ] = [[icicle]],[ [[w1name]] ] = [[an icicle]],[ [[w2keyword]] ] = [[frostbite]],},
 {[ [[w2name]] ] = [[*-<AGONY>-*]],[ [[w1keyword]] ] = [[pain]],[ [[w1name]] ] = [[*-<PAIN>-*]],[ [[ws2keyword]] ] = [[agony]],},
 {[ [[w1name]] ] = [[Bacon Buster]],[ [[w1keyword]] ] = [[bacon]],},
 {[ [[w1name]] ] = [[Trained Attack Sprite]],[ [[w1keyword]] ] = [[sprite]],},
@@ -50,5 +50,5 @@ return {{[ [[Fango]] ] = {2},[ [[Ghaik]] ] = {3},[ [[Rancor]] ] = {4},[ [[Kaki]]
 {[ [[w2keyword]] ] = [[eanruigo]],[ [[w1keyword]] ] = [[eanruigw]],[ [[w1name]] ] = [[- - - CALP IS RISEN - - -]],[ [[w2name]] ] = [[- - - - ALL HAIL! - - - -]],},
 {[ [[w2name]] ] = [[Ore's stone disc]],[ [[w1keyword]] ] = [[oreweap1]],[ [[w1name]] ] = [[Ore's stone circle]],[ [[w2keyword]] ] = [[oreweap2]],},
 {[ [[w2name]] ] = [[GTI RighT]],[ [[w1keyword]] ] = [[gti]],[ [[w1name]] ] = [[GTI LefT]],[ [[w2keyword]] ] = [[gti]],},
-{[ [[w2name]] ] = [[a pernach named "arccotmain"]],[ [[w1keyword]] ] = [[arccotoff]],[ [[w1name]] ] = [[Arccot's offhand shestopyor]],[ [[w2keyword]] ] = [[arccotmain]],},
+{[ [[w2name]] ] = [[a Pernach named "arccotmain"]],[ [[w1keyword]] ] = [[arccotoff]],[ [[w1name]] ] = [[Arccot's offhand shestopyor]],[ [[w2keyword]] ] = [[arccotmain]],},
 }
