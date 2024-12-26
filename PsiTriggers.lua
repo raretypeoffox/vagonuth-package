@@ -42,7 +42,7 @@ return {{[ [[Fango]] ] = {2},[ [[Ghaik]] ] = {3},[ [[Rancor]] ] = {4},[ [[Kaki]]
 {[ [[w1name]] ] = [[Fire]],[ [[w1keyword]] ] = [[tranquil]],},
 {[ [[w2name]] ] = [[a tan ham crank]],[ [[w1keyword]] ] = [[snuffle]],[ [[w1name]] ] = [[manna hat rack]],[ [[w2keyword]] ] = [[spuati]],},
 {[ [[w2name]] ] = [[Loradon's Justice]],[ [[w1keyword]] ] = [[islene]],[ [[w1name]] ] = [[Islene's Fury]],[ [[w2keyword]] ] = [[loradon]],},
-{[ [[w2name]] ] = [[frostbite]],[ [[w1keyword]] ] = [[icicle]],[ [[w1name]] ] = [[an icicle]],[ [[w2keyword]] ] = [[frostbite]],},
+{[ [[w2name]] ] = [[frostbite]],[ [[w1keyword]] ] = [[icicle]],[ [[w1name]] ] = [[An icicle]],[ [[w2keyword]] ] = [[frostbite]],},
 {[ [[w2name]] ] = [[*-<AGONY>-*]],[ [[w1keyword]] ] = [[pain]],[ [[w1name]] ] = [[*-<PAIN>-*]],[ [[ws2keyword]] ] = [[agony]],},
 {[ [[w1name]] ] = [[Bacon Buster]],[ [[w1keyword]] ] = [[bacon]],},
 {[ [[w1name]] ] = [[Trained Attack Sprite]],[ [[w1keyword]] ] = [[sprite]],},
