@@ -3,7 +3,7 @@
 
 
 -- Trigger Patterns:
--- 0 (regex): ^You get a perfect (diamond|emerald|ruby|amethyst|sapphire).$
+-- 0 (regex): ^You get a perfect (diamond|emerald|ruby|amethyst|sapphire)\.$
 
 -- Script Code:
 if (Grouped() and not GroupLeader()) then

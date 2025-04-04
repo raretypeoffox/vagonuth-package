@@ -72,7 +72,7 @@ function GMCP_Group()
         
         -- For all groupies that are not us, check who has the lowest % of HP and set them as our monitor
         if (Player.name ~= StatTable.CharName and (Player.position ~= "Sleep" or Player.position ~= "Rest")) then
-          if (player_hppct < smallest_hppct) then
+          if (player_hppct < smallest_hppct) and not GlobalVar.AutoHealExclusionList[Player.name] then
             smallest_hppct = player_hppct
             GlobalVar.VizMonitor = Player.name
           end

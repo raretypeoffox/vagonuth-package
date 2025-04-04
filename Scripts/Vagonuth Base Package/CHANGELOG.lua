@@ -64,6 +64,26 @@
 -- fixed rapture bug for low hero psi's
 -- removed healing outside of combat (prs test feature)
 
+-- v1.2.0
+-- full rewrite of bladedancer dance patterns, users can build custom dance patterns now
+-- added: dancepattern and nextstance
+-- added "dropjunk" (or "dj") command to quickly clean inventory
+-- added mday leader gtell commands "get X Y", "drop X Y", "ablut", "wear all" etc. (only work on mday)
+-- added GlobalVar.PlaneName
+-- added gt track <x>, if char as autotrack echo on, will track X on leaders command
+-- added auto spell switching when lords swap between mid and lord plane
+-- improved soldier gameloop (stance shifting at hero and lord)
+-- improved immo (moved to gmcp for better keyword targetting / consistency)
+-- added auto devour for dragons (based on immo list)
+-- bug fix: autolotto wasn't handing out last item
+-- bug fix: improved migraine trigger for when dealing with multiple migraines
+-- minor fix: changed beckon trigger to not autofollow outside of mday
+-- minor fix: added bzk to be included in "ar auto"
+-- minor fix: wrt "ar auto" at hero, bld's and small warrior types (< 2500hp) are now auto added to AR
+-- minor fix: repvault and repthief now report # of complete sets you have
+
+
+
 
 
 -- Long-term Todo

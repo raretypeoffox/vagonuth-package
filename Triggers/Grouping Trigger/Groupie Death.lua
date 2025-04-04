@@ -3,7 +3,7 @@
 
 
 -- Trigger Patterns:
--- 0 (regex): ^\[DEATH INFO\]: (?<charname>\w+) killed by (?<mobname>.*) in (?<room>.*) \((\d+)\).$
+-- 0 (regex): ^\[DEATH INFO\]: (?<charname>\w+) killed by (?<mobname>.*) in (?<room>.*) \((\d+)\)\.$
 
 -- Script Code:
 -- [DEATH INFO]: Yennefer killed by Chloroform in Ponderous Flowers (18423).

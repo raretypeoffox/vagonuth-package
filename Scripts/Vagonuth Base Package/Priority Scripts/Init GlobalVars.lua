@@ -73,6 +73,7 @@ function Init.GlobalVars()
   GlobalVar.AutoHealLowest =  true
   GlobalVar.InterventionTarget = nil
   GlobalVar.Pantheon = nil
+  GlobalVar.AutoHealExclusionList = GlobalVar.AutoHealExclusionList or {}
 
     -- Vizier Variables
   GlobalVar.VizMonitor = ""
@@ -150,6 +151,25 @@ function Init.Profile(timeout)
       tempTimer(5, function() Init.Profile(timeout) end)
     end
     
+    -- Init spells and skills by class/race/level
+    Init.Char(MyClass, MyRace, MyLevel, MySubLevel)
+
+    -- GUI Setup
+    
+    if (GlobalVar.GUI) then
+      AutoKillSetGUI()
+      AutoSkillSetGUI()
+      AutoBashSetGUI()
+      AutoCastSetGUI()
+    end
+     
+    -- Raise Custom Event for others to code with
+    raiseEvent("CustomProfileInit")
+    
+
+end
+
+function Init.Char(MyClass, MyRace, MyLevel, MySubLevel)
     -- Caster Variables
     GlobalVar.AutoCast = false
     GlobalVar.SurgeLevel = (MyLevel == 125 and 2 or 1)
@@ -303,20 +323,6 @@ function Init.Profile(timeout)
       GlobalVar.AutoRevive = true
     end
 
-
-    -- GUI Setup
-    
-    if (GlobalVar.GUI) then
-      AutoKillSetGUI()
-      AutoSkillSetGUI()
-      AutoBashSetGUI()
-      AutoCastSetGUI()
-    end
-     
-    -- Raise Custom Event for others to code with
-    raiseEvent("CustomProfileInit")
-    
-
 end
 
 function Init.FirstTime()
@@ -336,13 +342,28 @@ function Init.FirstTime()
   cecho("<red>Note:\t<white>This package auto-updates. If you edit the code directly,\n")
   cecho("<white>\tthis will overwrite your code\n")
   cecho("<white>\tSee the README under Scripts for coding best practices\n")
+  
+  -- Install CPC if not already installed
+  if not table.contains(getPackages(),"Cross Profile Communication") then
+	 installPackage("https://github.com/takilara/cpc/releases/latest/download/cpc.mpackage")
+  end
 end
 
 function Init.ProfileOnLogin()
   safeTempTrigger("Init.LoginTrigger", "^(Welcome( back)? to the AVATAR System(, Hero|, Lord|, Lady)? (?<charname>\\w+).|Reconnecting.)$", 
     function() 
       tempTimer(5, function() Init.Profile() end)
+      tempTimer(7, function()
+        if StatTable.Level == 125 and GetPlaneName() == "Midgaardia" then
+          printGameMessage("Lord on Midgaard", "Spells and skills reset to hero defaults", "yellow", "white")
+          Init.Char(StatTable.Class, StatTable.Race, 51, 999)
+          AutoCastStatus()
+          AutoCastSetGUI()
+        end
+      end)
     end, "regex")
+
+      
 
 end
 

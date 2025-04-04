@@ -3,10 +3,11 @@
 
 
 -- Trigger Patterns:
--- 0 (regex): ^surge (off|up|down|1|2|3|4|5)
+-- 0 (regex): ^(s|surge) (off|up|down|1|2|3|4|5)
 
 -- Script Code:
-local surgelevel = matches[2]
+local SurgeUpMana = (30000 * Battle.GetSpellCostMod("arcane")) or 30000 
+local surgelevel = tonumber(matches[3]) or matches[3]
 
 if (StatTable.Class == "Mage" or StatTable.Class == "Wizard" or StatTable.Class == "Sorcerer") then
   
@@ -19,16 +20,15 @@ if (StatTable.Class == "Mage" or StatTable.Class == "Wizard" or StatTable.Class 
     printGameMessage("Surge Request", "Surge level set to " .. GlobalVar.SurgeLevel)
     
   elseif surgelevel == "up" then
-    local manapct = (StatTable.current_mana / StatTable.max_mana)
         
     if GlobalVar.SurgeLevel <= 3 and manapct > 0.40 then
       local priorsurgelevel = GlobalVar.SurgeLevel
-      if (manapct > 0.95) then
+      if StatTable.current_mana  > SurgeUpMana then
         GlobalVar.SurgeLevel = 5
-      elseif (manapct > 0.75) then
-        GlobalVar.SurgeLevel = GlobalVar.SurgeLevel + 2
+      elseif StatTable.current_mana  > (SurgeUpMana * 0.75) then
+        GlobalVar.SurgeLevel = (GlobalVar.SurgeLevel > 4 and GlobalVar.SurgeLevel or 4)
       else
-        GlobalVar.SurgeLevel = GlobalVar.SurgeLevel + 1
+        GlobalVar.SurgeLevel = (GlobalVar.SurgeLevel > 3 and GlobalVar.SurgeLevel or 3)
       end
       
       tempTimer(60, function() GlobalVar.SurgeLevel = priorsurgelevel; printGameMessage("Surge Request", "Surge level reset to " .. priorsurgelevel) end)
@@ -38,7 +38,6 @@ if (StatTable.Class == "Mage" or StatTable.Class == "Wizard" or StatTable.Class 
     end  
     
   else
-    surgelevel = tonumber(surgelevel)
     assert(surgelevel~=nil)
     GlobalVar.SurgeLevel = surgelevel
     printGameMessage("Surge Request", "Surge level set to " .. GlobalVar.SurgeLevel)

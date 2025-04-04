@@ -28,7 +28,10 @@ local PSIWeaponLookup = {
   ["NinehundreD"] = {w1name = "*-<PAIN>-*", w1keyword = "pain", w2name="*-<AGONY>-*", ws2keyword = "agony"},
   ["Vulkan"] = {w1name = "A Winged Angel", w1keyword = "lordkdr", w2name = "A Winged Devil", w2keyword = "lordkrd"},
   ["Eanruig"] = {w1name = "Chondrite Longsword", w1keyword = "eanruigw", w2name = "Chondrite Shortsword", w2keyword = "eanruigo"},
+  ["Volexios"] = {w1name = "a quarterstaff that whispers 'Volexios'", w1keyword = "volexios"},
   }
+  
+  
   
 
 function PSITrigger.Create(charname, weaponname, weaponkeyword)
@@ -94,6 +97,8 @@ function PSITrigger.Load()
   for char_name, psitrigger in pairs(PSIWeaponLookup) do
     PSITrigger.PsiTriggers[char_name] = psitrigger
   end
+  PSITrigger.TriedLookUp = {}
+  PSITrigger.Update()
 end
 
 function PSITrigger.DownloadFile()
@@ -114,7 +119,7 @@ end
 
 PSITrigger.Load()
 PSITrigger.downloadFileHandler = safeEventHandler("PSIFileDownloadFileHandler", 'sysDownloadDone', "PSITrigger.onFileDownloaded")
-safeTempTimer("PsiFileDownloadTimer", 2, [[PsiFile.DownloadFile()]])
+safeTempTimer("PsiTriggerDownloadTimer", 2, [[PSITrigger.DownloadFile()]])
 
 
 

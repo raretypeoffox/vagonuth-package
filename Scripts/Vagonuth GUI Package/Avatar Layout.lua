@@ -174,7 +174,7 @@ function LoadLayout()
   GroupContainer = Geyser.Container:new({
     name = "GroupContainer",
     x="0", y=0,                    -- makes the container start 20% of the screen away from the right side
-    width = LeftPanelWidth, height="60%",      -- filling it up until the end
+    width = LeftPanelWidth, height="55%",      -- filling it up until the end
   },left_container)
   
   GroupPanel_background = createLabel("GroupPanel_background", "1%", "0", "95%", "100%", "black", nil, GroupContainer, nil, headerStyleSheet)
@@ -250,7 +250,7 @@ function LoadLayout()
   --LEFT MIDDLE START container on left for info
   left_container_middle = Geyser.Container:new({
     name = "left_container_middle",
-    x=0, y="60%",                 
+    x=0, y="55%",                 
     width = "100%", height="15%", 
   }, left_container)
   
@@ -264,11 +264,11 @@ function LoadLayout()
     borderRadius = 1,
   }
 
-  RoomLabel = createLabel("RoomLabel", "3%", "26", "90%", "18", "white", [[<center>Room</center>]], left_container_middle, nil, styleSheetHidden)
-  ExitListLabel = createLabel("ExitListLabel", "3%", "48", "90%", "18", "yellow", [[<left></left>]], left_container_middle, nil, styleSheetHidden)
-  Victim1Label = createLabel("Victim1Label", "3%", "70", "90%", "18", "white", [[<left>...</left>]], left_container_middle, nil, styleSheetHidden)
-  Victim2Label = createLabel("Victim2Label", "3%", "92", "90%", "18", "white", [[<left>...</left>]], left_container_middle, nil, styleSheetHidden)
-  Victim3Label = createLabel("Victim3Label", "3%", "114", "90%", "18", "white", [[<left>...</left>]], left_container_middle, nil, styleSheetHidden)
+  RoomLabel = createLabel("RoomLabel", "3%", "22", "90%", "18", "white", [[<center>Room</center>]], left_container_middle, nil, styleSheetHidden)
+  ExitListLabel = createLabel("ExitListLabel", "3%", "40", "90%", "18", "yellow", [[<left></left>]], left_container_middle, nil, styleSheetHidden)
+  Victim1Label = createLabel("Victim1Label", "3%", "60", "90%", "18", "white", [[<left>...</left>]], left_container_middle, nil, styleSheetHidden)
+  Victim2Label = createLabel("Victim2Label", "3%", "80", "90%", "18", "white", [[<left>...</left>]], left_container_middle, nil, styleSheetHidden)
+  Victim3Label = createLabel("Victim3Label", "3%", "100", "90%", "18", "white", [[<left>...</left>]], left_container_middle, nil, styleSheetHidden)
   
   Victim1Label:hide()
   Victim2Label:hide()
@@ -277,34 +277,39 @@ function LoadLayout()
   --bottom container on left for spell effects
   left_container_bottom = Geyser.Container:new({
     name = "left_container_bottom",
-    x=0, y="75%",                 
-    width = "100%", height="25%", 
+    x=0, y="70%",                 
+    width = "100%", height="30%", 
   }, left_container)
   
   left_container_background = createLabel("left_container_background", "1%", "0", "95%", "100%", "black", nil, left_container_bottom, nil, headerStyleSheet)
   lowerWindow("left_container_background")
-  leftlowerPanelHeader = createLabel("leftlowerPanelHeader", "1%", "0", "95%", "20", "orange", [[<center><b>Affects</b></center>]], left_container_bottom, nil, headerStyleSheet)
+  leftlowerPanelHeader = createLabel("leftlowerPanelHeader", "1%", "0", "95%", "18", "orange", [[<center><b>Affects</b></center>]], left_container_bottom, nil, headerStyleSheet)
+
+  local affectLabelHeight = 15
+  local rowSpacing = affectLabelHeight + 3
+  local rowStartY = 26
 
   -- affect labels
-  MoveHiddenLabel = createLabel("MoveHiddenLabel", "3%", "26", "28%", "18", "white", [[<left>Move Hidden</left>]], left_container_bottom, nil, styleSheetOn)
-  SneakLabel = createLabel("SneakLabel", "34%", "26", "28%", "18", "white", [[<left>Sneak</left>]], left_container_bottom, nil, styleSheetOn)
-  InvisLabel = createLabel("InvisLabel", "65%", "26", "28%", "18", "white", [[<left>Invis</left>]], left_container_bottom, nil, styleSheetOn)
-  SancLabel = createLabel("SancLabel", "3%", "48", "28%", "18", "white", [[<left>Sanctuary</left>]], left_container_bottom, nil, styleSheetOn)
-  FrenzyLabel = createLabel("FrenzyLabel", "34%", "48", "28%", "18", "white", [[<left>Frenzy</left>]], left_container_bottom, nil, styleSheetOn)
-  WaterLabel = createLabel("WaterLabel", "65%", "48", "28%", "18", "white", [[<left>WaterBreath</left>]], left_container_bottom, nil, styleSheetOn)
-  FortLabel = createLabel("FortLabel", "3%", "70", "28%", "18", "white", [[<left>Fortitudes</left>]], left_container_bottom, nil, styleSheetOn)
-  FociLabel = createLabel("FociLabel", "34%", "70", "28%", "18", "white", [[<left>Foci</left>]], left_container_bottom, nil, styleSheetOn)
-  AwenLabel = createLabel("AwenLabel", "65%", "70", "28%", "18", "white", [[<left>Awen</left>]], left_container_bottom, nil, styleSheetOn)
-  InvincLabel = createLabel("InvincLabel", "3%", "92", "28%", "18", "white", [[<left>Invinc</left>]], left_container_bottom, nil, styleSheetOn)
-  BarkLabel = createLabel("BarkLabel", "34%", "92", "28%", "18", "white", [[<left>Barkskin</left>]], left_container_bottom, nil, styleSheetOn)
-  SteelLabel = createLabel("SteelLabel", "65%", "92", "28%", "18", "white", [[<left>Steel Skel</left>]], left_container_bottom, nil, styleSheetOn)
-  IronLabel = createLabel("IronLabel", "3%", "114", "28%", "18", "white", [[<left>Iron Skin</left>]], left_container_bottom, nil, styleSheetOn)
-  ConcentrateLabel = createLabel("ConcentrateLabel", "34%", "114", "28%", "18", "white", [[<left>Concentrate</left>]], left_container_bottom, nil, styleSheetOn)
-  WerreLabel = createLabel("WerreLabel", "65%", "114", "28%", "18", "white", [[<left>Werrebocler</left>]], left_container_bottom, nil, styleSheetOn)
+  MoveHiddenLabel = createLabel("MoveHiddenLabel", "3%", rowStartY, "28%", affectLabelHeight, "white", [[<left>Move Hidden</left>]], left_container_bottom, nil, styleSheetOn)
+  SneakLabel = createLabel("SneakLabel", "34%", rowStartY, "28%", affectLabelHeight, "white", [[<left>Sneak</left>]], left_container_bottom, nil, styleSheetOn)
+  InvisLabel = createLabel("InvisLabel", "65%", rowStartY, "28%", affectLabelHeight, "white", [[<left>Invis</left>]], left_container_bottom, nil, styleSheetOn)
+  SancLabel = createLabel("SancLabel", "3%", rowStartY + rowSpacing, "28%", affectLabelHeight, "white", [[<left>Sanctuary</left>]], left_container_bottom, nil, styleSheetOn)
+  FrenzyLabel = createLabel("FrenzyLabel", "34%", rowStartY + rowSpacing, "28%", affectLabelHeight, "white", [[<left>Frenzy</left>]], left_container_bottom, nil, styleSheetOn)
+  WaterLabel = createLabel("WaterLabel", "65%", rowStartY + rowSpacing, "28%", affectLabelHeight, "white", [[<left>WaterBreath</left>]], left_container_bottom, nil, styleSheetOn)
+  FortLabel = createLabel("FortLabel", "3%", rowStartY + 2 * rowSpacing, "28%", affectLabelHeight, "white", [[<left>Fortitudes</left>]], left_container_bottom, nil, styleSheetOn)
+  FociLabel = createLabel("FociLabel", "34%", rowStartY + 2 * rowSpacing, "28%", affectLabelHeight, "white", [[<left>Foci</left>]], left_container_bottom, nil, styleSheetOn)
+  AwenLabel = createLabel("AwenLabel", "65%", rowStartY + 2 * rowSpacing, "28%", affectLabelHeight, "white", [[<left>Awen</left>]], left_container_bottom, nil, styleSheetOn)
+  InvincLabel = createLabel("InvincLabel", "3%", rowStartY + 3 * rowSpacing, "28%", affectLabelHeight, "white", [[<left>Invinc</left>]], left_container_bottom, nil, styleSheetOn)
+  BarkLabel = createLabel("BarkLabel", "34%", rowStartY + 3 * rowSpacing, "28%", affectLabelHeight, "white", [[<left>Barkskin</left>]], left_container_bottom, nil, styleSheetOn)
+  SteelLabel = createLabel("SteelLabel", "65%", rowStartY + 3 * rowSpacing, "28%", affectLabelHeight, "white", [[<left>Steel Skel</left>]], left_container_bottom, nil, styleSheetOn)
+  IronLabel = createLabel("IronLabel", "3%", rowStartY + 4 * rowSpacing, "28%", affectLabelHeight, "white", [[<left>Iron Skin</left>]], left_container_bottom, nil, styleSheetOn)
+  ConcentrateLabel = createLabel("ConcentrateLabel", "34%", rowStartY + 4 * rowSpacing, "28%", affectLabelHeight, "white", [[<left>Concentrate</left>]], left_container_bottom, nil, styleSheetOn)
+  WerreLabel = createLabel("WerreLabel", "65%", rowStartY + 4 * rowSpacing, "28%", affectLabelHeight, "white", [[<left>Werrebocler</left>]], left_container_bottom, nil, styleSheetOn)
 
   --START SPECIFICS
     -- Create an empty table to store the Layout.Labels
   local labelIndex = 1  -- Counter for label names
+  rowStartY = rowStartY + 5 * rowSpacing
   
   for row = 1, 4 do
     for column = 1, 3 do
@@ -317,11 +322,10 @@ function LoadLayout()
         x = "65%"
       end
       
-      local rowStartY = 136
-      local rowSpacing = 22
+      
       local y = tostring(rowStartY + (row - 1) * rowSpacing)
   
-      Layout.Labels[labelIndex] = createLabel("Skill" .. labelIndex .. "Label", x, y, "28%", 18, "white", "Extra Label", left_container_bottom, nil, styleSheetOn)
+      Layout.Labels[labelIndex] = createLabel("Skill" .. labelIndex .. "Label", x, y, "28%", affectLabelHeight, "white", "Extra Label", left_container_bottom, nil, styleSheetOn)
       Layout.Labels[labelIndex]:hide()
   
       labelIndex = labelIndex + 1

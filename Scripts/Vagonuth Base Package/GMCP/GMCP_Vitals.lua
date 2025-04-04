@@ -51,11 +51,13 @@ local AffectsLookup = {
   ["Spell: protection evil"] = "ProtectionEvil",
   
   ["Exhausted Spell: solitude"] = "SolitudeTimer",
+   ["Exhausted Spell: intervention"] = "InterventionExhaust",
+  
+  -- sld
   ["Exhausted Spell: square"] = "SquareExhaust",
   ["Exhausted Spell: echelon"] = "EchelonExhaust",
   ["Exhausted Spell: phalanx"] = "PhalanxExhaust",
   ["Exhausted Spell: column"] = "ColumnExhaust",
-  ["Exhausted Spell: intervention"] = "InterventionExhaust",
   ["Spell: square"] = "StanceSquare",
   ["Spell: echelon"] = "StanceEchelon",
   ["Spell: phalanx"] = "StancePhalanx",
@@ -74,7 +76,15 @@ local AffectsLookup = {
   ["Spell: gale stratum"] = "GaleStratum",
   ["Exhausted Spell: water breathing"] = "WaterBreathingExhaust",
   ["Exhausted Spell: giant strength"] = "GiantStrengthExhaust",
-  ["Exhausted Spell: fly"] = "FlyExhaust",
+  ["Exhausted Spell: fireball"] = "FireballExhaust",
+  ["Exhausted Spell: chill touch"] = "ChillTouchExhaust",
+  ["Exhausted Spell: acid blast"] = "AcidBlastExhaust",
+  ["Exhausted Spell: burning hands"] = "BurningHandsExhaust",
+  ["Exhausted Spell: lightning bolt"] = "LightningBoltExhaust",
+  ["Exhausted Spell: cure light"] = "CureLightExhaust",
+  ["Exhausted Spell: cure serious"] = "CureSeriousExhaust",
+  ["Exhausted Spell: cure critical"] = "CureCriticalExhaust",
+  
   
   -- bladedancer
   ["Spell: bladedance"] = "BladedanceTimer",
@@ -96,6 +106,7 @@ local AffectsLookup = {
   ["Spell: artificer blessing"] = "ArtificerBlessing",
   ["Spell: artificer blessing aura"] = "ArtificerBlessingAura", 
   ["Spell: discordia"] = "Discordia",
+  ["Spell: discordia aura"] = "DiscordiaAura",
   ["Spell: divine adjutant"] = "DivineAdjutant",
   ["Spell: divine grace"] = "DivineGrace",
   ["Spell: glorious conquest"] = "GloriousConquest",
@@ -198,9 +209,12 @@ local AffectsLookup = {
   ["Racial frenzy fatigue"] = "RacialFrenzyFatigue",
   ["Racial roar fatigue"] = "RacialRoarFatigue",
   ["Racial expunge fatigue"] = "RacialExpungeFatigue",
+  ["Spell: racial devour"] = "RacialDevour",
+  ["Racial devour fatigue"] = "RacialDevourFatigue",
   
   -- debuffs
   ["Spell: calm"] = "Calm",
+  ["Spell: awe"] = "Calm",
   ["Spell: fear"] = "Fear",
   ["Spell: poison"] = "Poison",
   ["Spell: curse"] = "Curse",
@@ -220,6 +234,7 @@ local AffectsLookup = {
   ["Spell: unrest"] = "Unrest",
   ["Spell: faerie fire"] = "FaerieFire",
   ["Spell: plague"] = "Plague",
+  ["Spell: shun"] = "Shun",
   
   ["Spell: hand of god"] = "HandOfGod",
   

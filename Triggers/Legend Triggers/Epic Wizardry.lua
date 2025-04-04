@@ -4,9 +4,10 @@
 
 -- Trigger Patterns:
 -- 0 (exact): You have mastered epic wizardry!
+-- 1 (exact): You have already mastered epic wizardry!
 
 -- Script Code:
-GlobalVar.SurgeLevel = 2
+GlobalVar.SurgeLevel = 5
 GlobalVar.AutoCaster = "signature spell"
 GlobalVar.AutoCasterSingle = "signature spell"
 GlobalVar.AutoCasterAOE = "inferno"

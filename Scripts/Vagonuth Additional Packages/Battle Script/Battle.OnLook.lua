@@ -41,6 +41,8 @@ function Battle.OnLook()
         
         if IsClass({"Psionicist", "Mindbender"}) then Battle.DeceptCheck(s, Players[k].name) end
         if IsClass({"Mindbender"}) then Battle.PsyphonCheck(Players[k]) end
+        if IsClass({"Sorcerer"}) then Battle.ImmoCheck(s, Players[k].name) end
+        if StatTable.Race == "Dragon" then Battle.DevourCheck(s, Players[k].name) end
         if IsClass({"Monk", "Shadowfist"}) and StatTable.Level == 125 and not SafeArea() then TryAction("look " .. Players[k].name  .. " chakra", 60) end
       
         -- If Mob isn't fighting (ie didn't match the pattern above) then find would've set i to nil
@@ -75,6 +77,73 @@ function Battle.OnLook()
   
 end
 
+-- Weak Mobs used for Immo, also Devour
+ImmoMobList = {
+  "This Githyanki coughs, blood bubbling up through his open mouth.",
+  "A dying Githzerai crawls, dragging his useless legs behind him.",
+  "Unsure on his feet, this young Githzerai tries to stay out of the way.",
+  "A small fiend crawls through the blood.",
+  "A former Lord of Midgaardia serves the Fae.",
+  "Red particles swirl together in a fierce cluster.",
+  "A dark cloud of diminishing hate struggles to keep itself together.",
+  "This demon is emaciated with elongated limbs.",
+  "A mound of topaz starts to move listlessly.",
+  "Back from the dead, this Githzerai stumbles to his feet.",
+  "The shadows reveal a Githyanki hidden behind the outhouse.",
+  
+  "This youth from this hamlet is terrified of you... but honor-bound to attack.",
+  "This young female Trog is startled at your presence!",
+  "This Troglodyte youth looks like he's off for the day, just enjoying himself.",
+  "A Kuzzivo Youth looks like he wants to run away from you!",
+  
+  -- Conundrum
+  "A united ent and giant army is fighting to preserve Midgaardia!",
+  "Jacklyn leads refugees from Hospice refugee camp elsewhere.",
+  
+  
+  
+}
+
+
+function Battle.ImmoCheck(mobname, mobnum)
+  if StatTable.Level < 125 and StatTable.SubLevel < 101 then return end
+  if not ArrayHasValue(ImmoMobList, mobname) then return end
+  if StatTable.Calm and not Battle.Combat then return end
+
+  -- quicken logic ok? add combat logic?
+  --bug in quicken
+  local quicken_level = 0
+
+  if StatTable.current_mana > (70000 * Battle.GetSpellCostMod("arcane")) then
+    quicken_level = 9
+  elseif StatTable.current_mana > (50000 * Battle.GetSpellCostMod("arcane")) then
+    quicken_level = 5
+  end
+  
+  if quicken_level > 0 then TryAction("quicken " .. quicken_level, 5) end
+  
+  if not StatTable.Immolation then
+    TryCast("cast immolation " .. mobnum, 5)
+  elseif not StatTable.AstralPrison and StatTable.Level == 125 then
+    TryCast("cast 'astral prison' " .. mobnum, 5)
+  else
+    return
+  end
+  if quicken_level > 0 then TryAction("quicken off",5) end
+
+end
+
+function Battle.DevourCheck(mobname, mobnum)
+  if not ArrayHasValue(ImmoMobList, mobname) then return end
+  if StatTable.RacialDevourFatigue then return end
+    
+  TryAction("racial devour " .. mobnum, 5)
+
+end
+
+
+
+
 local DeceptArea = {
   "{ LORD } Pliny Nothing",
   
@@ -98,6 +167,7 @@ local DeceptList = {
   
   ["{ LORD } Mimir   Cinderheim"] = {
     "A self-confident warrior scans for signs of danger.",
+    "Soaring overhead, an imp scans for signs of life.",
   
   },
   
@@ -189,6 +259,6 @@ function Battle.PsyphonCheck(mob)
   if (i == nil) then return end -- we're not fighting this mob
   
 
-  TryFunction("PsyphonCast", Battle.NextAct, {"qcuiekn 9" .. cs .. "cast psyphon " .. mob.name .. cs .. "quicken off", 5}, 5)
+  TryFunction("PsyphonCast", Battle.NextAct, {"quicken 9" .. cs .. "cast psyphon " .. mob.name .. cs .. "quicken off", 5}, 5)
   
 end

@@ -255,6 +255,13 @@ function UpdateGUI()
         setNextAvailableLabel(StatTable.Alertness, "Alert", "Alertness", "alertness")
       elseif MyClass == "Assassin" then
         setNextAvailableLabel(StatTable.Alertness, "Alert", "Alertness", "alertness")
+      elseif MyClass == "Soldier" then
+        if (MyLevel == 125 or MySubLevel > 100) then
+          setNextAvailableLabelExhaust(StatTable.StanceEchelon, StatTable.EchelonExhaust, "Echelon", "Echelon", "stance echelon")
+          setNextAvailableLabelExhaust(StatTable.StanceSquare, StatTable.SquareExhaust, "Square", "Square", "stance square") 
+          setNextAvailableLabelExhaust(StatTable.StancePhalanx, StatTable.PhalanxExhaust, "Phalanx", "Phalanx", "stance phalanx") 
+          setNextAvailableLabelExhaust(StatTable.StanceColumn, StatTable.ColumnExhaust, "Column", "Column", "stance column") 
+        end
       
       elseif MyClass == "Bladedancer" then
         setNextAvailableLabel(StatTable.Alertness, "Alert", "Alertness", "alertness")
@@ -423,6 +430,7 @@ function UpdateGUI()
         setNextAvailableLabelExhaust(StatTable.RacialGalvanize, StatTable.RacialGalvanizeFatigue, "Galvanize", "Galvanize", "racial galvanize")
       elseif (MyRace == "Dragon") then
         setNextAvailableLabelExhaust(nil, StatTable.RacialRoarFatigue, "Roar", "Roar", "racial roar")
+        setNextAvailableLabelExhaust(StatTable.RacialDevour, StatTable.RacialDevourFatigue, "Devour", "Devour", "racial devour")
       end -- end of MyRace
       
       -- Labels to only show when they affect you
@@ -456,7 +464,7 @@ function UpdateGUI()
         if StatTable[debuff] then setNextAvailableLabelDebuff(StatTable[debuff], debuff) end
       end
       
-      local Debuffs = {"Calm", "Blindness", "Heartbane", "Fear", "Poison", "Curse", "Demonfire", "Virus", 
+      local Debuffs = {"Calm", "Shun", "Blindness", "Heartbane", "Fear", "Poison", "Curse", "Demonfire", "Virus", 
       "Biotoxin", "Venom", "Toxin", "DoomToxin", "Flash", "Weaken", "Overconfidence", "Scramble", "Panic", "FaerieFire", "Plague",
       "Unrest", "WaterBreathingExhaust", "GiantStrengthExhaust", "FlyExhaust", "CureLightExhaust"}
       

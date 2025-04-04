@@ -1,8 +1,8 @@
 -- Alias: resetpsi
 -- Attribute: isActive
 
--- Pattern: ^resetpsi$
+-- Pattern: ^(resetpsi|psireset)$
 
 -- Script Code:
 PSITrigger.TriedLookUp = {}
-PSITrigger.Update()
+PSITrigger.Load()

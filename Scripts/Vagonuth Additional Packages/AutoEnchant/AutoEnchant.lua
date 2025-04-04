@@ -109,7 +109,7 @@ function AutoEnchantBrill()
 end
 
 function AutoEnchantAddLevel()
-  local WeaponMaxLevel = 2 -- should usually be 4 but switch to 2 when autoweapon being used on special armor (eg gith hands)
+  local WeaponMaxLevel = 4 -- should usually be 4 but switch to 2 when autoweapon being used on special armor (eg gith hands)
   local ArmorMaxLevel = 2
 
   AutoEnchantTable.ItemLevel = AutoEnchantTable.ItemLevel + 1

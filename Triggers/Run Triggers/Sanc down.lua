@@ -9,15 +9,19 @@
 -- Script Code:
 -- Rewrite 28 Aug 2023
 
-
-
 AutoCross = AutoCross or false
+
+if AutoCross then
+  local was_asleep = false
+  if StatTable.Position == "Sleep" then send("rest"); was_asleep = true end 
+  send("cross")
+  if was_asleep then send("sleep") end
+  return 
+end
 
 function KillSancSelfAtLordTimer()
   safeKillTimer("SancSelfAtLord")
 end
-
-if AutoCross then send("cross"); return end
 
 -- Function that waits till you're not fighting to cast sanctuary (will cast immediately if out of combat)
 local function CastAfterCombat(spell)
@@ -35,6 +39,8 @@ function SancSelfAtLord()
   safeTempTimer("SancSelfAtLord", 30, function()
   safeEventHandler("SancSelfAtLordEventID", "OnQuit", "KillSancSelfAtLordTimer", true)
     if not StatTable.Sanctuary then
+      if IsMDAY() then send("gtell not sanced!"); return end
+      
       if StatTable.Class == "Monk" or StatTable.Class == "Shadowfist" then
         CastAfterCombat("'iron monk'")
       else
@@ -79,7 +85,7 @@ else -- Hero and Low mort
      and StatTable.Level >=23 then CastAfterCombat("sanctuary"); return; end
   
   -- Everyone else gets sanc at Hero 45
-  if StatTable.Level == 125 or StatTable.SubLevel >= 45 then CastAfterCombat("sanctuary"); return; end
+  if StatTable.Class ~= "Berserker" and StatTable.SubLevel >= 45 then CastAfterCombat("sanctuary"); return; end
 
   -- We aren't able to cast sanc on ourselves, ask for sanc
   if not GlobalVar.Silent and Grouped() then send("gtell |BW|Sanctuary|N| is down - please sanc me",false) end

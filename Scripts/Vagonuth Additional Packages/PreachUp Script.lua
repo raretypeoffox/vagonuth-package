@@ -4,12 +4,12 @@
 -- Script Code:
 CustomPreachup = {
 ["Xanur"] = "cast 'minds eye'",
-["Zephyra"] = "cast solitude",
+--["Zephyra"] = "cast solitude",
 ["Qhax"] = "cast prayer soothe",
 }
 
 CustomFrenzyList = {
-  "Azarael",
+  --"Azarael",
   "Thistleshade",
   "Bruzzorli",
 }
@@ -28,13 +28,17 @@ end
 
 
 function PreachUp()
-  cecho("<white>AutoPreachUp Script<ansi_white>: attempting to get spells from bots, checking if bots are on this plane")
   if StatTable.Position ~= "Stand" then send("stand") end
-  TryLook()
-  getOnlinePlayers()
+  
+  if SafeArea() then
+    cecho("<white>AutoPreachUp Script<ansi_white>: attempting to get spells from bots, checking if bots are on this plane")
+    TryLook()
+    getOnlinePlayers()
+    tempTimer(2, function() LookForPreachupBots() end)
+  end
+  
   if IsMDAY() then CustomMDAYPreachup() end
   
-  tempTimer(2, function() LookForPreachupBots() end)
   raiseEvent("OnPreachUp")
 end
 
@@ -185,7 +189,7 @@ function GetSpellsAtPreachup()
     end
   end
   
-  if StatTable.Race ~= "High Elf" and GlobalVar.AutoFrenzy and (IsClass(StaticVars.FrenzyClasses) or ArrayHasValue(CustomFrenzyList, StatTable.CharName)) then
+  if StatTable.Race ~= "High Elf" and GlobalVar.AutoFrenzy and StatTable.Level >= 51 and (IsClass(StaticVars.FrenzyClasses) or ArrayHasValue(CustomFrenzyList, StatTable.CharName)) then
     if IsMDAY and IsNotClass({"Berserker","Priest"}) and (MyLevel == 125 or MySubLevel > 41) then
       table.insert(commands, "cast frenzy")
     else
@@ -295,32 +299,46 @@ function GetSpellsAtPreachup()
   
   if CustomPreachup[StatTable.CharName] then table.insert(commands, CustomPreachup[StatTable.CharName]) end
   
-  if StatTable.Alignment < -300 then
+  if not StatTable.ProtectionGood and StatTable.Alignment < -300 then
     table.insert(commands, "cast 'protection good'")
   end
   
   safeCall(ClearGurneyTriggers)
   if GroupLeader() and SafeArea() then sendGMCP("Char.Group.List"); tempTimer(4, [[GroupOrder()]]) end
   
+  -- sneak
+  if MyLevel >= 51 and IsNotClass({"Paladin", "Priest", "Berserker", "Wizard", "Bodyguard", "Stormlord"}) then
+    if MyClass == "Sorcerer" and (MyLevel == 125 or MySubLevel >= 5) then
+      table.insert(commands, "shadow form")
+    else
+      table.insert(commands, "sneak")
+    end
+  end
+  
   -- For solo preachups
   if not Grouped() then
+  
+    
     
     if MyLevel == 125 then
-      -- Grab sanc before we go at lord
-      for _, player in ipairs(StaticVars.PrsBots) do
-        if Players[player] then
-          table.insert(commands, "tell " .. player .. " intervention")
-        break
-        end  
+      -- Grab intervention before we go at lord
+      if not StatTable.Intervention then
+        for _, player in ipairs(StaticVars.PrsBots) do
+          if Players[player] then
+            table.insert(commands, "tell " .. player .. " intervention")
+          break
+          end  
+        end
       end
-      table.insert(commands, "sn")
-      table.insert(commands, "cast 'improved invis'")
+      
+      
+      if not StatTable.Invis then table.insert(commands, "cast 'improved invis'") end
       
     
     end
     
     
-    if MyClass == "Sorcerer" and (MySubLevel >= 250 or MyLevel >= 51) then
+    if MyClass == "Sorcerer" and not StatTable.DefiledFlesh and (MySubLevel >= 250 or MyLevel >= 51) then
       table.insert(commands, "cast defiled")
       for _, player in ipairs(StaticVars.PrsBots) do
         if Players[player] then

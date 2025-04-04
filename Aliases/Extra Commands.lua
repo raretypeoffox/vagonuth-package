@@ -21,6 +21,9 @@ local syntax_tbl = {
   {"gt inspire", nil},
   {"gt dance check", nil},
   {"gt pick <dir>", nil},
+  {"gt [get/drop] <item> [container]", "for mday, can have groupies drop/get (eg gt drop all.lockbox)"},
+  {"gt [ablut/wear all]", "for mday, have groupies ablut/wear all"},
+  
   
   
   {"",nil},
@@ -34,8 +37,10 @@ local syntax_tbl = {
   {"<white>Misc.", nil},
   {"showstats", "show all your xp / gains starts since you launched the mudlet session"},
   {"charstars <character>", "reports one of your characters stats"},
+  {"repcharstats <char> <chat>", "reports character's HP/MP stats to chat channel"},
   {"iaw <equip", "insures and wears a piece of equipment"},
   {"autotrack", "different tracking options, see autotrack for details"},
+  {"dropjunk", "drops all junk in inventory"},
   
 
 }

@@ -5,8 +5,9 @@
 
 -- Script Code:
 function GMCP_Room() 
+  GlobalVar.PlaneName = GetPlaneName()
   if(GlobalVar.GUI) then
-    RoomLabel:echo("<center>" .. RemoveColourCodes(gmcp.Room.Info.name) .. "</center>")
+    RoomLabel:echo("<center>" .. RemoveColourCodes(gmcp.Room.Info.name) .. " (" .. GlobalVar.PlaneName .. ")</center>")
     ExitListLabel:echo("<center>" .. table.concat(table.keys(gmcp.Room.Info.exits), " ") .. "</center>")
     
     Victim1Label:hide()
@@ -21,6 +22,8 @@ function GMCP_Room()
       GlobalVar.RoomBlockedCasting = nil
     end
   end
+  
+  
  
 end
 

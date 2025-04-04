@@ -1,5 +1,4 @@
 -- Trigger: Earth essence 
--- Attribute: isActive
 
 
 -- Trigger Patterns:

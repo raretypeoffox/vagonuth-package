@@ -6,7 +6,15 @@
 -- 0 (exact): home
 
 -- Script Code:
-if (gmcp.Room.Info.zone ~= "{ LORD } Crom    Thorngate") then
+
+
+if not GlobalVar.AutoPlane then
+  QuickBeepVerbose()
+  printGameMessageVerbose("QuickBeep", "Leader requested homeshift")
+  return
+end
+
+if not SafeArea() then
   if (StatTable.Position == "Sleep") then send("stand") end
   
   local tempTriggerID = tempBeginOfLineTrigger("You failed your homeshift due to lack of concentration!", function() send("cast homeshift") end)

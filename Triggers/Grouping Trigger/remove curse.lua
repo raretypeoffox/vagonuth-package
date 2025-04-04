@@ -4,7 +4,7 @@
 
 
 -- Trigger Patterns:
--- 0 (lua function): if(StatTable.Class == "Sorcerer" or StatTable.Class == "Cleric") then return true end
+-- 0 (lua function): if(StatTable.Class == "Sorcerer" or StatTable.Class == "Cleric" or StatTable.Class == "Druid") then return true end
 -- 1 (regex): ^\*?(\w+)\*? tells the group 'rc'$
 
 -- Script Code:

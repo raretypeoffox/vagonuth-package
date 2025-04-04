@@ -1,5 +1,4 @@
 -- Script: Immo Script
--- Attribute: isActive
 
 -- Script Code:
 function ImmoMob(mobname)

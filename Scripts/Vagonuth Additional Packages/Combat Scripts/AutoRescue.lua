@@ -232,11 +232,15 @@ function AR.Auto()
     elseif v.name == StatTable.CharName then
       -- not adding ourself
     else
-      if v.class == "Pal" or v.class == "Bld" or v.class == "War" or v.class == "Rip" or v.class == "Bod" or v.class == "Mon" or v.class == "Shf" then
+      if StatTable.Level == 125 and (v.class == "Pal" or v.class == "Bld" or v.class == "War" or v.class == "Rip" or v.class == "Bod" or v.class == "Mon" or v.class == "Shf") then
+        AR_excluded = AR_excluded .. v.name .. " |BW|||BY| "
+      elseif StatTable.Level == 51 and (
+              (v.class == "Pal" and tonumber(string.match(v.level, "%d+")) >= 250) or 
+              ((v.class == "War" or v.class == "Rip" or v.class == "Bod" or v.class == "Mon" or v.class == "Shf") and tonumber(v.hp) > 2500)) then
         AR_excluded = AR_excluded .. v.name .. " |BW|||BY| "
       else
         -- exclude mutants as well
-        if tonumber(v.maxhp) > 50000 then AR_excluded = AR_excluded .. v.name .. " |BW|||BY| " else
+        if v.class ~= "Bzk" and tonumber(v.maxhp) > 50000 then AR_excluded = AR_excluded .. v.name .. " |BW|||BY| " else
         AR.RescueList[string.lower(v.name)] = true; end
       end
     end   
@@ -245,7 +249,7 @@ function AR.Auto()
     if AR.Echo then cecho("<white>AutoRescue:<ansi_white> all groupies added\n") else send("gtell |BW|AutoRescue:|N| all groupies added") end
   else
     AR_excluded = AR_excluded:sub(1,-12)
-    if AR.Echo then cecho("<white>AutoRescue:<ansi_white> all groupies excluding tanks/pals/blds/mutants (<yellow>" .. AR_excluded .."<ansi_white>)\n") else send("gtell |BW|AutoRescue:|N| added all groupies excluding tanks/pals/blds/mutants (|BY|" .. AR_excluded .."|N|)") end
+    if AR.Echo then cecho("<white>AutoRescue:<ansi_white> all groupies excluding tanks/pals/mutants (<yellow>" .. AR_excluded .."<ansi_white>)\n") else send("gtell |BW|AutoRescue:|N| added all groupies excluding tanks/pals/blds/mutants (|BY|" .. AR_excluded .."|N|)") end
   end
   if not AR.Echo then AR.Show() end
 end

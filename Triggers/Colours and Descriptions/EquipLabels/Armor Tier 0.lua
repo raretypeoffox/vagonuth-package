@@ -14,6 +14,8 @@
 -- 8 (substring): a golden marionette wire
 -- 9 (substring): the Spirit Guard
 -- 10 (substring): A ring of nightmares
+-- 11 (substring): quest amulet of
+-- 12 (substring): the Gambit Declined
 
 -- Script Code:
 cecho (string.rep (" ",80-tonumber(string.len(line))) .."<purple> [AC - T0]")

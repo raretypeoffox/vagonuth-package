@@ -12,6 +12,11 @@ function QuickBeep()
   playSoundFile({name = getMudletHomeDir().. "/Vagonuth-Package/quickbeep.wav"})
 end
 
+function QuickBeepVerbose()
+  if not GlobalVar.Verbose then return end
+  QuickBeep()
+end
+
 function VictoryBeep()
   if GlobalVar.Silent then return end
   playSoundFile({name = getMudletHomeDir().. "/Vagonuth-Package/victorybeep.mp3", volume = 75})
@@ -66,7 +71,8 @@ function SafeArea()
       gmcp.Room.Info.zone == "{ LORD } Crom    Thorngate" or
       gmcp.Room.Info.zone == "{ LORD } Vorak   Lord Mud School" or
       gmcp.Room.Info.zone == "{ LORD } Odin    Labyrinth of Bo'vul" or
-      gmcp.Room.Info.zone == "{ LORD } Crom    The House of Bandu") then
+      gmcp.Room.Info.zone == "{ LORD } Crom    The House of Bandu" or
+      gmcp.Room.Info.zone == "{ ALL  } AVATAR  Locker Rental Agency") then
     return true
   else
     return false
@@ -107,6 +113,8 @@ function AskBotsForHeals()
   
   if gmcp.Room.Players["Yorrick"] then send("tell yorrick " .. healspell .. healaugment) end
   if gmcp.Room.Players["Martyr"] then send("tell martyr " .. healspell .. healaugment) end
+  if gmcp.Room.Players["Logic"] then send("tell logic " .. healspell .. healaugment) end
+  if gmcp.Room.Players["Textual"] then send("tell textual " .. healspell .. healaugment) end
   if gmcp.Room.Players["Idle"] then send("tell idle " .. healspell .. healaugment) end
   if gmcp.Room.Players["Eiri"] then send("tell eiri " .. healspell .. healaugment) end
   if gmcp.Room.Players["Arby"] then send("tell arby ".. healspell) end

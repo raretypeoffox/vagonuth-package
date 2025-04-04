@@ -3,7 +3,7 @@
 
 
 -- Trigger Patterns:
--- 0 (regex): ^\[LORD INFO\]: (\w+) initiates a Threnody dirge for corpse of (\w+) in (.*).$
+-- 0 (regex): ^\[LORD INFO\]: (\w+) initiates a Threnody dirge for corpse of (\w+) in (.*)\.$
 
 -- Script Code:
 

@@ -18,6 +18,7 @@ RunStats.RunMV = RunStats.RunMV or 0
 RunStats.RunPrac = RunStats.RunPrac or 0
 RunStats.RunHealXp = RunStats.RunHealXp or 0
 RunStats.RunStartLevel = RunStats.RunStartLevel or 0
+RunStats.SpellLevelProcs = RunStats.SpellLevelProcs or 0
 if (RunStats.RunStartLevel == 0) then
   tempTimer(15, function() if StatTable.Level ~= nil and StatTable.Level < 51 then RunStats.RunStartLevel = StatTable.Level else RunStats.RunStartLevel = StatTable.SubLevel end end)
 end
@@ -68,10 +69,6 @@ function InitSessionXPOnLogin()
     end)
   end
   
-  if (RunStats.RunStartLevel == 0) then
-    safeTempTimer("RunStatsInit2", 5, function() if StatTable.Level ~= nil and StatTable.Level < 51 then RunStats.RunStartLevel = StatTable.Level else RunStats.RunStartLevel = StatTable.SubLevel end end)
-  end
-
 end
 
 
@@ -100,7 +97,8 @@ function RunStats.Reset()
   RunStats.RunMV = 0
   RunStats.RunPrac = 0
   RunStats.RunHealXp = 0
-  if StatTable.Level ~= nil and StatTable.Level < 51 then RunStats.RunStartLevel = StatTable.Level else RunStats.RunStartLevel = StatTable.SubLevel end
+  RunStats.SpellLevelProcs = 0
+  tempTimer(5, function() if StatTable.Level ~= nil and StatTable.Level < 51 then RunStats.RunStartLevel = StatTable.Level else RunStats.RunStartLevel = StatTable.SubLevel end end)
   RunXPLabel:echo(RunStats.RunXp)
   RunKillsLabel:echo(RunStats.RunKills)
   RunLevelsLabel:echo(RunStats.RunLevels .. " Levels")

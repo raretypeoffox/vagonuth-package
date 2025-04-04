@@ -60,9 +60,9 @@ function PantheonActivator()
   GlobalVar.PantheonCounter = GlobalVar.PantheonCounter + 1
   
   if GlobalVar.PantheonCounter >= StaticVars.PantheonNumber then
-    if StatTable.GrimHarvest then
+    if StatTable.GrimHarvest and not StatTable.GrimHarvestAura then
       Battle.DoAfterCombat("cast 'grim harvest' activate")
-    elseif StatTable.UnholyRampage then
+    elseif StatTable.UnholyRampage and not StatTable.UnholyRampageAura then
       Battle.DoAfterCombat("cast 'unholy rampage' activate")
     end
   end

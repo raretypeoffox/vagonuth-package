@@ -3,7 +3,7 @@
 
 
 -- Trigger Patterns:
--- 0 (start of line): An orphan holds something that OBVIOUSLY doesn't belong to them.
+-- 0 (substring): An orphan holds something that OBVIOUSLY doesn't belong to them.
 
 -- Script Code:
 send("tickle rascal")

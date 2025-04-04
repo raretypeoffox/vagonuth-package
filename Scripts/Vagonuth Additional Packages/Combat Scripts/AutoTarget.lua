@@ -64,10 +64,34 @@ local TargetExclusions = {
 "Made of solid indigo light, a guardian golem glares at you.",
 "Made of solid violet light, a guardian golem glares at you.",
 
+"True good can never be caged.",
+
 
 -- Astral Invasion
 "A Fae Cleric rolls his eyes at you, and casts a protection spell on himself.",
 "Flames dance playfully upon the back of some poor soul.",
+
+-- Mobs on the way to wasps (maybe do this with area exception?)
+"A Grue stands in the shadows, slavering all over himself.",
+"A vampire squirrel looks up from the ground, catching your gaze.",
+"A ghost hovers before you.",
+"A jet black unicorn stands before you, looking angry.",
+"A giant oak tree looms before you, seeming to almost grin.",
+
+
+-- Kzinti
+"A villager struggles through the waist-high snow.",
+"For this villager, every day is a nightmare.",
+"This villager dreams of forgotten warmth.",
+"This villager stares straight ahead.",
+"A small, scrawny boy looks up at you, and then goes back to rearranging stones.",
+"A village child looks up at you, but does not move.",
+"This haggler seems wrapped in the web of old age.",
+
+-- Conundrum
+"A large mob of angry Midgaardians are looking for the ones responsible!",
+"Some sleeping heroes are procrastinating here, uninterested in the invasion.",
+
 
 
 
@@ -81,7 +105,7 @@ function AutoTarget()
   if not GlobalVar.AutoTarget or Battle.Combat or SafeArea() then return end
   
   for _,mob in pairs(gmcp.Room.Players) do
-    if(tonumber(mob.name) ~= nil and ArrayHasSubstring(TargetExclusions, mob.fullname) == false) then
+    if(tonumber(mob.name) ~= nil and ArrayHasSubstring(TargetExclusions, mob.fullname) == false and ArrayHasSubstring(ImmoMobList, mob.fullname) == false) then
       
       --if GroupLeader() then send("emote is killing " .. mob.name) end
       
@@ -95,7 +119,7 @@ function AutoTarget()
           cast_action = "surge " .. GlobalVar.SurgeLevel .. getCommandSeparator() .. cast_action .. getCommandSeparator() .. "surge off"
         end
         -- delay cast by AutoTargetCastDelay seconds to give tanks/stabbers a chance first
-        tempTimer(AutoTargetCastDelay,function() send(cast_action) end)
+        tempTimer(AutoTargetCastDelay,function() if not Battle.Combat then TryCast(cast_action,5); end; end)
         break
       else
         send(GlobalVar.KillStyle .. " " .. mob.name)

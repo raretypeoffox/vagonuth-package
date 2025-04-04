@@ -11,20 +11,28 @@
 -- Script Code:
 
 if (StatTable.WaterBreathingExhaust == nil) then
-  --Battle.Interupt("cast water", 5)
-  Battle.NextAct("cast water", 5)
-elseif (StatTable.GiantStrengthExhaust == nil) then
-  --Battle.Interupt("cast 'giant strength'", 5)
-  Battle.NextAct("cast 'giant strength'", 5)
-elseif StatTable.FlyExhaust == nil then
-  --Battle.Interupt("cast fly", 5)
-  Battle.NextAct("cast fly", 5)
-else
-  --Battle.Interupt("cast endurance", 5)
-  Battle.NextAct("cast 'cure light'", 5)
+  Battle.NextAct("cast 'water breathing'", 5)
+
+elseif IsClass({"Priest", "Paladin", "Ripper", "Druid",}) then
+  if (StatTable.CureLightExhaust == nil) then
+    Battle.NextAct("cast 'cure light'", 5)
+  elseif (StatTable.CureSeriousExhaust == nil) then
+    Battle.NextAct("cast 'cure serious'", 5)
+  elseif (StatTable.CureCriticalExhaust == nil) then
+    Battle.NextAct("cast 'cure critical'", 5) 
+  end
+else 
+  if (StatTable.FireballExhaust == nil) then
+    Battle.NextAct("cast fireball", 5)
+  elseif StatTable.AcidBlastExhaust == nil then
+    Battle.NextAct("cast 'acid blast'", 5) 
+  elseif StatTable.ChillTouchExhaust == nil then
+    Battle.NextAct("cast 'chill touch'", 5)
+  elseif StatTable.BurningHandsExhaust == nil then
+    Battle.NextAct("cast 'burning hands'", 5)  
+  elseif StatTable.LightningBoltExhaust == nil then
+    Battle.NextAct("cast 'lightning bolt'", 5)  
+  end
 end
 
 
-
-
--- spells learned by every class (ex-bzk): water breathing, fly, giant str, endurance

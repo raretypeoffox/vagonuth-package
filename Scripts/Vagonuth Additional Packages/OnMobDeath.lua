@@ -77,7 +77,7 @@ function OnMobDeath()
     end
 
     -- Check if the last command was a) in our CommandCheck list and b) if it was not cast successfully. If both true, try it again
-    if (MobDeath.CommandCheck[MobDeath.Queue[1]] ~= nil and MobDeath.CommandCheck[MobDeath.Queue[1]] > 0) then
+    if (MobDeath.CommandCheck[MobDeath.Queue[1]] ~= nil and tonumber(MobDeath.CommandCheck[MobDeath.Queue[1]]) and MobDeath.CommandCheck[MobDeath.Queue[1]] > 0) then
       pdebug("OnMobDeath(): You already have " .. MobDeath.Queue[1] .. " - not casting again")
       table.remove(MobDeath.Queue, 1)
       OnMobDeath()

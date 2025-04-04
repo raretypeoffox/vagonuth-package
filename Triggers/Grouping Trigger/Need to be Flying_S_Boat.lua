@@ -3,8 +3,8 @@
 
 
 -- Trigger Patterns:
--- 0 (regex): ^You need to be flying to go (east|west|north|south|up|down).$
--- 1 (regex): ^You need a boat to go to the (\w+).$
+-- 0 (regex): ^You need to be flying to go (east|west|north|south|up|down)\.$
+-- 1 (regex): ^You need a boat to go to the (\w+)\.$
 
 -- Script Code:
 if StatTable.Class == "Berserker" then

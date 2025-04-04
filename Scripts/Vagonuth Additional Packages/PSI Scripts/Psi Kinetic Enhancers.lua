@@ -13,8 +13,8 @@ KineticEnhancers = {
 }
 
 -- hack for now
-GlobalVar.KineticEnhancerOne = GlobalVar.KineticEnhancerOne or "stunning"
-GlobalVar.KineticEnhancerTwo = GlobalVar.KineticEnhancerTwo or "conscious"
+GlobalVar.KineticEnhancerOne = GlobalVar.KineticEnhancerOne or nil
+GlobalVar.KineticEnhancerTwo = GlobalVar.KineticEnhancerTwo or nil
 
 function checkKineticEnhancers()
   local count = 0
@@ -63,15 +63,16 @@ function castKineticEnhancers()
 
   if enhancersCount == 2 or (enhancersCount == 1 and StatTable.Level == 51) then return end
 
-  if matchKineticEnhancer(GlobalVar.KineticEnhancerOne) and not StatTable[matchKineticEnhancer(GlobalVar.KineticEnhancerOne)] then
+  if GlobalVar.KineticEnhancerOne and matchKineticEnhancer(GlobalVar.KineticEnhancerOne) and not StatTable[matchKineticEnhancer(GlobalVar.KineticEnhancerOne)] then
     TryAction("cast '" .. GlobalVar.KineticEnhancerOne .. "'", 5)
     return  
   end
   
-  if matchKineticEnhancer(GlobalVar.KineticEnhancerTwo) and not StatTable[matchKineticEnhancer(GlobalVar.KineticEnhancerTwo)] then
+  if GlobalVar.KineticEnhancerTwo and matchKineticEnhancer(GlobalVar.KineticEnhancerTwo) and not StatTable[matchKineticEnhancer(GlobalVar.KineticEnhancerTwo)] then
     TryAction("cast '" .. GlobalVar.KineticEnhancerTwo .. "'", 5)
     return  
   end
+  
 end
 
 

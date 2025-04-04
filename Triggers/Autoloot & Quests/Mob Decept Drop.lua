@@ -6,7 +6,7 @@
 -- mBgColour: #ffff00
 
 -- Trigger Patterns:
--- 0 (regex): ^(?<mobname>.*) is so disgusted with (a|an|the) (?<item>.*) it tries to drop it!$
+-- 0 (regex): ^(?<mobname>.*) is so disgusted with (an|a|the) (?<item>.*) it tries to drop it!$
 -- 1 (regex): ^(?<mobname>.*) is so disgusted with (?<item>.*) it tries to drop it!$
 
 -- Script Code:

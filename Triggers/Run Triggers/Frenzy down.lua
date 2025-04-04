@@ -6,7 +6,7 @@
 -- 0 (start of line): You slowly come out of your rage.
 
 -- Script Code:
-if GlobalVar.AutoFrenzy == false then return end
+if GlobalVar.AutoFrenzy == false or SafeArea() then return end
 
 if AR.Status and not StatTable.Class == "Berserker" then return end
 

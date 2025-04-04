@@ -3,7 +3,7 @@
 
 
 -- Trigger Patterns:
--- 0 (regex): ^\[LORD INFO\]: \w+ starts a Salvation rite for (?<target>\w+) in (?<room>.*).$
+-- 0 (regex): ^\[LORD INFO\]: \w+ starts a Salvation rite for (?<target>\w+) in (?<room>.*)\.$
 
 -- Script Code:
 SalvTarget = matches.target

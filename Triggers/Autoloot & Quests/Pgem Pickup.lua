@@ -3,7 +3,7 @@
 
 
 -- Trigger Patterns:
--- 0 (regex): ^(\w+) gets a perfect (diamond|emerald|ruby|amethyst|sapphire).$
+-- 0 (regex): ^(\w+) gets a perfect (diamond|emerald|ruby|amethyst|sapphire)\.$
 
 -- Script Code:
 if (GlobalVar.GroupMates[GMCP_name(matches[2])]) then

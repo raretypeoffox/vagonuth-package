@@ -6,7 +6,7 @@
 -- mBgColour: #0055ff
 
 -- Trigger Patterns:
--- 0 (regex): ^The eyes of (.*) brighten and clear.$
+-- 0 (regex): ^The eyes of (.*) brighten and clear\.$
 
 -- Script Code:
 if not IsGroupMate(matches[2]) then

@@ -3,7 +3,7 @@
 
 
 -- Trigger Patterns:
--- 0 (regex): ^You give a perfect (diamond|emerald|ruby|amethyst|sapphire) to (\w+).$
+-- 0 (regex): ^You give a perfect (diamond|emerald|ruby|amethyst|sapphire) to (\w+)\.$
 
 -- Script Code:
 printGameMessage("PGEM!", "You passed the perfect " .. matches[2] .. " to " .. matches[3], "purple", "white")

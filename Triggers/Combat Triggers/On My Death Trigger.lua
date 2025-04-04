@@ -37,7 +37,6 @@ end
 
 local function whereami()
   TryLook()
-  --display(gmcp.Room.Info)
   
   if (gmcp.Room.Info.name == "On a Cloud" and gmcp.Room.Info.zone == "{ 1   4} Crom    The Meadow") then cloud2sanc() end
 
@@ -53,7 +52,6 @@ if (StatTable.Level < 125) then
   send("wake")
   
   TryLook()
-  display(gmcp.Room.Info)
   
   
   send("down")

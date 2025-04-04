@@ -36,8 +36,9 @@ function TankDirectionCleanup()
 end
 
 function TankDirectionInit()
+    if not StatTable then printMessage("DEBUG ERROR", "TankDirectionInit() has no StatTable!!", "yellow") return end
     if not StatTable.CharName then printMessage("DEBUG ERROR", "TankDirectionInit() has no charname!!", "yellow") end
-    if not StatTable or not StatTable.CharName then return end
+
     printMessage("DEBUG", "TankDirectionInit() successfully called", "yellow")
     
     -- Initialize the pattern

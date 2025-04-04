@@ -3,7 +3,7 @@
 
 
 -- Trigger Patterns:
--- 0 (regex): ^(\w+) utters the words, 'air hammer'.$
+-- 0 (regex): ^(\w+) utters the words, 'air hammer'\.$
 
 -- Script Code:
 local rc_target = matches[2]

@@ -14,7 +14,7 @@ StaticVars.MaxGroupLabels = 32
 
 -- Update bots as required
 StaticVars.DruidBots = { "Viridi", "FlutterFly", "Yorrick", "Idle"}
-StaticVars.PsiBots = {"Neodox", "Xykith", "Raisteel"}
+StaticVars.PsiBots = {"Neodox", "Xykith", "Raisteel", "Corimax"}
 StaticVars.PrsBots = {"Martyr", "Gobo", "Eiri", "Arby", "Textual", "Logic"}
 
 -- Some defualts
@@ -52,7 +52,8 @@ StaticVars.InjuredPercent = 0.85
 StaticVars.CriticalPercent = 0.6
 
 StaticVars.Junk = {
-["small wooden lockbox"] = "small wooden lockbox",
+--["small wooden lockbox"] = "small wooden lockbox",
+
 ["lab memo"] = "memo",
 ["silver broad sword"] = "silver broad sword",
 ["dark blue sleeves"] = "dark blue sleeves",
@@ -61,6 +62,7 @@ StaticVars.Junk = {
 ["angelic lance"] = "angel lance",
 ["kzinti pickaxe"] = "pickaxe",
 ["kzinti melee claw"] = "kzinti melee claw lordgear",
+["kzinti captain's claw"] = "kzinti captain claw lordgear",
 ["huge bastard sword"] = "bastard sword",
 ["shiv"] = "shiv",
 ["ethereal shield"] = "ethereal shield",
@@ -183,13 +185,12 @@ StaticVars.Junk = {
 ["obsidian bow"] = "obsidian bow smooth arc",
 ["grey robe lined with crystals"] = "crystals grey robe",
 ["silvery bow"] = "silvery bow",
-["watershape"] = "watershape",
 ["pink ice ring"] = "pink ice ring",
 ["wide strip of hard flesh"] = "hard flesh strip lordgear",
 ["bow of light"] = "light bow lordgear",
 ["skeletal sword"] = "skeletal sword",
 ["enormous carved bone staff"] = "bone staff",
-["coral Shield"] = "coral shield lordgear",
+["coral Shield"] = "coral shield lordshield",
 ["Astral Longsword"] = "astral longsword",
 ["Lightspear"] = "lightspear",
 ["glass sphere wrapped in green web"] = "glass sphere green web",
@@ -197,9 +198,6 @@ StaticVars.Junk = {
 ["emerald-encrusted silver shield"] = "emerald shield silver",
 ["sultan's Greaves"] = "coral sultan greaves",
 ["public Approval"] = "public approval",
-["plate of the oblivious defender"] = "armor plate oblivious defender",
-["helm of the oblivious defender"] = "helmet oblivious defender",
-["gleam of fading hope"] = "gleam ember flicker fading hope",
 ["violet psi-blade"] = "psi-blade energy violet",
 ["smoky psi-blade"] = "psi-blade energy smoky",
 --["pure psi-blade"] = "psi-blade energy pure",
@@ -221,12 +219,69 @@ StaticVars.Junk = {
 ["black buckler"] = "black spike buckler skin lordgear",
 ["two-handed broad sword"] = "broad sword",
 ["blade of the Crusaders"] = "crusader blade lordgear",
+["armor of the Purifying Flame"] = "armor red white flame lordgear",
 ["stone demonhide"] = "stone demonhide",
 ["crimson spear"] = "crimson spear",
 ["blue-green demonscale wrap"] = "blue-green demonscale wrap",
 ["Staff of Torment"] = "staff torment",
 ["sturdy scimitar"] = "scimitar",
 ["reinforced buckler"] = "buckler shield",
+["stout branch"] = "branch",
+["unholy sword of the githyanki"] = "sword gith",
+["black cloak"] = "black cloak lordgear",
+["small, knotted whip"] = "knotted whip",
+["Rotting Ring"] = "rotting ring twisted loop vine",
+["sea sabre"] = "sea sabre",
+["sea sword"] = "sea sword",
+["sea saw"] = "sea saw",
+["sea bow"] = "sea bow",
+["amulet of sorrow"] = "amulet sorrow",
+["ethereal sword"] = "ethereal sword",
+["chaos shield"] = "chaos shield",
+["cape of the Merman"] = "cape",
+["signet of Zydarielle"] = "signet zydarielle thin delicate ring obsidian",
+["signet of Kipparielle"] = "signet obsidian ring cats eye gem",
+["signet of Syriohl"] = "gold ring bronze copper leaves",
+["signet of Valyce"] = "signet valyce ring white stone",
+["leather bracer"] = "leather bracer lordgear gorn",
+["red belt"] = "red cotton belt lordgear gorn",
+["pair of white pants"] = "white cotton pants lordgear gorn",
+["white tunic"] = "white cotton tunic lordgear gorn",
+["massive demon blade"] = "massive demon blade",
+["shadow blade"] = "shadow blade",
+["giant wood-shafted axe"]= "axe giant",
+["silvery-colored potion"] = " potion silvery",
+["slaughtering gloves"] = "slaughtering gloves",
+["Tuataur battle tunic"] = "Tuataur battle tunic loose gi",
+["Golden Helmet of Mambrino"] = "Golden Helmet of Mambrino",
+["small demon's amulet"] = "amulet demon",
+["cloud of dancing shards"] = "cloud dancing shards",
+["habiliments of purity"] = "habiliments purity",
+["boots of the Righteous Path"] = "boots Righteous Path",
+["Tul-Sith tattoo"] = "Tul-Sith tattoo",
+["scroll with githyanki writings on it"] = "scroll githyanki",
+["signet of Malafont"] = "signet malafont gold heavy ring",
+["signet of Yorimandil"] = "Yorimandil signet ring black stone",
+["disease-ridden tatters"] = "tatters disease ridden",
+["heavy steel rod called, \"Twin\""] = "steel rod twin",
+["can of Armor-Brite polish"] = "can armor brite polish",
+["sword of the Survivor"] = "sword Survivor",
+["iridescent titanium dagger"]= "dagger iridescent titanium",
+["iridescent titanium sword"]= "sword iridescent titanium",
+["scrap metal club"] = "scrap metal club",
+["large gear"] = "gear",
+
+
+
+
+
+
+
+-- junk ammo
+["standard arrows"] = "standard arrows brace",
+["brace of barbed arrows"] = "arrows brace barbed",
+
+
 
 
 -- situtionally decent items, you may want to comment out if you're new:
@@ -234,6 +289,12 @@ StaticVars.Junk = {
 ["lord's head chalice"] = "chalice head lord",
 ["sword of ascension"] = " sword ascension",
 ["white dragonscale vambrace"] = "white dragonscale vambrace",
+["watershape"] = "watershape",
+["plate of the oblivious defender"] = "armor plate oblivious defender",
+["helm of the oblivious defender"] = "helmet oblivious defender",
+["gleam of fading hope"] = "gleam ember flicker fading hope",
+["ring of the Burning River"] = "ring burning river lordgear",
+["nightsky cuirass"] = "nightsky cuirass chest-plate armored",
 
 }
 

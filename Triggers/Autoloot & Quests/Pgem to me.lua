@@ -3,7 +3,7 @@
 
 
 -- Trigger Patterns:
--- 0 (regex): ^(\w+) gives you a perfect (diamond|emerald|ruby|amethyst|sapphire).$
+-- 0 (regex): ^(\w+) gives you a perfect (diamond|emerald|ruby|amethyst|sapphire)\.$
 
 -- Script Code:
 if IsMDAY() then send("put perfect pgem") end

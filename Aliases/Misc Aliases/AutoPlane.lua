@@ -23,4 +23,4 @@ end
 
 SaveProfileVars()
 
-printMessage("AutoStance", "Set to " .. (GlobalVar.AutoPlane and "ON" or "OFF"))
+printMessage("AutoPlane", "Set to " .. (GlobalVar.AutoPlane and "ON" or "OFF"))

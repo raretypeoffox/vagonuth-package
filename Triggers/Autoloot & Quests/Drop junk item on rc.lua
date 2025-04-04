@@ -4,7 +4,7 @@
 
 
 -- Trigger Patterns:
--- 0 (regex): ^Your (.*) glows blue.$
+-- 0 (regex): ^Your (.*) glows blue\.$
 -- 1 (start of line): You feel an unclean aura lift from you.
 
 -- Script Code:

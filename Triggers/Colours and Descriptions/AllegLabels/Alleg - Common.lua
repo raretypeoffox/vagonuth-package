@@ -37,6 +37,7 @@
 -- 31 (substring): a incantation note
 -- 32 (substring): coarse leather boots
 -- 33 (substring): Faerie script
+-- 34 (substring): shaleskin arm guard
 
 -- Script Code:
 cecho (string.rep (" ",80-tonumber(string.len(line))) .. "<yellow> [ALLEG - Common]")

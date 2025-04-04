@@ -3,7 +3,7 @@
 
 
 -- Trigger Patterns:
--- 0 (regex): ^(\w+) shivers and suffers.$
+-- 0 (regex): ^(\w+) shivers and suffers\.$
 
 -- Script Code:
 -- Stay out of lag if rescueing

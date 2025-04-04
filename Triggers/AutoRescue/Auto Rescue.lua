@@ -17,6 +17,13 @@ local AOE_attacks = {
   "shard storm",
   "cataclysm",
   "vampire touch",
+  "Meteor Swarm",
+  "FLASH",
+  "field of death",
+  "earthbind",
+  "smash",
+  "freeze",
+  "disintegrate",
   
   
   

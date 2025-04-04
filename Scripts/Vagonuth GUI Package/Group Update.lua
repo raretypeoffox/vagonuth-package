@@ -11,11 +11,22 @@ local SmallScreen = true
 
 -- called on update to GMCP_Group()
 function UpdateGroupGUI(GroupieTableIndex, Player)
-  if AR.Status then
-      GroupieTable[GroupieTableIndex].NameLabel:echo("<left>" .. (AR.RescueList[string.lower(Player.name)] and "<b><span style='color: rgb(10,126,242)'>*</span></b>" or "<span style='color: rgb(0,0,0)'>*</span>") .. (Player.leader and "<b><left><span style='color: rgb(255,0,0)'>"..Player.name.."</span></b>" or Player.name) .. "</left>")
-  else
-      GroupieTable[GroupieTableIndex].NameLabel:echo("<left>" .. (AR.RescueList[string.lower(Player.name)] and "<b><span style='color: rgb(125,125,125)'>*</span></b>" or "<span style='color: rgb(0,0,0)'>*</span>") .. (Player.leader and "<b><left><span style='color: rgb(255,0,0)'>"..Player.name.."</span></b>" or Player.name) .. "</left>")
+  local player_name = Player.name
+  
+  if StatTable.CharName == Player.name then
+    player_name = "<left><span style='color: rgb(255,255,255)'>" .. Player.name .. "</span>"
+    if Player.leader then player_name = "<b>" .. player_name .. "</b>" end
+  elseif Player.leader then
+    player_name = "<b><left><span style='color: rgb(255,0,0)'>" .. Player.name .. "</span></b>"
+  
   end
+  
+  if AR.Status then
+      GroupieTable[GroupieTableIndex].NameLabel:echo("<left>" .. (AR.RescueList[string.lower(Player.name)] and "<b><span style='color: rgb(10,126,242)'>*</span></b>" or "<span style='color: rgb(0,0,0)'>*</span>") .. player_name .. "</left>")
+  else
+      GroupieTable[GroupieTableIndex].NameLabel:echo("<left>" .. (AR.RescueList[string.lower(Player.name)] and "<b><span style='color: rgb(125,125,125)'>*</span></b>" or "<span style='color: rgb(0,0,0)'>*</span>") .. player_name  .. "</left>")
+  end
+  
   GroupieTable[GroupieTableIndex].NameLabel:setClickCallback(function() send("r " .. Player.name) end)
   GroupieTable[GroupieTableIndex].InfoLabel:echo(SmallScreen and "<center>" .. Player.class .. "</center>" or "<left>" .. Player.race .. "-" .. Player.class .. "</left>")
   GroupieTable[GroupieTableIndex].InfoLabel:setClickCallback(function() OnMobDeathQueue("monitor " .. Player.name) end)

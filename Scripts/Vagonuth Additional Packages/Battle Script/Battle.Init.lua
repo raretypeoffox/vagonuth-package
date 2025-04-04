@@ -178,7 +178,7 @@ function Battle.AutoCast()
       autocast_stopsurge = (10000 * Battle.GetSpellCostMod("arcane")) or 8000
     elseif (StatTable.Class == "Sorcerer") then
       autocast_stopsurge = (10000 * Battle.GetSpellCostMod("arcane")) or 8000
-    elseif StatTable.Class == "Mindbender" then
+    elseif IsClass({"Mindbender", "Psionicist"}) then
       autocast_stopsurge = (9000 * Battle.GetSpellCostMod("psionic")) or 7000
     end
   elseif (StatTable.Level == 51) then
@@ -190,7 +190,7 @@ function Battle.AutoCast()
   -- Psi stomp protector
   if StatTable.Class == "Psionicist" then
     if not StatTable.KineticChain and Battle.Stomper then
-      if StatTable.Level == 51 then
+      if StatTable.Level == 51 and StatTable.SubLevel >= 101 then
         return "cast rupture", spelllag
       elseif StatTable.Level == 125 then
         return "cast mindwipe", spelllag
@@ -228,7 +228,6 @@ function Battle.AutoCast()
 end
 
 function Battle.AutoHeal()
-  GlobalVar.AutoHealExclusionList = GlobalVar.AutoHealExclusionList or {}
   local shadowed = (gmcp.Room.Info.zone == "{ LORD } Ctibor  Netherworld" and true or false)
 
   --pdebug("Called Battle.AutoHeal()")
@@ -238,10 +237,10 @@ function Battle.AutoHeal()
   local MonitorHPPct = (StatTable.Level == 125) and 0.875 or 0.725 -- at what % (expressed in decimal) should we auto heal at
   MonitorHPPct = math.floor((MonitorHPPct + (math.random() * 0.05)) * 1000 + 0.5) / 1000 -- adds a random number between 0 and 5% so that when multiple people use the package, they don't all start healing at the exact same amonut
   
-  local MinManaPct = (StatTable.Level == 125) and 0.15 or 0.25 -- at what mana level should we stop auto healing at
+  local MinManaPct = (StatTable.Level == 125) and 0.1 or 0.25 -- at what mana level should we stop auto healing at
   local MinMana = (MinManaPct * StatTable.max_mana) or 0
   -- At Lord, save enough mana for create shrine + planeshift
-  --local MinMana = (StatTable.Level == 125) and (2500 * Battle.GetSpellCostMod("divine") + 500 * Battle.GetSpellCostMod("arcane")) or 300
+  local MinMana = (StatTable.Level == 125) and (2500 * Battle.GetSpellCostMod("divine") + 500 * Battle.GetSpellCostMod("arcane")) or 300
   
   --lua print(((2500 * GetSpellCostModRacial(StatTable.Race, "divine") + 500 * GetSpellCostModRacial(StatTable.Race, "arcane"))))
   

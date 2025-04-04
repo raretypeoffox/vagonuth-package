@@ -197,12 +197,14 @@ function AutoLotto.Start()
     return false
   end
   
+  if StatTable.Position == "Sleep" then send("rest") end
+  
   AutoLotto.Status = true
   AutoLotto.LastPlayer = ""
   AutoLotto.Round = 1
   
   send("visible")
-  send("rest")
+  send("sleep")
 
   safeEventHandler("ProcessLotto", "OnLotto", function() AutoLotto.ProcessLotto() end, true)
   
@@ -384,16 +386,26 @@ function AutoLotto.OneItemLeftCheck()
     error("AutoLotto: shouldn't be reached")
     return false
   end
+  
+  local was_asleep = (StatTable.Position == "Sleep" and true or false)
+  if was_asleep then send("rest") end
 
   send("gtell Only one item left! Handing out...")
-  
+  local wait_delay = 0
   for i = 1, AutoLotto.TotalItems do
     AutoLotto.PlayerPick, AutoLotto.Increment = AutoLotto.NextWinnerIncrement(AutoLotto.PlayerPick, AutoLotto.Increment)
-    send("get " .. AutoLotto.LottoItems[index].id[1] .. " " .. AutoLotto.BagID) -- used to be AutoLotto.BagKeyword
-    send("give " .. AutoLotto.LottoItems[index].id[1] .. " " .. AutoLotto.LottoList[AutoLotto.PlayerPick])
+    local next_send = ""
+    
+    next_send = "get " .. AutoLotto.LottoItems[index].id[1] .. " " .. AutoLotto.BagID -- used to be AutoLotto.BagKeyword
+    next_send = next_send .. cs .. "give " .. AutoLotto.LottoItems[index].id[1] .. " " .. AutoLotto.LottoList[AutoLotto.PlayerPick]
     table.remove(AutoLotto.LottoItems[index].id, 1) 
-    send("gtell |BY|" .. AutoLotto.LottoList[AutoLotto.PlayerPick].. "|N| received |BY|" .. AutoLotto.LottoItems[index].name .. "|N|!")
+    next_send = next_send .. cs .. "gtell |BY|" .. AutoLotto.LottoList[AutoLotto.PlayerPick].. "|N| received |BY|" .. AutoLotto.LottoItems[index].name .. "|N|!"
+
+    tempTimer(wait_delay, function() send(next_send) end)
+    wait_delay = wait_delay + 0.1
   end
+  
+  if was_asleep then tempTimer(wait_delay + 1, function() send("sleep"); end) end
 
   return true
 end

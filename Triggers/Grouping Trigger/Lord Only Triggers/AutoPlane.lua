@@ -16,7 +16,6 @@ if plane == "Planar Anchor" then plane = "anchor" end
 if plane == "Kzinti Homeworld" then plane = "kzinti" end
 
 
-
 if GlobalVar.GroupLeader == GMCP_name(multimatches[2].player) and plane == "Thorngate" then
   if GroupSize() == 2 then -- don't following when duo'ing
     beep()

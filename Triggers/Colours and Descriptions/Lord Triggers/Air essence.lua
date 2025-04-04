@@ -1,5 +1,4 @@
 -- Trigger: Air essence 
--- Attribute: isActive
 
 
 -- Trigger Patterns:

@@ -6,7 +6,7 @@
 -- mBgColour: transparent
 
 -- Trigger Patterns:
--- 0 (regex): ^You feel more confidence in your ability with (.*).$
+-- 0 (regex): ^You feel more confidence in your ability with (.*)\.$
 -- 1 (regex): ^Your mastery of (.*) has improved!$
 
 -- Script Code:
