@@ -1,7 +1,3 @@
--- Script: Battle.Init
--- Attribute: isActive
-
--- Script Code:
 Battle = Battle or {}
 Battle.Combat = Battle.Combat or false
 --Battle.Queue = Battle.Queue or {}
@@ -18,6 +14,8 @@ Battle.OnCombatEventHandler = Battle.OnCombatEventHandler or nil
 Battle.EndCombatEventHandler = Battle.EndCombatEventHandler or nil
 Battle.ActEventHandler = Battle.ActEventHandler or nil
 
+Battle.LagAdjustSeq = Battle.LagAdjustSeq or 0
+
 local ACT_WAIT_TIME_SECONDS = 0.5 -- constant, amount of time to wait before calling another loop of Battle.Act
 
 -- Adds compatability for people not running the inventory package
@@ -31,6 +29,15 @@ end
 
 function Battle.GetSkillLagMod()
   if type(_G["GetSkillLagMod"]) == "function" then return GetSkillLagMod() else return 1 end
+end
+
+local function scheduleActTimer(delay)
+  Battle.LagAdjustSeq = Battle.LagAdjustSeq + 1
+  local mySeq = Battle.LagAdjustSeq
+  return tempTimer(delay, function()
+    if mySeq ~= Battle.LagAdjustSeq then return end
+    Battle.Act()
+  end)
 end
 
 -- Note would cause a bug if Battle.NextAct was called while Battle.NextAction was already set, could build a queue system
@@ -69,10 +76,8 @@ function Battle.Act()
   
   -- If we are in more than 1 second of lag, likely an external event. Wait for lag to be over before trying Battle.Act()
   local lag = tonumber(gmcp.Char.Vitals.lag)
-  --local lag = 0 -- server prompt bug
+
   if lag > 1 then
-    --printMessage("Battle.Act()", "In lag, waiting " .. lag .. " seconds before calling again")
-    --Battle.NextActionTimerID = tempTimer(lag, function() Battle.Act() end)
     Battle.NextActionTimerID = tempTimer(0.1, function() Battle.Act() end)
     return
   end
@@ -91,19 +96,35 @@ function Battle.Act()
   -- if Battle.NextAction exists and we're in combat, send action and call Battle.Act again once out of lag
   if Battle.NextAction and Battle.NextActionTime and Battle.Combat then
     send(Battle.NextAction)
-    Battle.NextActionTimerID = tempTimer(Battle.NextActionTime, function() Battle.Act() end)
+    Battle.LagStartTime = os.clock()
+    Battle.LastSpellLag = Battle.NextActionTime
+    Battle.NextActionTimerID = scheduleActTimer(Battle.NextActionTime)
     
   -- If Battle.NextAction doesn't exist but NextActionTime does, then just call Battle.Act in NextActionTime
   elseif Battle.NextAction == nil and Battle.NextActionTime and Battle.Combat then
-    Battle.NextActionTimerID = tempTimer(Battle.NextActionTime, function() Battle.Act() end)
+    Battle.NextActionTimerID = scheduleActTimer(Battle.NextActionTime)
   
   -- Neither Action nor Time exists, call again in ACT_WAIT_TIME_SECONDS seconds until combat is over
   elseif Battle.Combat then
-    Battle.NextActionTimerID = tempTimer(ACT_WAIT_TIME_SECONDS, function() Battle.Act() end)
+    Battle.NextActionTimerID = scheduleActTimer(ACT_WAIT_TIME_SECONDS)
   end
   
   Battle.NextAction = nil
   Battle.NextActionTime = nil
+end
+
+function Battle.OnLagReduce()
+  if not Battle.LagStartTime or not Battle.LastSpellLag then return end
+  local elapsed   = os.clock() - Battle.LagStartTime
+  local actualLag = tonumber(gmcp.Char.Vitals.lag) or (Battle.LastSpellLag * 0.4)
+  local remaining = math.max(0, actualLag - elapsed)
+
+  if Battle.NextActionTimerID then killTimer(Battle.NextActionTimerID) end
+
+  Battle.NextActionTimerID = scheduleActTimer(remaining)
+  
+  Battle.LagStartTime = nil
+  Battle.LastSpellLag = nil
 end
 
 function Battle.KillAct()
@@ -128,7 +149,7 @@ function Battle.OnCombat()
   
   local current_lag = tonumber(gmcp.Char.Vitals.lag)
   if (current_lag > 0) then
-    Battle.NextActionTimerID = tempTimer(current_lag, function() Battle.Act() end)
+    Battle.NextActionTimerID = scheduleActTimer(current_lag)
   else
     Battle.Act()
   end
@@ -321,7 +342,7 @@ function Battle.DoAfterCombat(action, retryCount)
   end
   
   if Battle.Combat or StatTable.Position == "Sleep" or StatTable.Position == "Rest" then
-    OnMobDeathQueue(action)
+    TryQueue(action, 60)
     safeEventHandler("BattleDoAfterCombatQueueID", "OnMobDeath", function() Battle.DoAfterCombatTable[action] = nil end, true)
     return
   end
@@ -375,21 +396,3 @@ Battle.EndCombatEventHandler = registerAnonymousEventHandler("EndCombat", "Battl
 -- 3 mobs died in quick sucession,
 -- aug 2; cast comf fired off 3 times in a row (once after each death)
 
---augment 2;cast comfort Jampton;augment off
-
---Donquixote utters the words, 'brimstone'.
---Donquixote's brimstone strikes Kinetisch with terminal brutality!
---Kinetisch is DEAD!!
-
---Alwyn utters the words, 'meteor swarm'.
---A torrent of meteors streams from Alwyn's hands at his foes!
---Alwyn's Meteor Swarm strikes Leger with terminal brutality!
---augment 2;cast comfort Jampton;augment off
---Leger is DEAD!!
-
---Alwyn's Meteor Swarm strikes Leger with >***ERADICATING***< brutality!
---augment 2;cast comfort Jampton;augment off
---Leger is DEAD!!
-
---Pohi's air Banshee Wail strikes Leger with *ERADICATING* force!
---augment 2;cast comfort Jampton;augment off
