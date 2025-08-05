@@ -36,6 +36,7 @@
 -- "OnCombat" -- called when you enter a fight
 -- "EndCombat" -- called when you end the fight
 -- "OnLevel" -- called when you level
+-- "OnTingle" -- called when you tingle a skill
 
 
 -- To have your function ExampleFunction() called on one of these events, simply add the following

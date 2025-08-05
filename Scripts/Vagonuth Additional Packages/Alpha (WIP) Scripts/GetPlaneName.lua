@@ -47,7 +47,7 @@
     ["{ LORD } Dev     Pits of Blood and Chain"]        = "Noctopia",
     ["{ LORD } Dev     The Unravelling"]              = "Nowhere",
     ["{ LORD } Kariya  Temple of the Council"]        = "Tarterus",
-    ["{ LORD } Mal     Demi-plane of Dread"]          = "DEFAULT",
+    ["{ LORD } Mal     Demi-plane of Dread"]          = "Astral",
     ["{ LORD } Skorn   Soulchar Desolation"]          = "Stone",
     ["{ LORD } Silence Githzerai Keep"]               = "Outland",
     ["{ LORD } Moir    Battle of Avalon"]             = "Shard",

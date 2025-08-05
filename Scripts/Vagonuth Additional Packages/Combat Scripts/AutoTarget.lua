@@ -23,17 +23,13 @@ local TargetExclusions = {
 "Nalfar tests the weight of his weapon, shuffling it from hand to hand.",
 "With a grim smile, Teli idly waits to jump into the fray.",
 
--- Immo Mobs
-"This Githyanki coughs, blood bubbling up through his open mouth.",
-"A dying Githzerai crawls, dragging his useless legs behind him.",
-"Unsure on his feet, this young Githzerai tries to stay out of the way.",
-"A small fiend crawls through the blood.",
-"A former Lord of Midgaardia serves the Fae.",
-"Red particles swirl together in a fierce cluster.",
-"A dark cloud of diminishing hate struggles to keep itself together.",
-"This demon is emaciated with elongated limbs.",
-"A mound of topaz starts to move listlessly.",
-"Back from the dead, this Githzerai stumbles to his feet.",
+-- Immo Mobs (no longer required, seperate check done below)
+
+-- "{51  51} Ginta   Exploration Outpost"
+"A massive shell is lying here.",
+"A new growth of kelp undulates here.",
+"A thick vine of kelp grows here.",
+"An enormous bird with a red tail is flying here.",
 
 -- NPCS
 "Resting on the throne, Bestellen contemplates a white cube in his hand.",
@@ -64,6 +60,8 @@ local TargetExclusions = {
 "Made of solid indigo light, a guardian golem glares at you.",
 "Made of solid violet light, a guardian golem glares at you.",
 
+"Light gleams and sparkles off of the perfect scales of a large dragon.",
+
 "True good can never be caged.",
 
 
@@ -87,6 +85,7 @@ local TargetExclusions = {
 "A small, scrawny boy looks up at you, and then goes back to rearranging stones.",
 "A village child looks up at you, but does not move.",
 "This haggler seems wrapped in the web of old age.",
+"A villager struggles through the waist-high snow.",
 
 -- Conundrum
 "A large mob of angry Midgaardians are looking for the ones responsible!",
@@ -100,9 +99,11 @@ local TargetExclusions = {
 }
 
 AutoTargetCastDelay = AutoTargetCastDelay or 1
+local AutoTargetMinHPPct = AutoTargetMinHPPct or 0.5
 
 function AutoTarget()
   if not GlobalVar.AutoTarget or Battle.Combat or SafeArea() then return end
+  if StatTable.current_health / StatTable.max_health < AutoTargetMinHPPct then return end
   
   for _,mob in pairs(gmcp.Room.Players) do
     if(tonumber(mob.name) ~= nil and ArrayHasSubstring(TargetExclusions, mob.fullname) == false and ArrayHasSubstring(ImmoMobList, mob.fullname) == false) then
@@ -123,7 +124,8 @@ function AutoTarget()
         break
       else
         send(GlobalVar.KillStyle .. " " .. mob.name)
-        if GlobalVar.KillStyle == "ass" or GlobalVar.KillStyle == "bs" then
+        local killstyle = first_word_in_string(GlobalVar.KillStyle)
+        if ArrayHasValue({"ass", "bs", "shadowcast"}, killstyle) then
           tempTimer(0, function() send("surp " .. mob.name) end)
         end
         if GlobalVar.AutoTargetEmote then send("emote is killing " .. mob.name) end

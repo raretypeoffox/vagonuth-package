@@ -17,5 +17,5 @@ AutoCastON()
 
 send("amplify on" .. cs .. "surge off" .. cs .. "quicken off")
 if GlobalVar.Password then
-  send("worship bhyss " .. GlobalVar.Password, false)
+  send("worship shizaga " .. GlobalVar.Password, false)
 end

@@ -7,11 +7,11 @@
 
 -- Script Code:
 local SurgeUpMana = (30000 * Battle.GetSpellCostMod("arcane")) or 30000 
-local surgelevel = tonumber(matches[3]) or matches[3]
+local surgelevel = matches[3]
 
 if (StatTable.Class == "Mage" or StatTable.Class == "Wizard" or StatTable.Class == "Sorcerer") then
   
-  if surgelevel == "off" or surgelevel == 1 then
+  if surgelevel == "off" or surgelevel == "1" then
     GlobalVar.SurgeLevel = 1
     printGameMessage("Surge Request", "Surging turned off")
     
@@ -20,7 +20,7 @@ if (StatTable.Class == "Mage" or StatTable.Class == "Wizard" or StatTable.Class 
     printGameMessage("Surge Request", "Surge level set to " .. GlobalVar.SurgeLevel)
     
   elseif surgelevel == "up" then
-        
+    local manapct = (StatTable.current_mana / StatTable.max_mana)    
     if GlobalVar.SurgeLevel <= 3 and manapct > 0.40 then
       local priorsurgelevel = GlobalVar.SurgeLevel
       if StatTable.current_mana  > SurgeUpMana then
@@ -38,8 +38,9 @@ if (StatTable.Class == "Mage" or StatTable.Class == "Wizard" or StatTable.Class 
     end  
     
   else
-    assert(surgelevel~=nil)
-    GlobalVar.SurgeLevel = surgelevel
+    assert(tonumber(surgelevel)~=nil)
+    if tonumber(surgelevel) > 5 then return end -- TODO: add check for classes that can't surge 5?
+    GlobalVar.SurgeLevel = tonumber(surgelevel)
     printGameMessage("Surge Request", "Surge level set to " .. GlobalVar.SurgeLevel)
   end
 elseif StatTable.Class == "Psionicist" then

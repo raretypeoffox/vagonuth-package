@@ -6,12 +6,10 @@
 -- 0 (regex): ^\*\w+\* tells the group 'pp (.*)'$
 
 -- Script Code:
-if (StatTable.Class == "Mage" or StatTable.Class == "Cleric" or StatTable.Class == "Wizard" or
-    StatTable.Class == "Druid" or StatTable.Class == "Stormlord" or StatTable.Class == "Vizier"
-    --or StatTable.Class == "Priest" -- Prs is out of class but often helpful
-    ) then
-    
-    
+
+if IsClass({"Mage", "Cleric", "Wizard", "Druid", "Stormlord"}) then
+    -- Viz not in list due to often popping portals
+    -- Prs is out of class    
 
   if StatTable.current_mana > 100 then
     send("cast portal " .. matches[2])

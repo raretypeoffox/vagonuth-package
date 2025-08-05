@@ -25,10 +25,15 @@
 -- 19 (regex): ^You legendchat '.*'$
 -- 20 (regex): ^Father Tybmas herochats '.*'$
 -- 21 (regex): ^Father Tybmas lordchats '.*'$
+-- 22 (start of line): [LORD INFO]:
 
 -- Script Code:
 selectString(line,1)
 copy()
 appendBuffer("Channels")
-deselect()
-deleteLine()
+
+
+if not GlobalVar.EchoToMainConsole then
+  deselect()
+  deleteLine()
+end

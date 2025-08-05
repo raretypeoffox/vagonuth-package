@@ -56,7 +56,7 @@ function PreachUpAutoMonitor()
       if is_bodyguard then
         -- Bodyguard logic: find the group member with the lowest max HP
         local maxhp = tonumber(v.maxhp)
-        if maxhp and maxhp < lowest_maxhp then
+        if maxhp and maxhp < lowest_maxhp and not ArrayHasValue(StaticVars.PrsBots, GMCP_name(v.name)) then
           lowest_maxhp = maxhp
           monitor_name = v.name
         end
@@ -254,7 +254,14 @@ function GetSpellsAtPreachup()
     if not StatTable.DeathShroud then table.insert(commands, "cast 'death shroud'") end
     if MyLevel >= 51 and not StatTable.SummonNecrit then table.insert(commands, "cast 'summon necrit'") end
   elseif MyClass == "Black Circle Initiate" and MyLevel >= 51 then
-    if not StatTable.Nightcloak then table.insert(commands, "cast nightcloak") end
+    if not StatTable.Nightcloak then table.insert(commands, "cast 'nightcloak'") end
+    
+    if MyLevel == 125 and not StatTable.KahbyssInsight then 
+      table.insert(commands, "cast 'kahbyss insight'") 
+    elseif not StatTable.SenseWeakness and (MyLevel == 125 or MySubLevel >= 250) then 
+      table.insert(commands, "cast 'sense weakness'") 
+    end
+    
   elseif MyClass == "Bladedancer" and MyLevel == 125 then
     if not BldDancing() then
       table.insert(commands, "stance unending")
@@ -286,7 +293,7 @@ function GetSpellsAtPreachup()
     table.insert(commands, "sn") 
     table.insert(commands, "alertness")  
   end
-  
+    
   if StatTable.Race == "Drider" then table.insert(commands, "racial imbue") end
   
   
@@ -295,7 +302,7 @@ function GetSpellsAtPreachup()
   if MyLevel == 125 and IsNotClass({"Soldier", "Berserker", "Shadowfist", "Black Circle Initiate"}) and StatTable.current_mana > 2000 and Grouped() then table.insert(commands, "cast 'detect haven'") end
 
   
-  if StatTable.max_moves < 750 and StatTable.SubLevel > 7 and not StatTable.Endurance and IsNotClass({"Berserker"}) then table.insert(commands, "cast endurance") end
+  if StatTable.max_moves < 1000 and StatTable.SubLevel > 7 and not StatTable.Endurance and IsNotClass({"Berserker"}) then table.insert(commands, "cast endurance") end
   
   if CustomPreachup[StatTable.CharName] then table.insert(commands, CustomPreachup[StatTable.CharName]) end
   
@@ -308,7 +315,7 @@ function GetSpellsAtPreachup()
   
   -- sneak
   if MyLevel >= 51 and IsNotClass({"Paladin", "Priest", "Berserker", "Wizard", "Bodyguard", "Stormlord"}) then
-    if MyClass == "Sorcerer" and (MyLevel == 125 or MySubLevel >= 5) then
+    if IsClass({"Sorcerer", "Black Circle Initiate"}) and (MyLevel == 125 or MySubLevel >= 5) then
       table.insert(commands, "shadow form")
     else
       table.insert(commands, "sneak")

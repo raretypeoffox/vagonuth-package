@@ -39,7 +39,7 @@ elseif cmd == "mon" then
     end
   elseif tonumber(args) and tonumber(args) > 0 and tonumber(args) < 100 then
     AR.MontorRescueHPpct = (tonumber(args) / 100)
-    printMessage("AutoRescue", "Monitor Rescue HP % target set to " .. AR.MontorRescueHPpct .. "%")
+    printMessage("AutoRescue", "Monitor Rescue HP % target set to " .. (AR.MontorRescueHPpct * 100) .. "%")
   end
     
 elseif cmd == "small" then

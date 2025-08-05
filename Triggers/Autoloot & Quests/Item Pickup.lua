@@ -3,8 +3,8 @@
 
 
 -- Trigger Patterns:
--- 0 (regex): ^You get (an|a|the|\d+)? ?(?<item>.*) from corpse of (?<mobname>.*)\.$
--- 1 (regex): ^You make (an|a|the|\d+)? ?(?<item>.*) from the corpse!$
+-- 0 (regex): ^You get (an |a |the |\d+ )?(?<item>.*) from corpse of (?<mobname>.*)\.$
+-- 1 (regex): ^You make (an |a |the |\d+ )?(?<item>.*) from the corpse!$
 
 -- Script Code:
 --You get a kzinti pickaxe from corpse of A kzinti miner.
@@ -15,7 +15,6 @@ local AllegExceptionList = {
   ["baleflame"] = true,
   ["massive slate-grey sledgehammer"] = true,
 }
-  
 
 if matches.mobname == StatTable.CharName then return end
 

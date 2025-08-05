@@ -35,10 +35,11 @@ local syntax_tbl = {
   {"",nil},
   
   {"<white>Misc.", nil},
+  {"gui", "additional gui options"},
   {"showstats", "show all your xp / gains starts since you launched the mudlet session"},
   {"charstars <character>", "reports one of your characters stats"},
   {"repcharstats <char> <chat>", "reports character's HP/MP stats to chat channel"},
-  {"iaw <equip", "insures and wears a piece of equipment"},
+  {"iaw <equip>", "insures and wears a piece of equipment"},
   {"autotrack", "different tracking options, see autotrack for details"},
   {"dropjunk", "drops all junk in inventory"},
   

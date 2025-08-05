@@ -1,3 +1,7 @@
+-- Script: Battle.Init
+-- Attribute: isActive
+
+-- Script Code:
 Battle = Battle or {}
 Battle.Combat = Battle.Combat or false
 --Battle.Queue = Battle.Queue or {}
@@ -230,10 +234,14 @@ function Battle.AutoCast()
           AutoCastSetSpell(GlobalVar.AutoCasterSingle)
         end
       end        
-      
 
       -- Add a surge level if current mana exceeds 4x the stop surge mana (eg 8000 mana * 4 = 32000 mana)
       if surge_level == 2 and tonumber(gmcp.Char.Status.mana) > (autocast_stopsurge * 4) then
+        surge_level = surge_level + 1
+      end
+      
+      -- If signature spell, add a surge level (experimental)
+      if surge_level < 5 and GlobalVar.AutoCaster == "signature spell" then
         surge_level = surge_level + 1
       end
       

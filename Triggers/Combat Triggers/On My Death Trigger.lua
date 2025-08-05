@@ -59,8 +59,6 @@ if (StatTable.Level < 125) then
   send("east")
   if Grouped() then  
     safeTempTimer("AskForHealsOnDeath", 3, function() AskBotsForHeals() end)
-  else
-    send("cast eulo")
   end
   tempTimer(30, function() send("sleep") end)
   

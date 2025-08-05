@@ -19,7 +19,7 @@ StaticVars.PrsBots = {"Martyr", "Gobo", "Eiri", "Arby", "Textual", "Logic"}
 
 -- Some defualts
 StaticVars.DarkRaces = {"Drow", "Duergar", "Gargoyle", "Kobold", "Deep Gnome", "Demonseed", "Troll"}
-StaticVars.FrenzyClasses = {"Berserker", "Archer", "Assassin", "Fusilier", "Soldier", "Psionicist", "Rogue", "Black Cirle Initiate"}
+StaticVars.FrenzyClasses = {"Berserker", "Archer", "Assassin", "Fusilier", "Soldier", "Psionicist", "Rogue", "Black Circle Initiate"}
 StaticVars.GameMsgsChatOutput = "GameChat"
 
 -- Priest Config: for soul cleanse trigger, set your characters bag name (eg loot) and default held (eg lodestone) for the trigger to work properly
@@ -38,6 +38,10 @@ StaticVars.Default_Pantheon = {
 
 StaticVars.PantheonNumber = 4 -- number of mobs to wait for before activating grim harvest or unholy rampage
 
+StaticVars.Default_HighMagick = {
+  ["Aeryn"] = "brittle",
+}  -- Make sure to use normal capitalization, eg, first letter capitalized, remainder lower case
+
 
 -- Edit to the name you want pgem's passed to on MDAY
 StaticVars.PGemHolder = "Halgod"
@@ -52,7 +56,7 @@ StaticVars.InjuredPercent = 0.85
 StaticVars.CriticalPercent = 0.6
 
 StaticVars.Junk = {
---["small wooden lockbox"] = "small wooden lockbox",
+["small wooden lockbox"] = "small wooden lockbox", -- add a double dash (--) infront of the line to collect lockboxes
 
 ["lab memo"] = "memo",
 ["silver broad sword"] = "silver broad sword",
@@ -248,6 +252,8 @@ StaticVars.Junk = {
 ["pair of white pants"] = "white cotton pants lordgear gorn",
 ["white tunic"] = "white cotton tunic lordgear gorn",
 ["massive demon blade"] = "massive demon blade",
+["spiked leather belt"] = "leather belt spiked lordgear",
+["sphere of burning souls"] = "sphere burning soul",
 ["shadow blade"] = "shadow blade",
 ["giant wood-shafted axe"]= "axe giant",
 ["silvery-colored potion"] = " potion silvery",
@@ -270,9 +276,16 @@ StaticVars.Junk = {
 ["iridescent titanium sword"]= "sword iridescent titanium",
 ["scrap metal club"] = "scrap metal club",
 ["large gear"] = "gear",
+["suit of reptilian battle armor"] = "reptilian battle armor suit",
+["long, glinting knife"] = "long glinting knife blade",
+["volcano-glass whip"] = "whip glass lordgear",
 
-
-
+["ghostly ring"] = "ghost ring",
+["heavy granite sword"] = "sword heavy granite",
+["jeweled bottle"] = "jeweled bottle",
+["flask of dragonsbrew"] = "dragonsbrew flask",
+["glittering white pearl"] = "white pearl",
+["deep green emerald"] = "green emerald",
 
 
 
@@ -280,7 +293,6 @@ StaticVars.Junk = {
 -- junk ammo
 ["standard arrows"] = "standard arrows brace",
 ["brace of barbed arrows"] = "arrows brace barbed",
-
 
 
 

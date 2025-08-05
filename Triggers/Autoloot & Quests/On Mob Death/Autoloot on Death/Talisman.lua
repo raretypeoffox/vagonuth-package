@@ -1,5 +1,4 @@
 -- Trigger: Talisman 
--- Attribute: isActive
 
 
 -- Trigger Patterns:

@@ -1,7 +1,8 @@
 -- Alias: Reset Profile
 -- Attribute: isActive
 
--- Pattern: ^reset$
+-- Pattern: ^resetprofile$
 
 -- Script Code:
 resetProfile()
+LoadLayout()

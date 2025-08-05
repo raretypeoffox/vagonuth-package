@@ -52,7 +52,7 @@ function BattleTracker.TryRescue(mobcount, rescuetarget)
     -- for easier runs, uncomment below
     if (StatTable.Level <= 51 and mobcount == 1 and BattleTracker.MobHealth == "looks pretty hurt." and rescuetarget ~= my_char_name and rescuehp_pct < 1 and GlobalVar.GroupMates[rescuetarget].class ~= "Pal") then TryAction("r " .. rescuetarget,2) end
     -- Trial run on self healing paladins
-    if ((StatTable.current_health / StatTable.max_health) < 0.6 and (StatTable.current_mana / StatTable.max_mana) > 0.5) then TryCast("cast div",10) end
+    if StatTable.Level == 125 and ((StatTable.current_health / StatTable.max_health) < 0.6 and (StatTable.current_mana / StatTable.max_mana) > 0.5) then TryCast("cast div",10) end
   end 
 end
 

@@ -10,6 +10,8 @@
 Layout = Layout or {}
 Layout.Labels = Layout.Labels or {}
 Layout.DefaultFontSize = GlobalVar.FontSize or 8
+Layout.AffectLabelHeight = 20
+Layout.BottomPanelHeight = 140
 
 styleSheetOff = {
   borderColor = 'yellow',
@@ -57,6 +59,54 @@ local function createLabel(name, x, y, width, height, fgColor, message, containe
   return label
 end
 
+local function createSplitLabel(name, x, y, width, height, container)
+  -- Create container for the split label
+  local splitContainer = Geyser.Container:new({
+    name = name .. "Container",
+    x = x,
+    y = y,
+    width = width,
+    height = height
+}, container)
+
+-- Create left half label with exact same styling as your other labels
+local leftLabel = Geyser.Label:new({
+    name = name .. "Left",
+    x = "0%",
+    y = "0%",
+    width = "48%", -- Slightly smaller to account for spacing
+    height = "100%",
+    fgColor = "white",
+    message = [[<left>Water</left>]]
+}, splitContainer)
+
+-- Create right half label
+local rightLabel = Geyser.Label:new({
+    name = name .. "Right",
+    x = "52%", -- Slightly more offset to ensure clear separation
+    y = "0%",
+    width = "48%",
+    height = "100%",
+    fgColor = "white",
+    message = [[<left>Fly</left>]]
+}, splitContainer)
+
+-- Apply initial styles using the same styleSheet as your other labels
+leftLabel:setStyleSheet(generateStyleSheet(styleSheetOn))
+rightLabel:setStyleSheet(generateStyleSheet(styleSheetOn))
+
+-- Set font sizes to match other labels
+leftLabel:setFontSize(Layout.DefaultFontSize)
+rightLabel:setFontSize(Layout.DefaultFontSize)
+
+return {
+    container = splitContainer,
+    left = leftLabel,
+    right = rightLabel
+}
+end
+
+
 
 function ReportRun()
   if (StatTable.Level < 125) then DamageCounter.Report() end
@@ -95,9 +145,9 @@ function AutoSkillToggle()
   AutoSkillSetGUI()
 end
 
-function AutoBashToggle()
-  GlobalVar.AutoBash = not GlobalVar.AutoBash
-  AutoBashSetGUI()
+function AutoTargetToggle()
+  GlobalVar.AutoTarget = not GlobalVar.AutoTarget
+  AutoTargetSetGUI()
 end
 
 function AutoCastToggle()
@@ -129,14 +179,14 @@ function AutoSkillSetGUI()
   AutoSkillLabel:setStyleSheet(generateStyleSheet(styleSheet))
 end
 
-function AutoBashSetGUI()
+function AutoTargetSetGUI()
   if not GlobalVar.GUI then return end
   
-  local statusMessage = GlobalVar.AutoBash and "ON" or "OFF"
-  local styleSheet = GlobalVar.AutoBash and styleSheetOn or styleSheetOff
+  local statusMessage = GlobalVar.AutoTarget and "ON" or "OFF"
+  local styleSheet = GlobalVar.AutoTarget and styleSheetOn or styleSheetOff
 
-  AutoBashLabel:echo("<center>AutoBash " .. statusMessage .. "</center>")
-  AutoBashLabel:setStyleSheet(generateStyleSheet(styleSheet))
+  AutoTargetLabel:echo("<center>AutoTarget " .. statusMessage .. "</center>")
+  AutoTargetLabel:setStyleSheet(generateStyleSheet(styleSheet))
 
 end
 
@@ -151,8 +201,10 @@ function AutoCastSetGUI()
 
 end
 
+-- Modify your layout loading function to handle both styles
 function LoadLayout()
   local mainWidth, mainHeight = getMainWindowSize()--setup. Lets get the screen space we have available and chop it up
+  local BottomPanelHeight = Layout.BottomPanelHeight
   local LeftPanelPercent = 20 -- left side panel should be what % of available space
   local LeftPanelWidth = tonumber(mainWidth)*(LeftPanelPercent/100)  
   local RightPanelPercent = 25 -- right panel should be 25% of the available space
@@ -285,7 +337,7 @@ function LoadLayout()
   lowerWindow("left_container_background")
   leftlowerPanelHeader = createLabel("leftlowerPanelHeader", "1%", "0", "95%", "18", "orange", [[<center><b>Affects</b></center>]], left_container_bottom, nil, headerStyleSheet)
 
-  local affectLabelHeight = 15
+  local affectLabelHeight = Layout.AffectLabelHeight
   local rowSpacing = affectLabelHeight + 3
   local rowStartY = 26
 
@@ -295,7 +347,7 @@ function LoadLayout()
   InvisLabel = createLabel("InvisLabel", "65%", rowStartY, "28%", affectLabelHeight, "white", [[<left>Invis</left>]], left_container_bottom, nil, styleSheetOn)
   SancLabel = createLabel("SancLabel", "3%", rowStartY + rowSpacing, "28%", affectLabelHeight, "white", [[<left>Sanctuary</left>]], left_container_bottom, nil, styleSheetOn)
   FrenzyLabel = createLabel("FrenzyLabel", "34%", rowStartY + rowSpacing, "28%", affectLabelHeight, "white", [[<left>Frenzy</left>]], left_container_bottom, nil, styleSheetOn)
-  WaterLabel = createLabel("WaterLabel", "65%", rowStartY + rowSpacing, "28%", affectLabelHeight, "white", [[<left>WaterBreath</left>]], left_container_bottom, nil, styleSheetOn)
+  WaterFlyLabel = createSplitLabel("WaterFly", "65%", rowStartY + rowSpacing, "28%", affectLabelHeight, left_container_bottom)
   FortLabel = createLabel("FortLabel", "3%", rowStartY + 2 * rowSpacing, "28%", affectLabelHeight, "white", [[<left>Fortitudes</left>]], left_container_bottom, nil, styleSheetOn)
   FociLabel = createLabel("FociLabel", "34%", rowStartY + 2 * rowSpacing, "28%", affectLabelHeight, "white", [[<left>Foci</left>]], left_container_bottom, nil, styleSheetOn)
   AwenLabel = createLabel("AwenLabel", "65%", rowStartY + 2 * rowSpacing, "28%", affectLabelHeight, "white", [[<left>Awen</left>]], left_container_bottom, nil, styleSheetOn)
@@ -311,7 +363,7 @@ function LoadLayout()
   local labelIndex = 1  -- Counter for label names
   rowStartY = rowStartY + 5 * rowSpacing
   
-  for row = 1, 4 do
+  for row = 1, 5 do
     for column = 1, 3 do
       local x, y
       if column == 1 then
@@ -360,23 +412,38 @@ function LoadLayout()
     }, parent)
   end
   
-  PublicChannels = createChatWindow("Channels", "1%", "2%", "99%", "23%", right_container)
-  GroupChat = createChatWindow("GroupChat", "1%", "27%", "99%", "23%", right_container)
-  BuddyChat = createChatWindow("BuddyChat", "1%", "52%", "99%", "23%", right_container)
-  GameChat = createChatWindow("GameChat", "1%", "77%", "99%", "23%", right_container)
 
-  ChannelLabel = createLabel("ChannelLabel", "0", "0", "100%", "2%", "orange", [[<center><b>Public Channels</b></center>]], right_container, nil, headerStyleSheet)
-  GroupLabel = createLabel("GroupLabel", "0", "25%", "100%", "2%", "orange", [[<center><b>Group Chat</b></center>]], right_container, nil, headerStyleSheet)
-  BuddyLabel = createLabel("BuddyLabel", "0", "50%", "100%", "2%", "orange", [[<center><b>Buddy Chat</b></center>]], right_container, nil, headerStyleSheet)
-  GameLabel = createLabel("GameLabel", "0", "75%", "100%", "2%", "orange", [[<center><b>Game Messages</b></center>]], right_container, nil, headerStyleSheet)
+  local function createTraditionalChat(right_container)
+    PublicChannels = createChatWindow("Channels", "1%", "2%", "99%", "23%", right_container)
+    GroupChat = createChatWindow("GroupChat", "1%", "27%", "99%", "23%", right_container)
+    BuddyChat = createChatWindow("BuddyChat", "1%", "52%", "99%", "23%", right_container)
+    GameChat = createChatWindow("GameChat", "1%", "77%", "99%", "23%", right_container)
+  
+    ChannelLabel = createLabel("ChannelLabel", "0", "0", "100%", "2%", "orange", [[<center><b>Public Channels</b></center>]], right_container, nil, headerStyleSheet)
+    GroupLabel = createLabel("GroupLabel", "0", "25%", "100%", "2%", "orange", [[<center><b>Group Chat</b></center>]], right_container, nil, headerStyleSheet)
+    BuddyLabel = createLabel("BuddyLabel", "0", "50%", "100%", "2%", "orange", [[<center><b>Buddy Chat</b></center>]], right_container, nil, headerStyleSheet)
+    GameLabel = createLabel("GameLabel", "0", "75%", "100%", "2%", "orange", [[<center><b>Game Messages</b></center>]], right_container, nil, headerStyleSheet)
+  end
+  
+  createTraditionalChat(right_container)
+
+  PublicChannels:show()
+  GroupChat:show()
+  BuddyChat:show()
+  
+  ChannelLabel:show()
+  GroupLabel:show()
+  BuddyLabel:show()
     
   --BOTTOM STAT PANEL
-  setBorderBottom(129)
+  setBorderBottom(BottomPanelHeight)
   
   Bottom_container = Geyser.Container:new({
     name = "Bottom_container",
-    x = LeftPanelWidth -10, y= mainHeight-129,                    -- makes the container start where left panel ends
-    width = CentrePanelWidth, height="135",      -- filling it up until the end
+    x = LeftPanelWidth-12, 
+    y= mainHeight-BottomPanelHeight,
+    width = "100%", 
+    height=BottomPanelHeight,      -- filling it up until the end
   })
   
   FillLabel = createLabel("FillLabel", "0", "0", "100%", "95%", "black", "<center></center>", Bottom_container, nil, {borderColor = "yellow", backgroundColor = "black", borderRadius = 3})
@@ -430,13 +497,13 @@ function LoadLayout()
   end
 
   AutoKillLabel = Geyser.Label:new({
-      name = "AutoKillLabel",
-      x = CentrePanelSize*15, y = "0",
-      width = CentrePanelSize*2, height = "25",
-      fgColor = "white",
-      message = [[<center>AutoKill OFF</center>]],
-      nestable = true
-  }, CharPanel)
+    name = "AutoKillLabel",
+    x = CentrePanelSize*15, y = "0",
+    width = CentrePanelSize*2, height = "25",
+    fgColor = "white",
+    message = "<center>AutoKill - " .. (GlobalVar.KillStyle and GlobalVar.KillStyle or "OFF") .. "</center>",
+    nestable = true
+}, CharPanel)
   
   AutoKillLabel:setStyleSheet(generateStyleSheet(styleSheetOn))
   -- Add other AutoKillLabel configurations here...
@@ -456,12 +523,14 @@ function LoadLayout()
   AutoSkillLabel:setClickCallback("AutoSkillToggle")
   
 
-  -- AutoBashLabel creation
-  local autoBashStyleSheet = GlobalVar.AutoBash and styleSheetOn or styleSheetOff
-  local autoBashMessage = GlobalVar.AutoBash and "<center>AutoBash ON</center>" or "<center>AutoBash OFF</center>"
+  -- AutoTargetLabel creation
+  local autoTargetStyleSheet = GlobalVar.AutoTarget and styleSheetOn or styleSheetOff
+  local autoTargetMessage = GlobalVar.AutoTarget and "<center>AutoTarget ON</center>" or "<center>AutoTarget OFF</center>"
 
-  AutoBashLabel = createLabel("AutoBashLabel", CentrePanelSize*15, 25, CentrePanelSize*2, 25, "white", autoBashMessage, CharPanel, nil, autoBashStyleSheet)
-  AutoBashLabel:setClickCallback("AutoBashToggle")
+  AutoTargetLabel = createLabel("AutoTargetLabel", CentrePanelSize*15, 25, CentrePanelSize*2, 25, "white", autoTargetMessage, CharPanel, nil, autoTargetStyleSheet)
+  AutoTargetLabel:setClickCallback("AutoTargetToggle")
+  
+
 
   -- AutoCastLabel creation
   local autoCastStyleSheet = GlobalVar.AutoCast and styleSheetOn or styleSheetOff
@@ -582,3 +651,6 @@ Layout.FirstLoad = Layout.FirstLoad or false
 if GlobalVar.GUI and not Layout.FirstLoad then LoadLayout(); Layout.FirstLoad = true end
 
 --registerAnonymousEventHandler("sysWindowResizeEvent", LoadLayout)
+
+
+

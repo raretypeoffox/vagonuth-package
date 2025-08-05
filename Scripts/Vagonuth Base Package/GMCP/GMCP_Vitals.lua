@@ -23,7 +23,9 @@ local AffectsLookup = {
   ["Spell: move hidden"] = "MoveHidden",
   ["Spell: invis"] = "Invis",
   ["Spell: improved invis"] = "Invis",
+  ["Spell: mass invis"] = "Invis",
   ["Spell: water breathing"] = "WaterBreathing",
+  ["Spell: fly"] = "Fly",
   ["Spell: sanctuary"] = "Sanctuary",
   ["Spell: iron monk"] = "Sanctuary",
   ["Spell: fortitudes"] = "Fortitude",
@@ -51,7 +53,7 @@ local AffectsLookup = {
   ["Spell: protection evil"] = "ProtectionEvil",
   
   ["Exhausted Spell: solitude"] = "SolitudeTimer",
-   ["Exhausted Spell: intervention"] = "InterventionExhaust",
+  ["Exhausted Spell: intervention"] = "InterventionExhaust",
   
   -- sld
   ["Exhausted Spell: square"] = "SquareExhaust",
@@ -63,6 +65,21 @@ local AffectsLookup = {
   ["Spell: phalanx"] = "StancePhalanx",
   ["Spell: column"] = "StanceColumn",
   
+  -- mag
+  ["Spell: attenuation"] = "Attenuation",
+  ["Spell: attenuation aura"] = "AttenuationAura", 
+  ["Spell: planar modulation"] = "PlanarModulation",
+  ["Spell: planar modulation aura"] = "PlanarModulationAura", 
+  ["Spell: arcana harvesting"] = "ArcanaHarvesting",
+  ["Spell: arcana harvesting aura"] = "ArcanaHarvestingAura",
+  ["Spell: antimagic feedback"] = "AntimagicFeedback",
+  ["Spell: antimagic feedback aura"] = "AntimagicFeedbackAura",  
+  ["Spell: brittle"] = "Brittle",
+  ["Spell: brittle aura"] = "BrittleAura",
+  ["Spell: sympathetic resonance"] = "SympatheticResonance",
+  ["Spell: sympathetic resonance aura"] = "SympatheticResonanceAura", 
+  
+  -- wzd  
   ["Spell: ether link"] = "EtherLink",
   ["Spell: ether warp"] = "EtherWarp",
   --["Spell: ether crash"] = "EtherCrash",
@@ -70,10 +87,12 @@ local AffectsLookup = {
   ["Exhausted Spell: ether warp"] = "EtherWarpExhaust",
   --["Exhausted Spell: ether crash"] = "EtherCrashExhaust",
   
+  -- stm
   ["Spell: spring rain"] = "SpringRain",
-  ["Spell: dark embrace"] = "DarkEmbrace",
   ["Spell: blizzard"] = "Blizzard",
   ["Spell: gale stratum"] = "GaleStratum",
+  
+  -- exhausts
   ["Exhausted Spell: water breathing"] = "WaterBreathingExhaust",
   ["Exhausted Spell: giant strength"] = "GiantStrengthExhaust",
   ["Exhausted Spell: fireball"] = "FireballExhaust",
@@ -85,6 +104,13 @@ local AffectsLookup = {
   ["Exhausted Spell: cure serious"] = "CureSeriousExhaust",
   ["Exhausted Spell: cure critical"] = "CureCriticalExhaust",
   
+  -- bci
+  ["Spell: nightcloak"] = "Nightcloak",
+  ["Spell: sense weakness"] = "SenseWeakness",
+  ["Exhausted Spell: sense weakness"] = "SenseWeaknessExhaust",
+  ["Spell: kahbyss insight"] = "KahbyssInsight",
+  ["Exhausted Spell: kahbyss insight"] = "KahbyssInsightExhaust",
+  ["Exhausted Spell: quickcast"] = "QuickcastExhaust",
   
   -- bladedancer
   ["Spell: bladedance"] = "BladedanceTimer",
@@ -108,15 +134,22 @@ local AffectsLookup = {
   ["Spell: discordia"] = "Discordia",
   ["Spell: discordia aura"] = "DiscordiaAura",
   ["Spell: divine adjutant"] = "DivineAdjutant",
+  ["Spell: divine adjutant aura"] = "DivineAdjutantAura",
   ["Spell: divine grace"] = "DivineGrace",
   ["Spell: glorious conquest"] = "GloriousConquest",
   ["Spell: grim harvest"] = "GrimHarvest",
   ["Spell: grim harvest aura"] = "GrimHarvestAura",
   ["Spell: hallowed nimbus"] = "HallowedNimbus",
+  ["Spell: hallowed nimbus aura"] = "HallowedNimbusAura",
   ["Spell: protective vigil"] = "ProtectiveVigil",
+  ["Spell: aura protection"] = "ProtectiveVigilAura",
   ["Spell: sylvan benediction"] = "SylvanBenediction",
+  ["Spell: sylvan benediction aura"] = "SylvanBenedictionAura",
   ["Spell: unholy rampage"] = "UnholyRampage",  
-  ["Spell: unholy rampage aura"] = "UnholyRampageAura", 
+  ["Spell: rampage aura"] = "UnholyRampageAura", -- check name, rampage aura?
+  
+  -- Druid
+  ["Spell: sidereal reflections"] = "SiderealReflections",
     
   ["Spell: saving grace"] = "SavingGrace",
   ["Spell: death shroud"] = "DeathShroud",
@@ -141,6 +174,8 @@ local AffectsLookup = {
   ["Spell: rally"] = "Rally",
   ["Spell: tear"] = "Tear",
   ["Exhausted Spell: tear"] = "TearExhaust",
+  
+  -- pal
   ["Spell: fervor"] = "Fervor",
   ["Spell: prayer"] = "Prayer",
   ["Spell: holy zeal"] = "HolyZeal",
@@ -149,6 +184,8 @@ local AffectsLookup = {
   ["Spell: shared boon"] = "SharedBoon",
   ["Spell: valorous boon"] = "ValorousBoon",
   ["Spell: final boon"] = "FinalBoon",
+  -- todo add other pal auras
+  ["Spell: malice aura"] = "MaliceAura",
   
   -- monk / shf
   ["Spell: bear stance"] = "BearStance",
@@ -204,13 +241,47 @@ local AffectsLookup = {
   ["Racial innervate fatigue"] = "RacialInnervateFatigue",
   ["Spell: racial galvanize"] = "RacialGalvanize",
   ["Racial galvanize fatigue"] = "RacialGalvanizeFatigue",
-  ["Racial breath fatigue"] = "RacialBreathFatigue",
   ["Spell: racial frenzy"] = "RacialFrenzy",
   ["Racial frenzy fatigue"] = "RacialFrenzyFatigue",
-  ["Racial roar fatigue"] = "RacialRoarFatigue",
   ["Racial expunge fatigue"] = "RacialExpungeFatigue",
+  ["Racial breath fatigue"] = "RacialBreathFatigue",
+  ["Racial roar fatigue"] = "RacialRoarFatigue",
   ["Spell: racial devour"] = "RacialDevour",
   ["Racial devour fatigue"] = "RacialDevourFatigue",
+  ["Spell: racial heraldry"] = "RacialHeraldry",
+  ["Racial heraldry fatigue"] = "RacialHeraldryFatigue",
+  
+  
+    --bkd
+  ["Spell: racial prowl"] = "RacialProwl",
+  ["Racial prowl fatigue"] = "RacialProwlFatigue",
+  ["Racial terror fatigue"] = "RacialTerrorFatigue",
+  
+  --bud
+  ["Racial waterblast fatigue"] = "RacialWaterblastFatigue",
+  ["Racial engulf fatigue"] = "RacialEngulfFatigue",
+  
+  --grd
+  ["Spell: racial secrete"] = "RacialSecrete",
+  ["Racial secrete fatigue"] = "RacialSecreteFatigue",
+  ["Spell: racial constrict"] = "RacialConstrict",
+  ["Racial constrict fatigue"] = "RacialConstrictFatigue",
+  ["Racial miasma fatigue"] = "RacialMiasmaFatigue",
+  
+  --whd
+  ["Spell: racial icemirror"] = "RacialIcemirror",
+  ["Racial icemirror fatigue"] = "RacialIcemirrorFatigue",
+  ["Spell: racial frigid"] = "RacialFrigid",
+  ["Racial frigid fatigue"] = "RacialFrigidFatigue",
+  
+  -- check racial corpse eating?
+  
+  -- misc
+  ["Spell: dark embrace"] = "DarkEmbrace",
+  ["Spell: commune"] = "Commune",
+
+  
+  
   
   -- debuffs
   ["Spell: calm"] = "Calm",
@@ -246,7 +317,7 @@ function GMCP_Vitals()
     StatTable.Level, StatTable.SubLevel = tonumber(gmcp.Char.Status.level), tonumber(gmcp.Char.Status.sublevel)
     StatTable.HitRoll, StatTable.DamRoll = tonumber(gmcp.Char.Status.hitroll) or 0, tonumber(gmcp.Char.Status.damroll) or 0
     StatTable.ArmorClass = tonumber(gmcp.Char.Status.ac) or 0
-    StatTable.Items, StatTable.MaxItems = tonumber(gmcp.Char.Vitals.items), tonumber(string.sub(gmcp.Char.Vitals.string, -3))
+    StatTable.Items, StatTable.MaxItems = tonumber(gmcp.Char.Vitals.items) or 1, tonumber(string.sub(gmcp.Char.Vitals.string, -3)) or 1
     StatTable.Weight, StatTable.MaxWeight = tonumber(gmcp.Char.Vitals.wgt), tonumber(gmcp.Char.Vitals.maxwgt)
     StatTable.Alignment = tonumber(gmcp.Char.Status.alignment) or 0
     StatTable.Position = gmcp.Char.Vitals.position

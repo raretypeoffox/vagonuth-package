@@ -8,8 +8,15 @@
 -- 2 (regex): ^\*\w+\* tells the group '.*'$
 
 -- Script Code:
-selectString(line,1)
+selectString(line, 1)
 copy()
+
 appendBuffer("GroupChat")
-deselect()
-deleteLine()
+
+appendBuffer("console")
+
+
+if not GlobalVar.EchoToMainConsole then
+  deselect()
+  deleteLine()
+end

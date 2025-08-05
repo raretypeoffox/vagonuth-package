@@ -10,7 +10,9 @@
 selectString(line,1)
 copy()
 appendBuffer("BuddyChat")
-deselect()
-deleteLine()
---line = string.gsub(line, " buddychats", ":")
---cecho("BuddyChat", matches[2] .. ": " .. matches[3])
+
+
+if not GlobalVar.EchoToMainConsole then
+  deselect()
+  deleteLine()
+end

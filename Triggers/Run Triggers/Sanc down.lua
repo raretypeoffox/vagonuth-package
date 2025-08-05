@@ -40,7 +40,7 @@ function SancSelfAtLord()
   safeEventHandler("SancSelfAtLordEventID", "OnQuit", "KillSancSelfAtLordTimer", true)
     if not StatTable.Sanctuary then
       if IsMDAY() then send("gtell not sanced!"); return end
-      
+      if SafeArea() then return end
       if StatTable.Class == "Monk" or StatTable.Class == "Shadowfist" then
         CastAfterCombat("'iron monk'")
       else

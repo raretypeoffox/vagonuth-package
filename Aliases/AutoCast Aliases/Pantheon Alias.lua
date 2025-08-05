@@ -20,6 +20,12 @@ elseif args == "clear" then
   printMessage("Pantheon", "Spell cleared")
   GlobalVar.PantheonSpell = nil
 else
-  GlobalVar.PantheonSpell = args
-  printMessage("Pantheon", "Pantheon spell set to: <yellow>" .. GlobalVar.PantheonSpell)
+  local setspell = setPantheonSpell(args)
+  if setspell then
+    GlobalVar.PantheonSpell = setspell
+    printMessage("Pantheon", "Pantheon spell set to: <yellow>" .. GlobalVar.PantheonSpell)
+  else
+    printMessage("Pantheon", "Unknown spell name")
+  end
+
 end

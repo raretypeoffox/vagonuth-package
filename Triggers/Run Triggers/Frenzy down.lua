@@ -8,7 +8,7 @@
 -- Script Code:
 if GlobalVar.AutoFrenzy == false or SafeArea() then return end
 
-if AR.Status and not StatTable.Class == "Berserker" then return end
+if StatTable.Class ~= "Berserker" and AR.Status and TableSize(AR.RescueList) > 0 then return end
 
 if not (gmcp.Char.Status.area_name == "{ ALL  } AVATAR  Sanctum") then
   if StatTable.Class == "Berserker" and not GlobalVar.Silent then

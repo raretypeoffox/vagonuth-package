@@ -1,10 +1,10 @@
 -- Alias: AutoTarget
 -- Attribute: isActive
 
--- Pattern: ^(?i)autotarget ?(on|off)?
+-- Pattern: ^(?i)(autotarget|at) ?(on|off)?$
 
 -- Script Code:
-local args = (matches[2] or ""):lower()
+local args = (matches[3] or ""):lower()
 
 if args == "on" then
     GlobalVar.AutoTarget = true
@@ -17,7 +17,7 @@ else
     {"","Casters: autocasts your spell on first mob with 1 second delay"},
     {"","Casters: if killstyle not set to kill, will do killstyle instead"}
   })
-  return
 end
 
 printMessage("AutoTarget", "Set to " .. (GlobalVar.AutoTarget and "ON" or "OFF"))
+if (GlobalVar.GUI) then AutoTargetSetGUI() end

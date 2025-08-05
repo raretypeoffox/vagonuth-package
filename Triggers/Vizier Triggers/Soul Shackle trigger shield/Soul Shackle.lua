@@ -15,7 +15,7 @@ local HP_Percent = StatTable.current_health / StatTable.max_health
 
 local function CastSoulShackle_HPCheck(healthThreshold)
     if HP_Percent > healthThreshold and (StatTable.InjuredCount > 1 or StatTable.CriticalInjured > 0) then
-        TryCast("cast 'soul shackle'" .. getCommandSeparator() .. "stance soul",2)
+        TryCast("stance soul" .. getCommandSeparator() .. "cast 'soul shackle'", 2)
         GlobalVar.VizSoulShackle = true
     end
 end

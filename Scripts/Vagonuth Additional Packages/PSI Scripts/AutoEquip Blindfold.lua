@@ -8,6 +8,7 @@
 
 AutoEquipBlindfold = AutoEquipBlindfold or {}
 
+AutoEquipBlindfold.Enabled = AutoEquipBlindfold.Enabled or true
 AutoEquipBlindfold.Init = AutoEquipBlindfold.Init or false
 AutoEquipBlindfold.Count = AutoEquipBlindfold.Count or 0
 AutoEquipBlindfold.isEquipped = AutoEquipBlindfold.isEquipped or false
@@ -54,6 +55,9 @@ function AutoEquipBlindfold.Remove()
 end
 
 function AutoEquipBlindfold.Check()
+  if not AutoEquipBlindfold.Enabled then return end
+  if StatTable.Class ~= "Psionicist" then return end -- only for Psi's by defualt
+
   if not StatTable.MindsEye then
     if AutoEquipBlindfold.Init then
       safeKillTrigger("AutoEquipBlindfold.Wear")

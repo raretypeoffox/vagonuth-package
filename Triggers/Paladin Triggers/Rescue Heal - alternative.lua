@@ -13,6 +13,8 @@
 -- Con:     works less reliably when using skills with lag as it goes off of the look command
 
 if not GlobalVar.PaladinRescue then return end
+if not (StatTable.InjuredCount > 1 or StatTable.CriticalInjured > 0) then return end -- for rescue heals, not relavent for other types of oaths
+if (StatTable.current_health / StatTable.max_health) < 0.50 then return end
 
 target = string.lower(gmcp.Char.Status.opponent_name)
 

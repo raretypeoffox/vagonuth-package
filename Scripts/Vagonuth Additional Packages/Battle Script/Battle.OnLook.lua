@@ -39,7 +39,7 @@ function Battle.OnLook()
         -- Find the start/end of the pattern: "is here, fighting"
         i, j = string.find(s,"is here, fighting")
         
-        if IsClass({"Psionicist", "Mindbender"}) then Battle.DeceptCheck(s, Players[k].name) end
+        if IsClass({"Psionicist", "Mindbender", "Black Circle Initiate"}) then Battle.DeceptCheck(s, Players[k].name) end
         if IsClass({"Mindbender"}) then Battle.PsyphonCheck(Players[k]) end
         if IsClass({"Sorcerer"}) then Battle.ImmoCheck(s, Players[k].name) end
         if StatTable.Race == "Dragon" then Battle.DevourCheck(s, Players[k].name) end
@@ -90,6 +90,7 @@ ImmoMobList = {
   "A mound of topaz starts to move listlessly.",
   "Back from the dead, this Githzerai stumbles to his feet.",
   "The shadows reveal a Githyanki hidden behind the outhouse.",
+  "A mole meekly makes its way through the shifting earth.",
   
   "This youth from this hamlet is terrified of you... but honor-bound to attack.",
   "This young female Trog is startled at your presence!",
@@ -99,6 +100,7 @@ ImmoMobList = {
   -- Conundrum
   "A united ent and giant army is fighting to preserve Midgaardia!",
   "Jacklyn leads refugees from Hospice refugee camp elsewhere.",
+  
   
   
   
@@ -145,7 +147,7 @@ end
 
 
 local DeceptArea = {
-  "{ LORD } Pliny Nothing",
+  --"{ LORD } Pliny Nothing",
   
 }
 
@@ -185,7 +187,7 @@ local DeceptList = {
 
 
   --earth elemental descriptions: TODO determine which are telepaths, territorial and huge
-  ["{ LORD } Crowe   World of Stone "] = {
+  ["{ LORD } Crowe   World of Stone"] = {
     "This large Earth Elemental looks enraged.",
     "This earth elemental takes great joy in dispatching intruders.",
     "This Earth Elemental is so huge you can only surmise that it is royalty.",
@@ -217,10 +219,26 @@ local DeceptList = {
     "a Dark Fae beastmaster is in the middle of a scattershot attempt.",
     "a viper troop is out cold.",
     },
+  ["{ LORD } Pliny Nothing"] =
+    {
+    "A cultist drifting to nowhere in particular is here.",
+    "A cultist enjoying the relaxing void is here.",
+    "A cultist enjoying the soothing void is here.",
+    "A cultist with a shiny gem embedded in her forehead is here.",
+    "A new devotee, believing firmly in the tranquility of nothing is here.",
+    "A nihilistic cultist drifts in vast expanse of nothing.",
+    "A nihilistic cultist sits entranced, staring into a gap in the void.",
+    "A senior cultist floats here, a gemstone embedded in his forehead.",
+    "A well-versed cultist spreading her Mantra is here.",
+    "A young devotee seeks out the next convert while weaving through the void.",
+    "Full of rage and discontent, the elder cultist is here.",
+    "The nihilistic cultist is soothed by the expanse of nothingness."
+    },
 
 }
 
 function Battle.DeceptCheck(mobname, mobnum)
+  if GlobalVar.AutoTarget then return end
   if Battle.Combat then return end -- return if already in combat
   local zone = gmcp.Room.Info.zone
   if ArrayHasValue(DeceptArea, zone) or (DeceptList[zone] and ArrayHasValue(DeceptList[zone], mobname)) then

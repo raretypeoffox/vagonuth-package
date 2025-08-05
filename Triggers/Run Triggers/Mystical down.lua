@@ -6,7 +6,8 @@
 -- 0 (start of line): Your mystical barrier shimmers and is gone.
 
 -- Script Code:
-
-if StatTable.Fortitude then
-  OnMobDeathQueue("cast mystical")
+if (GlobalVar.GroupLeader ~= StatTable.CharName and GlobalVar.GroupLeader ~= "") then
+  if StatTable.Fortitude then
+    OnMobDeathQueue("cast mystical")
+  end
 end

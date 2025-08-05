@@ -39,7 +39,7 @@ function TankDirectionInit()
     if not StatTable then printMessage("DEBUG ERROR", "TankDirectionInit() has no StatTable!!", "yellow") return end
     if not StatTable.CharName then printMessage("DEBUG ERROR", "TankDirectionInit() has no charname!!", "yellow") end
 
-    printMessage("DEBUG", "TankDirectionInit() successfully called", "yellow")
+    
     
     -- Initialize the pattern
     local pattern = "^\\*(?<leader>\\w+)\\* tells the group '(?i)" .. string.sub(StatTable.CharName, 1, 3)
@@ -51,6 +51,8 @@ function TankDirectionInit()
     end
 
     pattern = pattern .. "\\,? (?<dir>north|west|east|south|up|down|n|w|e|s|u|d)'$"
+
+    printMessage("DEBUG", "TankDirectionInit() successfully called with pattern: " .. pattern, "yellow")
 
     safeTempTrigger("TankDirectionID", pattern, TankDirection, "regex")
     safeEventHandler("TankDirectionCleanupID", "sysDisconnectionEvent", TankDirectionCleanup, true)

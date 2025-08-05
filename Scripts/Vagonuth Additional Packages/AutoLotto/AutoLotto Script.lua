@@ -12,6 +12,8 @@ AutoLotto.LottoList = AutoLotto.LottoList or {}
 AutoLotto.PlayerPick = AutoLotto.PlayerPick or 1
 AutoLotto.Increment = AutoLotto.Increment or 1
 
+AutoLotto.CurrentItemName = AutoLotto.CurrentItemName or nil -- for can't carry weight trigger
+
 AutoLotto.BagKeyword = AutoLotto.BagKeyword or nil
 AutoLotto.BagID = AutoLotto.BagID or nil
 AutoLotto.LastPlayer = AutoLotto.LastPlayer or ""
@@ -68,6 +70,7 @@ function AutoLotto.CleanUp()
   AutoLotto.LastPlayer = ""
   AutoLotto.Round = 1
   AutoLotto.PlayerPick = nil
+  AutoLotto.CurrentItemName = nil
   safeKillTrigger("AutoLottoInvisNote")
   safeKillEventHandler("ProcessLotto")
   --safeKillTrigger("NextWinnerPick")
@@ -344,6 +347,8 @@ function AutoLotto.GiveItemToPlayer(item_index, player_name)
   
   local was_asleep = (StatTable.Position == "Sleep" and true or false)
   if was_asleep then send("rest") end
+  
+  AutoLotto.CurrentItemName = item.name -- for can't carry weight trigger
   
   send("get " .. item.id[1] .. " " .. AutoLotto.BagID) -- used to be AutoLotto.BagKeyword
   send("give " .. item.id[1] .. " " .. player_name)

@@ -15,6 +15,7 @@ end
 
 if (StatTable.Class == "Sorcerer" and not SafeArea() and StatTable.Foci and StatTable.Foci > 15 and StatTable.Level > 39 and not StatTable.TaintedExhaust and (StatTable.current_mana / StatTable.max_mana) > 0.25 and Grouped()) then
   if GroupSize() <= 3 and StatTable.Level == 125 then return end
+  if StatTable.HandOfGod and GroupLeader() then return end
   send("cast tainted")
   if (StatTable.DeathShroud == nil) then    
       OnMobDeathQueue("cast 'death shroud'")

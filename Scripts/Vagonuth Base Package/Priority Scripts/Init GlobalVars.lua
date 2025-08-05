@@ -72,7 +72,6 @@ function Init.GlobalVars()
   GlobalVar.AutoHealTarget = nil
   GlobalVar.AutoHealLowest =  true
   GlobalVar.InterventionTarget = nil
-  GlobalVar.Pantheon = nil
   GlobalVar.AutoHealExclusionList = GlobalVar.AutoHealExclusionList or {}
 
     -- Vizier Variables
@@ -106,7 +105,7 @@ function Init.GlobalVars()
   if Layout then
       AutoKillSetGUI()
       AutoSkillSetGUI()
-      AutoBashSetGUI()
+      AutoTargetSetGUI()
       AutoCastSetGUI()
   end
   
@@ -159,7 +158,7 @@ function Init.Profile(timeout)
     if (GlobalVar.GUI) then
       AutoKillSetGUI()
       AutoSkillSetGUI()
-      AutoBashSetGUI()
+      AutoTargetSetGUI()
       AutoCastSetGUI()
     end
      
@@ -278,7 +277,7 @@ function Init.Char(MyClass, MyRace, MyLevel, MySubLevel)
     end
 
     -- Killstyle
-    if MyClass == "Rogue" or MyClass == "Black Circle Initiate"  then
+    if MyClass == "Rogue"  then
       if MyLevel == 125 then GlobalVar.KillStyle = "ass"
       elseif MySubLevel > 101 then GlobalVar.KillStyle = "bs"
       elseif MyLevel >= 50 then GlobalVar.KillStyle = "murder"
@@ -302,8 +301,19 @@ function Init.Char(MyClass, MyRace, MyLevel, MySubLevel)
         end
       end
     elseif MyClass == "Black Circle Initiate" then
-      if MyLevel == 125 then GlobalVar.KillStyle = "ass"
-      elseif MySubLevel > 101 then GlobalVar.KillStyle = "bs"
+      if MyLevel == 51 then
+        if StatTable.SubLevel < 101 then
+          GlobalVar.KillStyle = "surp"
+        else
+          GlobalVar.KillStyle = "shadowcast fear"
+        end
+      elseif MyLevel == 125 then
+        GlobalVar.KillStyle = "ass"
+        GlobalVar.SkillStyle = "vs eye"
+        GlobalVar.AutoSkill = true
+        GlobalVar.AutoTarget = true
+      elseif MyLevel < 51 then
+        GlobalVar.KillStyle = "surp"
       end
     elseif MyClass == "Priest" and MyLevel > 51 then
       GlobalVar.KillStyle = false
@@ -374,50 +384,50 @@ tempTimer(0, function() Init.ProfileOnLogin() end)
 
 
 
--- Saved Variables
+
+local PROFILE_VARIABLES = {
+  {"BuddyChatName", nil},
+  {"BuddyChatColour", nil},
+  {"Silent", false},
+  {"Password", nil},
+  {"AutoStance", false},
+  {"AutoPlane", false},
+  {"FontSize", nil},
+  {"Debug", false},
+  {"Verbose", false},
+  {"AutoFrenzy", true},
+  {"PaladinRescue", true},
+  {"DownloadMessage", nil}
+}
+
 function SaveProfileVars()
   GlobalVar.Saved = {}
-  GlobalVar.Saved.BuddyChatName = GlobalVar.BuddyChatName or nil
-  GlobalVar.Saved.BuddyChatColour = GlobalVar.BuddyChatColour or nil
-  GlobalVar.Saved.Silent = GlobalVar.Silent or false
-  GlobalVar.Saved.Password = GlobalVar.Password or nil
-  GlobalVar.Saved.AutoStance = GlobalVar.AutoStance or false
-  GlobalVar.Saved.AutoPlane = GlobalVar.AutoPlane or false
-  GlobalVar.Saved.Silent = GlobalVar.Silent or false
-  GlobalVar.Saved.FontSize = GlobalVar.FontSize or nil
-  GlobalVar.Saved.Debug = GlobalVar.Debug or false
-  GlobalVar.Saved.Verbose = GlobalVar.Verbose or false
-  GlobalVar.Saved.AutoFrenzy = GlobalVar.AutoFrenzy or true
-  GlobalVar.Saved.PaladinRescue = GlobalVar.PaladinRescue or true
-  GlobalVar.Saved.DownloadMessage = GlobalVar.DownloadMessage or nil
+  
+  -- Save all variables defined in PROFILE_VARIABLES
+  for _, pair in ipairs(PROFILE_VARIABLES) do
+    local varName, defaultValue = pair[1], pair[2]
+    GlobalVar.Saved[varName] = GlobalVar[varName] or defaultValue
+  end
+  
   local location = getMudletHomeDir() .. "/ProfileVariables.lua"
   table.save(location, GlobalVar.Saved)
-
 end
 
 function LoadProfileVars()
   local location = getMudletHomeDir() .. "/ProfileVariables.lua"
   GlobalVar.Saved = GlobalVar.Saved or {}
+  
   if io.exists(location) then
     table.load(location, GlobalVar.Saved)
   else
     tempTimer(10, function() Init.FirstTime() end)
     SaveProfileVars()
   end
-  GlobalVar.Saved = GlobalVar.Saved or {}
-  GlobalVar.BuddyChatName = GlobalVar.Saved.BuddyChatName or nil
-  GlobalVar.BuddyChatColour = GlobalVar.Saved.BuddyChatColour or nil
-  GlobalVar.Silent = GlobalVar.Saved.Silent or false
-  GlobalVar.Password = GlobalVar.Saved.Password or nil
-  GlobalVar.AutoStance = GlobalVar.Saved.AutoStance or false
-  GlobalVar.AutoPlane = GlobalVar.Saved.AutoPlane or false
-  GlobalVar.Silent = GlobalVar.Saved.Silent or false
-  GlobalVar.FontSize = GlobalVar.Saved.FontSize or nil
-  GlobalVar.Debug = GlobalVar.Saved.Debug or false
-  GlobalVar.Verbose = GlobalVar.Saved.Verbose or false
-  GlobalVar.AutoFrenzy = GlobalVar.Saved.AutoFrenzy or true
-  GlobalVar.PaladinRescue =  GlobalVar.Saved.PaladinRescue or true
-  GlobalVar.DownloadMessage = GlobalVar.Saved.DownloadMessage or nil
+  
+  for _, pair in ipairs(PROFILE_VARIABLES) do
+    local varName, defaultValue = pair[1], pair[2]
+    GlobalVar[varName] = GlobalVar.Saved[varName] or defaultValue
+  end
 end
 
 LoadProfileVars()
@@ -440,7 +450,7 @@ function OnMudletDisconnect()
   if (GlobalVar.GUI) then
     AutoKillSetGUI()
     AutoSkillSetGUI()
-    AutoBashSetGUI()
+    AutoTargetSetGUI()
     AutoCastSetGUI()
   end
 end

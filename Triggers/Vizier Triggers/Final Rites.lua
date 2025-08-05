@@ -1,5 +1,4 @@
 -- Trigger: Final Rites 
--- Attribute: isActive
 
 
 -- Trigger Patterns:

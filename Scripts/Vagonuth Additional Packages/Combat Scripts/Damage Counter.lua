@@ -71,117 +71,125 @@ function DamageCounter.Reset()
   DamageCounter.Players = {}
 end
 
-function DamageCounter.Report()
-  local player_sort = {}
-  local player_brands = {}
-  local rank = 1
-  
-  for n,m in pairs(DamageCounter.Players) do
-    -- Begin sorting with terms included
-    --local avgdmg = math.floor(m.dmg / m.rounds+.05)
-    --local dmgwithterms = m.dmg + (avgdmg * m.terminal)
-    -- end sorting with terms included
-    --table.insert(player_sort, {dmgwithterms, n}) 
-    table.insert(player_sort, {m.dmg, n})
-    if m.brandishes > 0 then table.insert(player_brands, {m.brandishes, n}) end 
+-- Helper: parse and build a rank filter function
+local function make_filter(op, n)
+  if not op then         -- default: top 6
+    op, n = "<", 7
+  elseif type(op) == "number" then
+    op, n = "<", op  -- allow Report(5) to mean "< 5"
   end
-  
-  table.sort(player_sort,rcompare)
-  
-  
-  for i,n in ipairs(player_sort) do 
-    v = DamageCounter.Players[n[2]]
-    k = n[2]
-  --for k,v in pairs(DamageCounter.Players) do
-    if (v.rounds >= 1) then 
-      local avgdmg = math.floor((v.dmg - v.bashdmg) / (v.rounds - v.bashrounds) +.05)
-      --local dmgwithterms = v.dmg + (avgdmg * v.terminal)
-      local msg = rank .. ". |BW|" .. k .. "|N|: " .. format_int(math.floor(v.dmg+.05)) .. " (avg: |BY|" .. DamageCounter.numtodmg(avgdmg) .. "|N| / max: |BY|" .. DamageCounter.numtodmg(v.highest) .."|N|)"
-      msg = string.gsub(msg,"=","-") -- server doesn't allow '=', replace with '-'
-      if (rank < 7) then send("gtell " .. msg,false) end
-      rank = rank + 1
-      
-      --print(k,avgdmg,DamageCounter.numtodmg(avgdmg))
+
+  local valid = { ["<"]=1, ["<="]=1, ["=="]=1, ["="]=1,
+                  [">"]=1, [">="]=1, ["~="]=1 }
+  assert(valid[op], "Invalid op: use one of <,<=,==,~=,>,>=")
+
+  return function(rank)
+    if     op == "<"  then return rank <  n
+    elseif op == "<=" then return rank <= n
+    elseif op == ">"  then return rank >  n
+    elseif op == ">=" then return rank >= n
+    elseif op == "==" or op == "=" then return rank == n
+    elseif op == "~=" then return rank ~= n
     end
-  end
-  
-  if #player_brands > 0 then 
-    table.sort(player_brands,rcompare)
-    
-    local brand_msg = "gtell |BW|Top Brandishers: |N|"
-    
-    for i,n in ipairs(player_brands) do
-      if i > 8 then break end
-      
-      brand_msg = brand_msg .. n[2] .. " (|BY|" .. n[1] .. "|N|), "
-      
-    end 
-    
-    brand_msg = brand_msg:sub(1,-3)
-    send(brand_msg)
   end
 end
 
-function DamageCounter.ReportEcho()
+-- Helper: return a list of {damage, name} sorted descending
+local function sorted_players()
+  local t = {}
+  for name, st in pairs(DamageCounter.Players) do
+    table.insert(t, { st.dmg, name })
+  end
+  table.sort(t, rcompare)
+  return t
+end
+
+-- Helper: return a list of {brandishes, name} sorted descending
+local function sorted_brands()
+  local t = {}
+  for name, st in pairs(DamageCounter.Players) do
+    if st.brandishes > 0 then
+      table.insert(t, { st.brandishes, name })
+    end
+  end
+  table.sort(t, rcompare)
+  return t
+end
+
+-- Helper: format a line for send (with color codes)
+local function format_send_line(rank, name, v)
+  local avg = math.floor((v.dmg - v.bashdmg) / (v.rounds - v.bashrounds) + .05)
+  local dmg = format_int(math.floor(v.dmg + .05))
+  local msg = string.format(
+    "%d. |BW|%s|N|: %s (avg: |BY|%s|N| / max: |BY|%s|N|)",
+    rank,
+    name,
+    dmg,
+    DamageCounter.numtodmg(avg),
+    DamageCounter.numtodmg(v.highest)
+  )
+  return msg:gsub("=", "-")
+end
+
+-- Helper: format a line for echo (plain text with tabs)
+local function format_echo_line(rank, name, v)
+  local avg = math.floor((v.dmg - v.bashdmg) / (v.rounds - v.bashrounds) + .05)
+  local dmg = format_int(math.floor(v.dmg + .05))
+  -- adjust tabs based on name length and two-digit ranks
+  local name_thresh = (rank >= 10) and 3 or 4
+  local tab1 = (#name > name_thresh) and "\t" or "\t\t"
+  local tab2 = (#dmg < 8)          and "\t\t" or "\t"
+  return string.format(
+    "%d. %s%s%s%s(avg: %s / highest: %s / terms: %d)",
+    rank,
+    name,
+    tab1,
+    dmg,
+    tab2,
+    DamageCounter.numtodmg(avg),
+    DamageCounter.numtodmg(v.highest),
+    v.terminal
+  )
+end
+
+-- Helper: announce top brandishers via a callback
+local function announce_brands(brands, announce_fn)
+  if #brands == 0 then return end
+  local msg = "Top Brandishers: "
+  for i, e in ipairs(brands) do
+    if i > 8 then break end
+    msg = msg .. e[2] .. " (" .. e[1] .. "), "
+  end
+  msg = msg:sub(1, -3)
+  announce_fn(msg)
+end
+
+-- Main gtell-based report
+function DamageCounter.Report(op, n)
+  local show = make_filter(op, n)
+  for rank, entry in ipairs(sorted_players()) do
+    local name = entry[2]
+    local v    = DamageCounter.Players[name]
+    if v.rounds >= 1 and show(rank) then
+      send("gtell " .. format_send_line(rank, name, v), false)
+    end
+  end
+  announce_brands(sorted_brands(), function(m) send("gtell "..m, false) end)
+end
+
+-- Echo (print) version
+function DamageCounter.ReportEcho(op, n)
   print("Damage Report:")
   print("------------------")
-  
-  local player_sort = {}
-  local player_brands = {}
-  local rank = 1
-  
-  for n,m in pairs(DamageCounter.Players) do
-    -- Begin sorting with terms included
-    --local avgdmg = math.floor(m.dmg / m.rounds+.05)
-    --local dmgwithterms = m.dmg + (avgdmg * m.terminal)
-    -- end sorting with terms included
-    --table.insert(player_sort, {dmgwithterms, n}) 
-    table.insert(player_sort, {m.dmg, n}) 
-    if m.brandishes > 0 then table.insert(player_brands, {m.brandishes, n}) end
-  end
-  
-  table.sort(player_sort,rcompare)
-  
-  
-  for i,n in ipairs(player_sort) do 
-    v = DamageCounter.Players[n[2]]
-    k = n[2]
-  --for k,v in pairs(DamageCounter.Players) do
-    if (v.rounds >= 1) then 
-      local avgdmg = math.floor((v.dmg - v.bashdmg) / (v.rounds - v.bashrounds) +.05)
-      --local dmgwithterms = v.dmg + (avgdmg * v.terminal)
-      local msg = rank .. ". " .. k
-      if (string.len(k)>4) then
-        msg = msg .. "\t"
-      else
-        msg = msg .. "\t\t"
-      end
-      -- \t\t section needs to consider if number is two digits (if so, should be <7)
-      msg = msg .. format_int(math.floor(v.dmg+.05)) .. ((string.len(format_int(math.floor(v.dmg+.05))) < 8 and "\t\t" or "\t")) .. "(avg: " .. DamageCounter.numtodmg(avgdmg) .. " / highest: " .. DamageCounter.numtodmg(v.highest) .. " / terms: " .. v.terminal .. ")"
-      --msg = msg .. format_int(math.floor(dmgwithterms+.05)) .. "\t(avg: " .. DamageCounter.numtodmg(avgdmg) .. " / highest: " .. DamageCounter.numtodmg(v.highest) .. " / terminals: " .. v.terminal .. ")"
-      
-      print(msg)
-      rank = rank + 1
-      
-      --print(k,avgdmg,DamageCounter.numtodmg(avgdmg))
-      end
+  local show = make_filter(op, n)
+  for rank, entry in ipairs(sorted_players()) do
+    local name = entry[2]
+    local v    = DamageCounter.Players[name]
+    if v.rounds >= 1 and show(rank) then
+      print(format_echo_line(rank, name, v))
     end
-    
-   if #player_brands > 0 then 
-    table.sort(player_brands,rcompare)
-    
-    local brand_msg = "Top Brandishers: "
-    
-    for i,n in ipairs(player_brands) do
-      if i > 8 then break end
-      
-      brand_msg = brand_msg .. n[2] .. " (" .. n[1] .. "), "
-      
-    end 
-    
-    brand_msg = brand_msg:sub(1,-3)
-    print(brand_msg)
   end
+  announce_brands(sorted_brands(), print)
 end
 
 function DamageCounter.dmgtonum(dmgdesc)
@@ -321,7 +329,7 @@ function DamageCounter.dmgtonum(dmgdesc)
   if (dmgdesc == ">>***PORCINE***<<") then return 65000 end
   if (dmgdesc == ">>>***PORCINE***<<<") then return 70000 end
   if (dmgdesc == ">>>>***PORCINE***<<<<") then return 75000 end
-  if (dmgdesc == "divine") then return 80000 end
+  if (dmgdesc == "Divine") then return 80000 end
   if (dmgdesc == "daunting") then return 100000 end
   return -1
 end
@@ -466,7 +474,7 @@ function DamageCounter.numtodmg(dmgamt)
   elseif (dmgamt <= 65000) then return ">>***PORCINE***<<" 
   elseif (dmgamt <= 70000) then return ">>>***PORCINE***<<<" 
   elseif (dmgamt <= 75000) then return ">>>>***PORCINE***<<<<" 
-  elseif (dmgamt <= 80000) then return "divine" 
+  elseif (dmgamt <= 80000) then return "Divine" 
   elseif (dmgamt <= 100000) then return "daunting" 
   else return "BIG NUMBER!!" end
 end

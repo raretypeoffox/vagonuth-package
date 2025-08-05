@@ -35,6 +35,9 @@ function MobDeath.UpdateCommandCheck()
   MobDeath.CommandCheck["cast 'gravitas'"] = StatTable.Gravitas or 0
   MobDeath.CommandCheck["cast 'hive mind'"] = StatTable.HiveMind or 0
   
+  MobDeath.CommandCheck["cast 'sense weakness'"] = StatTable.SenseWeakness or 0
+  MobDeath.CommandCheck["cast 'kahbyss insight'"] = StatTable.KahbyssInsight or 0
+  
   -- Paladin
   if (GlobalVar.PrayerName ~= "") then
     MobDeath.CommandCheck["cast prayer '" .. GlobalVar.PrayerName .. "'"] = StatTable.Prayer or 0

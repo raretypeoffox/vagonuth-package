@@ -3,7 +3,7 @@
 
 
 -- Trigger Patterns:
--- 0 (regex): ^(recall set|recall|sanctum|look|quaff|drink|sneak|movehidden|inno|salute|tell pilgrim reward|kneel|die|save)$
+-- 0 (regex): ^(recall set|recall|sanctum|look|quaff|drink|sneak|movehidden|inno|tell pilgrim reward|kneel|die|save)$
 
 -- Script Code:
 send(matches[2])

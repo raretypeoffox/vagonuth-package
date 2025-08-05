@@ -216,7 +216,7 @@ function AutoFletch.SpecialAmmoInit(ammo, tier)
 
 end
 
-function AutoFletch.SpecialAmmoCleanUp()
+function AutoFletch.SpecialAmmoReset()
     AutoFletch.Status = false
     AutoFletch.NextSpecialFletch = nil
     AutoFletch.AntiSpam = 0
@@ -240,6 +240,10 @@ function AutoFletch.SpecialAmmoCleanUp()
     
     
     send("remove fletch")
+end
+
+function AutoFletch.SpecialAmmoCleanUp() -- depreciated
+  AutoFletch.SpecialAmmoReset()
 end
 
 function AutoFletch.OutOfMana(char_name, ammo, tier)

@@ -82,18 +82,33 @@
 -- minor fix: wrt "ar auto" at hero, bld's and small warrior types (< 2500hp) are now auto added to AR
 -- minor fix: repvault and repthief now report # of complete sets you have
 
-
+-- v1.3.0
+-- rewrite of black circle initiate (lord 75+ still needs work)
+-- added highmagic
+-- added sidereal
+-- added additional racials and auras to layout (incl racial heraldry)
+-- added GUI echomain, see "gui"
+-- added fail counter
+-- added affect info to powerstate show (legend)
+-- update to Battle.Act - caster's now cast faster after a lag proc
+-- minor update: changes autobash button to autotarget, disabled autobash cmd for now
+-- minor update: AutoLotto - added "can't carry" message
+-- bug fix: gt surge up was not working correctly.
 
 
 
 -- Long-term Todo
+-- BCI: Lord 75+ (swap bwtn mindstrike & ass)
+-- add max surge check for surging with classes that can't surge 5
+-- autoskill scatter doesn't work because its not 5 seconds of lag but rather the next round that it resets
 -- customizable variables
 -- keep custom variables outside of main package so not overwritten when updated
 -- have a script create a script outside of main package on first installation
 -- python script to convert between .lua and .xml
 -- make scan while move client side alias
+-- mob death queue, use expandalias?
 -- inprogress: make list of mobs with weapon for decept / shatter (mnk)
 
 -- BUGS:
--- 
+-- IsMDAY() is built throughout VagoPack but is a function from inventory pack (fix or make inv pack mandatory?)
 
