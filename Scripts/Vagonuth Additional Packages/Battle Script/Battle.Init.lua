@@ -379,7 +379,7 @@ function Battle.StormlordCombat()
   -- Sort all Players into enemies and friendlies
   for PlayerName,_ in pairs(Players) do
     -- Mobs have numbered "names" vs PCs who have real names, can eliminate PCs by removing non-numbered names
-    if tonumber(Players[PlayerName].name) then
+    if tonumber(Players[PlayerName].name and not Players[PlayerName].fullname:find("%(CHARMED%)")) then
       MobCount = MobCount + 1
     end
   end

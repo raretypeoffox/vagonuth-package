@@ -23,7 +23,7 @@ function Battle.OnLook()
   for k,v in pairs(Players) do
   
     -- Mobs have numbered "names" vs PCs who have real names, can eliminate PCs by removing non-numbered names
-    if (tonumber(Players[k].name) ~= nil) then 
+    if (tonumber(Players[k].name) ~= nil and not Players[PlayerName].fullname:find("%(CHARMED%)")) then 
         local i, j = 0, 0
         s = Players[k].fullname
         

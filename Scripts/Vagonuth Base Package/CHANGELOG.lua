@@ -102,6 +102,9 @@
 -- added racials: ill, gth
 -- bug fix: if immo and astral prision, immo trigger would cause you to quicken without stopping it
 
+-- v1.3.2
+-- bug fix: nec mobs removed from player lookups (eg aoe spells, autotarget, etc)
+
 -- v1.4.0
 -- TODO: add Nec stuff to labels etc.
 -- TODO: add gallop

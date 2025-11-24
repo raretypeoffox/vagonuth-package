@@ -42,6 +42,8 @@ local TargetExclusions = {
 
 -- Special
 "Something interesting is here",
+"(CHARMED)",
+
 
 -- Chaos
 "The Chaotic Abyss controls everything else.",
@@ -108,7 +110,7 @@ function AutoTarget()
   if StatTable.current_health / StatTable.max_health < AutoTargetMinHPPct then return end
   
   for _,mob in pairs(gmcp.Room.Players) do
-    if(tonumber(mob.name) ~= nil and ArrayHasSubstring(TargetExclusions, mob.fullname) == false and ArrayHasSubstring(ImmoMobList, mob.fullname) == false) then
+    if(tonumber(mob.name) ~= nil and not mob.fullname:find("%(CHARMED%)") and ArrayHasSubstring(TargetExclusions, mob.fullname) == false and ArrayHasSubstring(ImmoMobList, mob.fullname) == false) then
       
       --if GroupLeader() then send("emote is killing " .. mob.name) end
       

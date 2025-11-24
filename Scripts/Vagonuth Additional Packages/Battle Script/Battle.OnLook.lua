@@ -194,6 +194,7 @@ end
 
 local function BuildMobContext(p)
   if not (p and IsNumberedMob(p.name)) then return nil end
+  if p.fullname:find("%(CHARMED%)") then return nil end -- pet
 
   local parsed = ParseCombatLine(p.fullname or "")
   local player = parsed.targetPlayer

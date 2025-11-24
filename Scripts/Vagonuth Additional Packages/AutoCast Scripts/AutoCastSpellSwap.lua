@@ -62,7 +62,7 @@ function AutoCastSpellSwap()
   -- Sort all Players into enemies and friendlies
   for PlayerName,_ in pairs(Players) do
     -- Mobs have numbered "names" vs PCs who have real names, can eliminate PCs by removing non-numbered names
-    if tonumber(Players[PlayerName].name) then
+    if tonumber(Players[PlayerName].name) and not Players[PlayerName].fullname:find("%(CHARMED%)") then
       MobCount = MobCount + 1
     end
   end
@@ -94,7 +94,7 @@ function UpdateAutoCastSpell()
   
   -- Second check if there are any mobs that we do not AOE. If so, swap to single target
   for _,mob in pairs(gmcp.Room.Players) do
-    if(tonumber(mob.name) ~= nil and ArrayHasSubstring(DoNotArea_MobList, mob.fullname)) then
+    if(tonumber(mob.name) ~= nil and not Players[PlayerName].fullname:find("%(CHARMED%)") and ArrayHasSubstring(DoNotArea_MobList, mob.fullname)) then
         AutoCastSetSpell(GlobalVar.AutoCasterSingle)
       return
     end
