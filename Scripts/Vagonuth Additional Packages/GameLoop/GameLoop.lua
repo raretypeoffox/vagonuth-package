@@ -239,8 +239,18 @@
     if StatTable.Level == 125 and not StatTable.HiveMind and StatTable.current_mana > 1000 then
       Battle.DoAfterCombat("cast 'hive mind'") 
     end
-
+  
+  elseif MyClass == "Fury" then
+    if not GlobalVar.AutoStance then return end 
+    if StatTable.Level >= 51 and not StatTable.Wildmind and StatTable.current_mana > 250 then
+      Battle.DoAfterCombat("cast 'wildmind'") 
+    end
+    
+  
   end -- end of MyClass
+  
+  
+  
  end
  
  function GameLoopRace(MyRace)
@@ -278,6 +288,15 @@
     if StatTable.Level == 51 and not RacialFireaura and not StatTable.RacialFireauraFatigue then
       TryAction("racial fireaura", 30)
     end
+  
+  elseif MyRace == "Illithid" then
+    local level_diff = (StatTable.Level == 125 and 25 or 10)
+    
+    if not StatTable.MindFlay and tonumber(gmcp.Char.Vitals.lag) == 0 and tonumber(gmcp.Char.Status.opponent_level) > (StatTable.Level + level_diff) then
+      TryAction("racial mindflay", 30)
+    end
+    
+
   
   
   

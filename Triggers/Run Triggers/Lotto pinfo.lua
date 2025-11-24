@@ -6,9 +6,10 @@
 -- 0 (regex): ^\*?(\w+)\*? tells the group '(\w+)'s pick\. Check my pinfo and gt # to pick\.( Upcoming: )?(\w+)?,? ?(\w+)?,? ?(\w+)?
 -- 1 (regex): ^\*?(\w+)\*? tells the group '(\w+) - Pick an item from Pinfo \w+( - Upcoming: )?(\w+)?,? ?(\w+)?,? ?(\w+)?
 -- 2 (regex): ^\*?(\w+)\*? tells the group '(\w+)'s pick.'
--- 3 (regex): ^\*?(\w+)\*? tells the group '(\w+)'s pick! Check pinfo \w+ and gtell <#> or gtell pass. Next up: (\w+)?,? ?(w\+)?, ?(\w+)?,? ?(\w+)?
+-- 3 (regex): ^\*?(\w+)\*? tells the group '(\w+)'s pick! Check pinfo \w+ and gtell <#> or gtell pass. Next up: (\w+)?,? ?(\w+)?, ?(\w+)?,? ?(\w+)?
 -- 4 (regex): ^\*?(\w+)\*? tells the group '(\w+)'s pick. Upcoming winners: (\w+)?,? ?(w\+)?, ?(\w+)?,? ?(\w+)?
 -- 5 (regex): ^\*?(\w+)\*? tells the group '(\w+)'s pick. Please 'playerinfo \w+' for a list. Grouptell commands: 'info <item #>' for additional information \(if available\)., 'pass' to pass.'
+-- 6 (regex): ^\*?(\w+)\*? tells the group '(\w+) is up for lotto! Up next: ?(\w+)?, ?(\w+)?,? ?(\w+)?
 
 -- Script Code:
 local lottobot = matches[2] -- can't use matches inside tempTimer
@@ -20,7 +21,7 @@ end
 
 -- For the first round of lotto, always check out the lottobot
 local FirstPeek = TryAction("pinfo " .. lottobot, 600)
-if FirstPeek then beep() end
+if FirstPeek then beep(); printGameMessage("BEEP", "Lotto is starting...") end
 
 -- Otherwise Check the lottobot when its almost our turn
 if not FirstPeek then

@@ -165,6 +165,7 @@ end
 function Battle.EndCombat()
   --pdebug("Called Battle.EndCombat()")
   Battle.Combat = false
+  Battle.Stomper = false
   safeTempTimer("Battle.Recent.EndofCombat", 30, function() Battle.Recent = false; end)
   safeEventHandler("Battle.Recent.SetFalseOnMyDeath", "OnMyDeath", function() Battle.Recent = false; end, false)
   safeEventHandler("Battle.Recent.SetFalseOnPlane", "OnPlane", function() Battle.Recent = false; end, false)

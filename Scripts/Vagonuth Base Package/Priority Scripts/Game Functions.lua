@@ -72,7 +72,9 @@ function SafeArea()
       gmcp.Room.Info.zone == "{ LORD } Vorak   Lord Mud School" or
       gmcp.Room.Info.zone == "{ LORD } Odin    Labyrinth of Bo'vul" or
       gmcp.Room.Info.zone == "{ LORD } Crom    The House of Bandu" or
-      gmcp.Room.Info.zone == "{ ALL  } AVATAR  Locker Rental Agency") then
+      gmcp.Room.Info.zone == "{ ALL  } AVATAR  Locker Rental Agency") or
+      gmcp.Room.Info.name == "The Flying Citadel of Zin" 
+      then
     return true
   else
     return false

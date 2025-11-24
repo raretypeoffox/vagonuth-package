@@ -8,6 +8,7 @@
 -- Script Code:
 if IsGroupMate(matches[2]) then return; end -- just a group mate casting gravitas
 
+PSITrigger.GravitasMobs = PSITrigger.GravitasMobs or {}
 PSITrigger.GravitasMobs[matches[2]] = true
 
 -- Mob has casted gravitas, alert user and swap to mind wipe

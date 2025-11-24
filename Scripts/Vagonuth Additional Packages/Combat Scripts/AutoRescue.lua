@@ -15,6 +15,7 @@ AR.MonitorRescue = AR.MonitorRescue or false
 AR.MontorRescueHPpct = AR.MontorRescueHPpct or 0.25
 
 AR.RescueBzk = AR.RescueBzk or {}
+AR.RescueFyr = AR.RescueFyr or {}
 
 function AR.Debug(message)
   if GlobalVar.Debug then
@@ -144,16 +145,33 @@ end
 function AR.GroupieRescuesMe(name)
   if AR.Status == true then 
     if GlobalVar.GroupMates and GlobalVar.GroupMates[GMCP_name(name)] and  GlobalVar.GroupMates[GMCP_name(name)].class == "Bzk" then return end
+    
+    if GlobalVar.GroupMates and GlobalVar.GroupMates[GMCP_name(name)] and  GlobalVar.GroupMates[GMCP_name(name)].class == "Fyr" then 
+      AR.RescueFyr[GMCP_name(name)] = true
+    end
+    
     if AR.RescueList[string.lower(name)] == true then
       AR.Remove(name)
       if AR.Echo then
         cecho("<white>AutoRescue:<ansi_white> I was rescued by <yellow>" .. firstToUpper(name) .. "<ansi_white> - removed from AutoRescue\n")
-      else
+      elseif GlobalVar.GroupMates[GMCP_name(name)].class ~= "Fyr" then
         send("gtell |BW|AutoRescue:|N| I was rescued by |BC|" .. firstToUpper(name) .. "|N| - removed from AutoRescue (add yourself again with |BW|gt add me|N|)")
       end
     end
   end
 end
+
+safeEventHandler("Ar.AddGroupiesAfterCombat", "OnMobDeath", 
+  function()
+    if TableSize(AR.RescueFyr) == 0 then return end
+    
+    for key, _ in pairs(AR.RescueFyr) do
+      AR.RescueList[string.lower(key)] = true
+      printMessage("AutoRescue", "Fury " .. GMCP_name(key) .. " added back to rescue list")
+    end
+    
+    AR.RescueFyr = {}
+  end, false)
 
 
 function AR.On()
@@ -173,7 +191,8 @@ function AR.Remove(name)
   else
     if AR.RescueList[string.lower(name)] then
       AR.RescueList[string.lower(name)] = false
-      if AR.Echo then cecho("<white>AutoRescue:<ansi_white> " .. firstToUpper(name) .. " removed\n") else send("gtell |BW|AutoRescue:|N| " .. firstToUpper(name) .. " removed") end
+      
+      if AR.Echo then cecho("<white>AutoRescue:<ansi_white> " .. firstToUpper(name) .. " removed\n") elseif not AR.RescueFyr[GMCP_name(name)] then send("gtell |BW|AutoRescue:|N| " .. firstToUpper(name) .. " removed") end
       return true
     else
       if AR.Echo then cecho("<white>AutoRescue:<ansi_white> " .. firstToUpper(name) .. " not on autorescue list\n") else  send("gtell |BW|AutoRescue:|N| " .. firstToUpper(name) .. " not on autorescue list") end
@@ -204,6 +223,8 @@ function AR.All()
       print("AutoRescue ERROR: invis groupie not added")   
     elseif v.name == StatTable.CharName then
       -- not adding ourself
+    elseif v.level:find("Mob", 1, true) then
+     -- not adding nec mobs (shouldn't reach here but just incase)
     else
       if v.class == "Pal" then
         AR_paladins = AR_paladins .. v.name .. " |BW|||BY| "
@@ -231,6 +252,8 @@ function AR.Auto()
       print("AutoRescue ERROR: invis groupie not added")   
     elseif v.name == StatTable.CharName then
       -- not adding ourself
+    elseif v.level:find("Mob", 1, true) then
+     -- not adding nec mobs (shouldn't reach here but just incase)
     else
       if StatTable.Level == 125 and (v.class == "Pal" or v.class == "Bld" or v.class == "War" or v.class == "Rip" or v.class == "Bod" or v.class == "Mon" or v.class == "Shf") then
         AR_excluded = AR_excluded .. v.name .. " |BW|||BY| "

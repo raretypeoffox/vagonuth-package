@@ -30,6 +30,8 @@ local TargetExclusions = {
 "A new growth of kelp undulates here.",
 "A thick vine of kelp grows here.",
 "An enormous bird with a red tail is flying here.",
+"A fairy in a safari outfit is flitting around here.",
+"A fairy stands here, welcoming visitors.",
 
 -- NPCS
 "Resting on the throne, Bestellen contemplates a white cube in his hand.",

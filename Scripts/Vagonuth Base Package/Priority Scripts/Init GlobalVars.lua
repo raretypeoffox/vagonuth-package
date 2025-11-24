@@ -397,7 +397,8 @@ local PROFILE_VARIABLES = {
   {"Verbose", false},
   {"AutoFrenzy", true},
   {"PaladinRescue", true},
-  {"DownloadMessage", nil}
+  {"DownloadMessage", nil},
+  {"ShowNecMobs", false},
 }
 
 function SaveProfileVars()

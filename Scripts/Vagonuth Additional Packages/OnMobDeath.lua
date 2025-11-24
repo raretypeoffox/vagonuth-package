@@ -51,6 +51,9 @@ function MobDeath.UpdateCommandCheck()
   MobDeath.CommandCheck["cast 'stunning weapon'"] = StatTable.StunningWeapon or 0
   MobDeath.CommandCheck["cast savvy"] = StatTable.Savvy or 0
   
+  -- Fyr
+  MobDeath.CommandCheck["cast 'wildmind'"] = StatTable.Wildmind or 0
+  
   -- Rogue-likes
   MobDeath.CommandCheck["alertness"] = StatTable.Alertness or 0
 end

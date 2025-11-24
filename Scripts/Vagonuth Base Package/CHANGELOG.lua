@@ -95,6 +95,21 @@
 -- minor update: AutoLotto - added "can't carry" message
 -- bug fix: gt surge up was not working correctly.
 
+-- v1.3.1
+-- updated scripts to work with necromancer mobs
+-- use command: shownecmobs to see mobs in group list
+-- added: fyr (hero)
+-- added racials: ill, gth
+-- bug fix: if immo and astral prision, immo trigger would cause you to quicken without stopping it
+
+-- v1.4.0
+-- TODO: add Nec stuff to labels etc.
+-- TODO: add gallop
+-- TODO: fury
+-- TODO: build in auto resetprofile on update to ensure layout is fixed
+-- TODO: add a downloadable message that's presented once
+
+
 
 
 -- Long-term Todo

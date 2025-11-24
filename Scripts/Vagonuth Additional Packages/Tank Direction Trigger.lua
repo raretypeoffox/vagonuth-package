@@ -36,8 +36,8 @@ function TankDirectionCleanup()
 end
 
 function TankDirectionInit()
-    if not StatTable then printMessage("DEBUG ERROR", "TankDirectionInit() has no StatTable!!", "yellow") return end
-    if not StatTable.CharName then printMessage("DEBUG ERROR", "TankDirectionInit() has no charname!!", "yellow") end
+    if not StatTable then pdebug("TankDirectionInit() has no StatTable") return end
+    if not StatTable.CharName then pdebug("TankDirectionInit() has no charname") end
 
     
     
@@ -52,7 +52,8 @@ function TankDirectionInit()
 
     pattern = pattern .. "\\,? (?<dir>north|west|east|south|up|down|n|w|e|s|u|d)'$"
 
-    printMessage("DEBUG", "TankDirectionInit() successfully called with pattern: " .. pattern, "yellow")
+    
+    pdebug("TankDirectionInit() successfully called with pattern: " .. pattern)
 
     safeTempTrigger("TankDirectionID", pattern, TankDirection, "regex")
     safeEventHandler("TankDirectionCleanupID", "sysDisconnectionEvent", TankDirectionCleanup, true)

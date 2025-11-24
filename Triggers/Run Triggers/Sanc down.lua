@@ -9,6 +9,10 @@
 -- Script Code:
 -- Rewrite 28 Aug 2023
 
+if  gmcp.Room.Info.name == "A strange formation" or 
+    gmcp.Room.Info.name == "The Tears of Kra" 
+    then return end
+
 AutoCross = AutoCross or false
 
 if AutoCross then

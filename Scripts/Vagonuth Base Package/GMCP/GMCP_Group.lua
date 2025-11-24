@@ -4,14 +4,16 @@
 -- gmcp.Char.Group.List
 
 -- Script Code:
+local IncludeNecMobName = false -- set to true to show the Nec Mob's name
+
 function GMCP_Group()
     local GroupieTableIndex = 0
-    
     StatTable.InjuredCount = 0
     StatTable.CriticalInjured = 0
     GlobalVar.VizMonitor = ""
     LastGroupUpdate = deepcopy(GlobalVar.GroupMates) or {}
     GlobalVar.GroupMates = {}
+    GlobalVar.NecMobList = {}
     GlobalVar.PsiInGroup = false
     
     local InjuredPercent = StaticVars.InjuredPercent
@@ -21,7 +23,17 @@ function GMCP_Group()
     local GroupList = gmcp.Char.Group.List or nil
     local PlayersInRoom = gmcp.Room.Players or nil
     
+    
     if not GroupList then return end
+    
+    -- Remove necro mobs, put them in their own list
+    for i = #GroupList, 1, -1 do
+      local level = GroupList[i].level
+      if level and level:find("Mob", 1, true) then  -- case-sensitive, no pattern
+        table.insert(GlobalVar.NecMobList, GroupList[i])
+        table.remove(GroupList, i)
+      end
+    end
     
     -- Hide all the group labels
     for index = 1, StaticVars.MaxGroupLabels do
@@ -83,7 +95,32 @@ function GMCP_Group()
         TryPrint("Alert! Group mates are fighting!", 10)
       end
       
-    end -- end for loop
+    end -- end of player for loop
+    
+    if GlobalVar.ShowNecMobs or StatTable.Class == "Nec" then -- NecMobFlag
+      for _, NecMob in ipairs(GlobalVar.NecMobList) do
+        GroupieTableIndex = GroupieTableIndex + 1 
+        
+        if NecMob.name == "Someone" then
+          NecMob.name = "Nec Mob"
+        else
+          if IncludeNecMobName then
+            local mobtype, mobname
+            mobtype, _, mobname = NecMob.name:match("^A%s+(%w+)%s+(%w+)%s+(.+)$")
+            NecMob.name = firstToUpper(mobtype:sub(1,3)) .. " - " .. firstToUpper(mobname)
+          else
+            NecMob.name = firstToUpper(NecMob.name:match("^A%s+(%w+)%s+"))
+          end
+        end
+       
+        NecMob.name = "<left><span style='color: rgb(211,211,211)'>" .. NecMob.name .. "</span>"
+        
+        if GlobalVar.GUI and GroupieTableIndex <= StaticVars.MaxGroupLabels then
+          UpdateGroupGUI(GroupieTableIndex, NecMob)
+        end
+        
+      end
+    end -- end of NecMob for loop
 end
 
 function UpdateGroupMatesFindSomeone(Player, LastGroupUpdate)
@@ -106,4 +143,10 @@ function UpdateGroupMateVitals(Player)
     GlobalVar.GroupMates[Player.name].maxmp = tonumber(Player.maxmp)
     GlobalVar.GroupMates[Player.name].class = Player.class
     return
+end
+
+local function formatMobDisplay(s)
+    local mobType, _, mobName = s:match("^A%s+(%w+)%s+(named|tagged)%s+(.+)$")
+    if not mobType then return s end   -- fallback if format unexpected
+    return mobType .. " - " .. mobName
 end

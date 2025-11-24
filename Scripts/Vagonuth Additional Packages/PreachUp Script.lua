@@ -233,6 +233,9 @@ function GetSpellsAtPreachup()
     end
   elseif MyClass == "Mindbender" and MyLevel == 125 then
     if not StatTable.MindHive then table.insert(commands, "cast 'hive mind'") end
+  elseif MyClass == "Fury" and MyLevel >= 51 then
+    if not StatTable.Wildmind then table.insert(commands, "cast 'wildmind'") end
+  
   
   elseif MyClass == "Mage" and MyLevel >= 51 then
     if (MyLevel == 125 or MySubLevel > 101) and not StatTable.Savvy then table.insert(commands, "cast savvy") end
@@ -253,6 +256,7 @@ function GetSpellsAtPreachup()
     if (MyLevel == 125 and MySubLevel >= 200) and not StatTable.VilePhilosophy then table.insert(commands, "cast 'vile philosophy'") end
     if not StatTable.DeathShroud then table.insert(commands, "cast 'death shroud'") end
     if MyLevel >= 51 and not StatTable.SummonNecrit then table.insert(commands, "cast 'summon necrit'") end
+    
   elseif MyClass == "Black Circle Initiate" and MyLevel >= 51 then
     if not StatTable.Nightcloak then table.insert(commands, "cast 'nightcloak'") end
     
@@ -266,6 +270,7 @@ function GetSpellsAtPreachup()
     if not BldDancing() then
       table.insert(commands, "stance unending")
     end
+    
   elseif MyClass == "Monk" then
     if MyLevel == 125 then
       if not StatTable.BlindDevotion then table.insert(commands, "cast 'blind devotion'") end
@@ -276,6 +281,7 @@ function GetSpellsAtPreachup()
         table.insert(commands, "cast 'dagger hand'")
       end
     end
+    
   elseif MyClass == "Shadowfist" then
     if MyLevel == 125 then
       if not StatTable.Consummation then table.insert(commands, "cast consummation") end

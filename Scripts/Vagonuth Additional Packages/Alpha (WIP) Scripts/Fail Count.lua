@@ -10,17 +10,18 @@ FailCount = FailCount or {}
 
 -- ────────────── Configuration ──────────────
 
-FailCount.SpellName      = "identify" -- arcane
---FailCount.SpellName = "magic light"
+--FailCount.SpellName      = "identify" -- arcane
+FailCount.SpellName = "magic light"
 --FailCount.SpellName      = "detect poison" -- divine
 FailCount.SpellName      = string.lower(FailCount.SpellName)
---FailCount.SpellCastCmd   = "cast '" .. FailCount.SpellName .. "'"
-FailCount.SpellCastCmd   = "cast '" .. FailCount.SpellName .. "' spear"
+FailCount.SpellCastCmd   = "cast '" .. FailCount.SpellName .. "';drop spark"
+--FailCount.SpellCastCmd   = "cast '" .. FailCount.SpellName .. "' spear"
 
-FailCount.SuccessPattern = "^Object 'heavy spear ocean' type weapon, extra flags glow hum anti-evil"
+--FailCount.SuccessPattern = "^Object 'heavy spear ocean' type weapon, extra flags glow hum anti-evil"
 --FailCount.SuccessPattern = "^Object 'crude spear lordgear' type weapon, extra flags nolocate\.$"
 --FailCount.SuccessPattern = "^It doesn't look poisoned\.$"
 --FailCount.SuccessPattern = "^You twiddle your thumbs and The Light of \.w+'s Soul appears on you\.$"
+FailCount.SuccessPattern = "^You twiddle your thumbs and \\w+'s spark appears on you\.$"
 
 FailCount.FailPattern    = "^You failed your " .. FailCount.SpellName .. " due to lack of concentration\!"
 FailCount.OOMPattern     = "^You do not have enough mana to cast " .. FailCount.SpellName .. "\."

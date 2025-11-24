@@ -46,6 +46,7 @@ local syntax_tbl = {
   {"pwd <password>", "autologins with password (NOTE: stored in plain text!!)"},
   {"autostance (on|off)", "automatically switch stances on certain classes [default: OFF]"},
   {"autoplane (on|off)", "whether to auto plane when the leader does [default: OFF]"},
+  {"shownecmobs (on|off)", "show necromancer mobs in group list [default: OFF]"},
   {"ihelp", "explains the inventory list management system"},
   {"loadlayout", "redraws the GUI, helpful cmd when resizing the window etc"},
   {"cmds extra", "additional commands you may find useful, for more advanced users"},

@@ -227,6 +227,20 @@ local AffectsLookup = {
   ["Spell: hive mind"] = "HiveMind",
   ["Exhausted Spell: psyphon"] = "PsyphonExhaust",
   
+  -- fyr
+  ["Spell: wildmind"] = "Wildmind",
+  ["Spell: daring fury"] = "DaringFury",
+  ["Spell: destructive fury"] = "DestructiveFury",
+  ["Spell: explosive fury"] = "ExplosiveFury",
+  ["Spell: focused fury"] = "FocusedFury",
+  ["Spell: maniacal fury"] = "ManiacalFury",
+  ["Spell: psychotic fury"] = "PsychoticFury",
+  ["Spell: scathing fury"] = "ScathingFury",
+  ["Spell: vengeful fury"] = "VengefulFury",
+  
+  
+  
+  
   -- migraine exhausts
   ["Exhausted Spell: water breathing"] = "WaterBreathingExhaust",
   ["Exhausted Spell: giant strength"] = "GiantStrengthExhaust",
@@ -250,6 +264,12 @@ local AffectsLookup = {
   ["Racial devour fatigue"] = "RacialDevourFatigue",
   ["Spell: racial heraldry"] = "RacialHeraldry",
   ["Racial heraldry fatigue"] = "RacialHeraldryFatigue",
+  ["Racial scramble fatigue"] = "RacialScrambleFatigue",
+  ["Spell: mind flay"] = "RacialMindFlay",
+  ["Spell: mental aptitude"] = "RacialMentalAptitude",
+  ["Racial convoke fatigue"] = "RacialConvokeFatigue",
+  ["Racial planeshift fatigue"] = "RacialPlaneshiftFatigue",
+
   
   
     --bkd

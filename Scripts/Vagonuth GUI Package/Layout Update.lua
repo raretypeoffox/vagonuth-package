@@ -95,6 +95,22 @@ function setNextAvailableAura(baseSpell, auraSpell, shortLabel, longLabel, comma
   --end
 end
 
+function setNextAvailableLabelIfActiveFury(Stat, labelShort, labelLong, command)
+  if Stat then
+    for _, label in ipairs(Layout.Labels) do
+      if label.hidden then
+        -- Custom Fury look
+        label:echo("<center>" .. labelLong .. " - " .. Stat .. "</center>")
+        applyLabelStyle(label, "orange", "rgba(255, 165, 0, 0.85)")
+        label:setClickCallback("")
+        label:show()
+        break
+      end
+    end
+  end
+end
+
+
 -- called on update to GMCP_Vitals()
 function UpdateGUI()
   local MyClass = StatTable.Class -- local variables are inherently faster in Lua, as they exist in the virtual machine registers
@@ -199,7 +215,7 @@ function UpdateGUI()
     setLabelProperties(SneakLabel, StatTable.Sneak, "Sneak", "Not Sneaky", "sneak")
     setLabelProperties(InvisLabel, StatTable.Invis, "Invis", "Visible", "cast invis")
     setLabelProperties(SancLabel, StatTable.Sanctuary, "Sanc", "Sanctuary", "cast sanctuary")
-    setLabelProperties(WaterFlyLabel.left, StatTable.WaterBreathing, "Water", "Water", "cast 'water breathing'")
+    setLabelProperties(WaterFlyLabel.left, StatTable.WaterBreathing, "W", "Water", "cast 'water breathing'")
     setLabelProperties(WaterFlyLabel.right, StatTable.Fly, "Fly", "Fly", "cast fly")
     if StatTable.Frenzy == nil and StatTable.Fervor == nil then
       setLabelProperties(FrenzyLabel, nil, "Frenzy", "Frenzy", MyClass == "Paladin" and "cast fervor" or "cast frenzy")
@@ -253,10 +269,12 @@ function UpdateGUI()
         setNextAvailableLabelExhaust(StatTable.EtherWarp, StatTable.EtherWarpExhaust, "Ether Warp", "Ether Warp", "cast 'ether warp'")
         setNextAvailableLabelExhaust(StatTable.EtherCrashDuration, StatTable.EtherCrashExhaust, "Ether Crash", "Ether Crash", "cast 'ether crash'")
       end
+      
     elseif MyClass == "Stormlord" then  
       setNextAvailableLabel(StatTable.Savvy, "Savvy", "Savvy", "cast savvy")
       setNextAvailableLabel(StatTable.SpringRain, "Spring Rain", "Spring Rain", "cast 'spring rain'")
       setNextAvailableLabel(StatTable.GaleStratum, "Gale", "Gale Stratum", "cast stratum gale")
+      
     elseif MyClass =="Sorcerer" then
       setNextAvailableLabel(StatTable.Savvy, "Savvy", "Savvy", "cast savvy")
       setNextAvailableLabel(StatTable.Mystical, "Mystical", "Mystical", "cast mystical")
@@ -271,8 +289,10 @@ function UpdateGUI()
       
       if StatTable.EmotiveDrainExhaust then setNextAvailableLabelExhaust(StatTable.EmotiveDrain, StatTable.EmotiveDrainExhaust, "Emotive", "Emotive", "cast 'emotive drain'") end
       if StatTable.BrimstoneExhaust then setNextAvailableLabelExhaust(nil, StatTable.BrimstoneExhaust, "Brimstone", "Brimstone", "") end
+   
     elseif MyClass == "Rogue" then
       setNextAvailableLabel(StatTable.Alertness, "Alert", "Alertness", "alertness")
+      
     elseif MyClass == "Black Circle Initiate" then
       setNextAvailableLabel(StatTable.Alertness, "Alert", "Alertness", "alertness")
       setNextAvailableLabel(StatTable.Nightcloak, "Nightcloak", "Nightcloak", "cast 'nightcloak'")
@@ -284,6 +304,7 @@ function UpdateGUI()
     
     elseif MyClass == "Assassin" then
       setNextAvailableLabel(StatTable.Alertness, "Alert", "Alertness", "alertness")
+      
     elseif MyClass == "Soldier" then
       if (MyLevel == 125 or MySubLevel > 100) then
         setNextAvailableLabelExhaust(StatTable.StanceEchelon, StatTable.EchelonExhaust, "Echelon", "Echelon", "stance echelon")
@@ -438,13 +459,26 @@ function UpdateGUI()
       setNextAvailableLabelIfActive(StatTable.ConsciousWeapon, "Consc Wpn", "Conscious Wpn", "cast 'conscious weapon'")
       setNextAvailableLabelIfActive(StatTable.IntelligentWeapon, "Intell Wpn", "Intell Wpn", "cast 'intelligent weapon'")
       setNextAvailableLabelIfActive(StatTable.EmpathicResonance, "Emp. Res.", "Emp. Res.", "")
+      
     elseif (StatTable.Class == "Mindbender") then
       setNextAvailableLabel(StatTable.Savvy, "Savvy", "Savvy", "cast savvy")
       setNextAvailableLabel(StatTable.MindsEye, "Minds Eye", "Minds Eye", "cast 'minds eye'")
       setNextAvailableLabel(StatTable.HiveMind, "Hive Mind", "Hive Mind", "cast 'hive mind'")
       setNextAvailableLabel(StatTable.EmpathicResonance, "Emp. Res.", "Emp. Res.", "cast 'empathic resonance'")
       if StatTable.PsyphonExhaust then setNextAvailableLabelDebuff(StatTable.PsyphonExhaust, "Psyphon") end
+    elseif StatTable.Class == "Fury" then
+      setNextAvailableLabel(StatTable.Wildmind, "Wildmind", "Wildmind", "cast wildmind")
+      setNextAvailableLabelIfActiveFury(StatTable.DaringFury,      "Daring Fury",      "Daring Fury",      nil)
+      setNextAvailableLabelIfActiveFury(StatTable.DestructiveFury, "Destructive Fury", "Destructive Fury", nil)
+      setNextAvailableLabelIfActiveFury(StatTable.ExplosiveFury,   "Explosive Fury",   "Explosive Fury",   nil)
+      setNextAvailableLabelIfActiveFury(StatTable.FocusedFury,     "Focused Fury",     "Focused Fury",     nil)
+      setNextAvailableLabelIfActiveFury(StatTable.ManiacalFury,    "Maniacal Fury",    "Maniacal Fury",    nil)
+      setNextAvailableLabelIfActiveFury(StatTable.PsychoticFury,   "Psychotic Fury",   "Psychotic Fury",   nil)
+      setNextAvailableLabelIfActiveFury(StatTable.ScathingFury,    "Scathing Fury",    "Scathing Fury",    nil)
+      setNextAvailableLabelIfActiveFury(StatTable.VengefulFury,    "Vengeful Fury",    "Vengeful Fury",    nil)
 
+    
+    
     end -- end of MyClass
     
     -- Start of MyRace code
@@ -478,7 +512,16 @@ function UpdateGUI()
       
     elseif MyRace == "Firedrake" then
       setNextAvailableLabelExhaust(StatTable.RacialBreath, StatTable.RacialBreathFatigue, "Breath", "Breath", "racial breath")
+    
+    elseif MyRace == "Gith" then
+      setNextAvailableLabelExhaust(nil, StatTable.RacialConvokeFatigue, "Convoke", "Convoke", "racial convoke")
+      setNextAvailableLabelExhaust(nil, StatTable.RacialPlaneshiftFatigue, "Planeshift", "Planeshift", nil)
       
+    elseif MyRace == "Illithid" then
+      setNextAvailableLabelExhaust(nil, StatTable.RacialScrambleFatigue, "Scramble", "Scramble", "racial scramble")
+      setNextAvailableLabel(StatTable.RacialMindFlay, "MindFlay", "MindFlay", "racial mindflay")
+      setNextAvailableLabelIfActive(StatTable.RacialMentalAptitude, "Mental Apt.", nil, nil)
+    
     elseif (MyRace == "Dragon") then
       setNextAvailableLabelExhaust(StatTable.RacialBreath, StatTable.RacialBreathFatigue, "Breath", "Breath", "racial breath full")
       setNextAvailableLabelExhaust(nil, StatTable.RacialRoarFatigue, "Roar", "Roar", "racial roar")

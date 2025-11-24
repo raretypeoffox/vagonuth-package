@@ -1,10 +1,10 @@
 -- Alias: KillStyle
 -- Attribute: isActive
 
--- Pattern: ^(?i)killstyle ?(.*)?$
+-- Pattern: ^(?i)(killstyle|ks) ?(.*)?$
 
 -- Script Code:
-args = matches[2] or nil
+local args = matches[3] or nil
 
 if not args or args == "" then
   showCmdSyntax("KillStyle\n\tSyntax: killstyle <style>", {{"autokill (on|off)", "whether to attack with killstyle (see below) on leader emote"},{"killstyle <style>", "what autokill style to attack with (e.g. kill, bash, backstab)"},})
