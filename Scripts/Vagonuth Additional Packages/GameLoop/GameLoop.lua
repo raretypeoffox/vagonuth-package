@@ -233,7 +233,13 @@
        
    
   elseif MyClass == "Psionicist" then
-  
+    if StatTable.Level == 125 and not StatTable.KineticChain and not StatTable.KineticChainExhaust and StatTable.current_mana > 10000 then
+      Battle.DoAfterCombat("cast 'kinetic chain'")
+    end
+    
+    if StatTable.Level == 125 and StatTable.SubLevel > 200 and not StatTable.Gravitas and StatTable.current_mana > 1000 then
+      Battle.DoAfterCombat("cast 'gravitas'")
+    end
   
   elseif MyClass == "Mindbender" then
     if StatTable.Level == 125 and not StatTable.HiveMind and StatTable.current_mana > 1000 then
@@ -262,13 +268,17 @@
       if not StatTable.RacialBreathFatigue and 
          not GroupLeader() 
          and StatTable.Level == 125 and
-         tonumber(gmcp.Char.Status.opponent_level) > 180 then TryAction("racial breath", 30) end
+         tonumber(gmcp.Char.Status.opponent_level) > 180 then 
+          TryAction("racial breath", 30) 
+        end
   
    elseif MyRace == "Dragon" then
       if not StatTable.RacialBreathFatigue and 
          not GroupLeader() 
          and StatTable.Level == 125 and
-         tonumber(gmcp.Char.Status.opponent_level) > 180 then TryAction("racial breath full", 30) end
+         tonumber(gmcp.Char.Status.opponent_level) > 180 then 
+          TryAction("racial breath full", 30) 
+        end
    elseif MyRace == "Kzinti" then
    
       if (StatTable.Level == 125 and StatTable.DamRoll > 200) or (StatTable.Level == 51 and StatTable.DamRoll >  100) then

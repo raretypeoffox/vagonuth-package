@@ -1,5 +1,4 @@
 -- Trigger: Gravitas self 
--- Attribute: isActive
 
 
 -- Trigger Patterns:

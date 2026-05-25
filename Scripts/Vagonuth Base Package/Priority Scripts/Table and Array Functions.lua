@@ -80,7 +80,7 @@ end
 -- Not designed for large arrays
 function ArrayHasSubstring(array, substring)
 
-  assert(#array<1000)
+  assert(#array<2000)
   
   for i=1,#array do    
     if (string.find(substring,array[i]) ~= nil) then

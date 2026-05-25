@@ -32,6 +32,7 @@ local PSIWeaponLookup = {
   ["Hycybh"] = {w1name = "RUSTY SOLDERING IRON", w1keyword = "avenger"},
   ["Hohner"] = {w1name = "Flaying the Mind one slash at a time!", w1keyword = "hohner"},
   ["Parrot"] = {w1name = "a moldy cracker!", w1keyword = "hootwield", w2name = "a dead rat!", w2keyword = "hootoffhand"},
+  ["Draconixs"] = {w1name = "Loki", w1keyword = "loki", w2name = "Thor", w2keyword = "thor"},
   }
   
   

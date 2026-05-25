@@ -60,10 +60,10 @@ end
 
 function TryQueue(action, wait)
   assert(wait>0)
-  if TryActionSet["queue"] == nil then
-    TryActionSet["queue"] = true
+  if TryActionSet["queue" .. action] == nil then
+    TryActionSet["queue" .. action] = true
     OnMobDeathQueue(action)
-    tempTimer(wait, function() TryActionSet["queue"] = nil end)
+    tempTimer(wait, function() TryActionSet["queue" .. action] = nil end)
     return true
   else
     -- action already called
@@ -73,10 +73,10 @@ end
 
 function TryQueuePriority(action, wait)
   assert(wait>0)
-  if TryActionSet["queuepriority"] == nil then
-    TryActionSet["queuepriority"] = true
+  if TryActionSet["queuepriority" .. action] == nil then
+    TryActionSet["queuepriority" .. action] = true
     OnMobDeathQueuePriority(action)
-    tempTimer(wait, function() TryActionSet["queuepriority"] = nil end)
+    tempTimer(wait, function() TryActionSet["queuepriority" .. action] = nil end)
     return true
   else
     -- action already called
@@ -86,10 +86,10 @@ end
 
 function TryPrint(message, wait)
   assert(wait>0)
-  if TryActionSet["print"] == nil then
-    TryActionSet["print"] = true
+  if TryActionSet["print" .. message] == nil then
+    TryActionSet["print" .. message] = true
     print(message)
-    tempTimer(wait, function() TryActionSet["print"] = nil end)
+    tempTimer(wait, function() TryActionSet["print" .. message] = nil end)
     return true
   else
     -- action already called

@@ -410,6 +410,8 @@ function UpdateGUI()
       setNextAvailableLabelExhaust(StatTable.StanceSurefoot, StatTable.StanceSurefootExhaust, "Surefoot", "Surefoot", "stance surefoot")
       setNextAvailableLabelExhaust(StatTable.StanceRelentless, StatTable.StanceRelentlessExhaust, "Relentless", "Relentless", "stance relentless")
       setNextAvailableLabel(StatTable.Alertness, "Alert", "Alertness", "alertness")
+      setNextAvailableLabelIfActive(StatTable.Renown, "Renown", "Renown", "brag")
+      setNextAvailableLabelIfActive(StatTable.Payback, "Payback", "Payback", nil)
     
     
     elseif(MyClass == "Paladin") then
@@ -579,6 +581,10 @@ function UpdateGUI()
       setNextAvailableLabelIfActive(StatTable.Intervention, "Interv.", nil, nil) 
       setNextAvailableLabelIfActive(StatTable.Solitude, "Solitude", nil, nil)
     end
+    
+    -- Bld Buffs
+    setNextAvailableLabelIfActive(StatTable.ThousandCuts, "Thousand Cuts", nil, nil)
+    
     
     
     -- Commune / Hog!!

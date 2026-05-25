@@ -97,15 +97,19 @@ function GMCP_Group()
       
     end -- end of player for loop
     
+    
     if GlobalVar.ShowNecMobs or StatTable.Class == "Nec" then -- NecMobFlag
       for _, NecMob in ipairs(GlobalVar.NecMobList) do
         GroupieTableIndex = GroupieTableIndex + 1 
         
         if NecMob.name == "Someone" then
           NecMob.name = "Nec Mob"
+        elseif NecMob.name:match("^%S+$") then --single word, must be companion
+          NecMob.name = NecMob.name
         else
           if IncludeNecMobName then
             local mobtype, mobname
+            
             mobtype, _, mobname = NecMob.name:match("^A%s+(%w+)%s+(%w+)%s+(.+)$")
             NecMob.name = firstToUpper(mobtype:sub(1,3)) .. " - " .. firstToUpper(mobname)
           else

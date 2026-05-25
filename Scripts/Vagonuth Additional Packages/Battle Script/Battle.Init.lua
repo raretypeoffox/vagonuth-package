@@ -351,8 +351,12 @@ function Battle.DoAfterCombat(action, retryCount)
   end
   
   if Battle.Combat or StatTable.Position == "Sleep" or StatTable.Position == "Rest" then
-    TryQueue(action, 60)
-    safeEventHandler("BattleDoAfterCombatQueueID", "OnMobDeath", function() Battle.DoAfterCombatTable[action] = nil end, true)
+    local queued = TryQueue(action, 60)
+    if queued then
+      safeEventHandler("BattleDoAfterCombatQueue:" .. tostring(action), "OnMobDeath", function()
+        Battle.DoAfterCombatTable[action] = nil
+      end, true)
+    end
     return
   end
 

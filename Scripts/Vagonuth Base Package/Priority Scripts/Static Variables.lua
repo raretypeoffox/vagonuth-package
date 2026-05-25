@@ -14,7 +14,7 @@ StaticVars.MaxGroupLabels = 32
 
 -- Update bots as required
 StaticVars.DruidBots = { "Viridi", "FlutterFly", "Yorrick", "Idle", "Katya"}
-StaticVars.PsiBots = {"Neodox", "Xykith", "Raisteel", "Corimax"}
+StaticVars.PsiBots = {"Neodox", "Xykith", "Raisteel", "Corimax", "Glitch", "Steeler"}
 StaticVars.PrsBots = {"Martyr", "Gobo", "Eiri", "Arby", "Textual", "Logic"}
 
 -- Some defualts
@@ -287,6 +287,7 @@ StaticVars.Junk = {
 ["flask of dragonsbrew"] = "dragonsbrew flask",
 ["glittering white pearl"] = "white pearl",
 ["deep green emerald"] = "green emerald",
+["cultist long sword"] = "cultist sword",
 
 
 

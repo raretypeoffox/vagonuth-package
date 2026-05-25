@@ -94,7 +94,7 @@ function UpdateAutoCastSpell()
   
   -- Second check if there are any mobs that we do not AOE. If so, swap to single target
   for _,mob in pairs(gmcp.Room.Players) do
-    if(tonumber(mob.name) ~= nil and not Players[PlayerName].fullname:find("%(CHARMED%)") and ArrayHasSubstring(DoNotArea_MobList, mob.fullname)) then
+    if(tonumber(mob.name) ~= nil and not mob.fullname:find("%(CHARMED%)") and ArrayHasSubstring(DoNotArea_MobList, mob.fullname)) then
         AutoCastSetSpell(GlobalVar.AutoCasterSingle)
       return
     end

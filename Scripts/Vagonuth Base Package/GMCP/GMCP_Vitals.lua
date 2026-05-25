@@ -127,6 +127,7 @@ local AffectsLookup = {
   ["Exhausted Spell: veil of blades"] = "VeilExhaust",
   ["Spell: iron veil"] = "IronVeil",
   ["Spell: furious rampage"] = "Rampage",
+  ["Spell: thousand cuts"] = "ThousandCuts",
   
   -- cleric
   ["Spell: artificer blessing"] = "ArtificerBlessing",
@@ -174,6 +175,7 @@ local AffectsLookup = {
   ["Spell: rally"] = "Rally",
   ["Spell: tear"] = "Tear",
   ["Exhausted Spell: tear"] = "TearExhaust",
+
   
   -- pal
   ["Spell: fervor"] = "Fervor",
@@ -186,6 +188,9 @@ local AffectsLookup = {
   ["Spell: final boon"] = "FinalBoon",
   -- todo add other pal auras
   ["Spell: malice aura"] = "MaliceAura",
+  
+  -- Bod
+  ["Spell: payback"] = "Payback",
   
   -- monk / shf
   ["Spell: bear stance"] = "BearStance",
@@ -215,6 +220,10 @@ local AffectsLookup = {
   ["Exhausted Spell: gravitas"] = "GravitasExhaust",
   ["Spell: fury of the mind"] = "FuryOfTheMind",
   ["Spell: minds eye"] = "MindsEye",
+  ["Spell: orbit"] = "Orbit",
+  ["Spell: empathic resonance"] = "EmpathicResonance",
+  ["Spell: hive mind"] = "HiveMind",
+  ["Exhausted Spell: psyphon"] = "PsyphonExhaust",
   ["Spell: stunning weapon"] = "StunningWeapon",
   ["Spell: distracting weapon"] = "DistractingWeapon",
   ["Spell: disabling weapon"] = "DisablingWeapon",
@@ -222,10 +231,14 @@ local AffectsLookup = {
   ["Spell: felling weapon"] = "FellingWeapon",
   ["Spell: conscious weapon"] = "ConsciousWeapon",
   ["Spell: intelligent weapon"] = "IntelligentWeapon",
-  ["Spell: orbit"] = "Orbit",
-  ["Spell: empathic resonance"] = "EmpathicResonance",
-  ["Spell: hive mind"] = "HiveMind",
-  ["Exhausted Spell: psyphon"] = "PsyphonExhaust",
+  ["Exhausted Spell: stunning weapon"] = "StunningWeaponExhaust",
+  ["Exhausted Spell: distracting weapon"] = "DistractingWeaponExhaust",
+  ["Exhausted Spell: disabling weapon"] = "DisablingWeaponExhaust",
+  ["Exhausted Spell: restricting weapon"] = "RestrictingWeaponExhaust",
+  ["Exhausted Spell: felling weapon"] = "FellingWeaponExhaust",
+  ["Exhausted Spell: conscious weapon"] = "ConsciousWeaponExhaust",
+  ["Exhausted Spell: intelligent weapon"] = "IntelligentWeaponExhaust",
+
   
   -- fyr
   ["Spell: wildmind"] = "Wildmind",
@@ -366,6 +379,7 @@ function GMCP_Vitals()
     -- Affects that cannot be looked up with GetDuration(v) should be listed seperately below
     StatTable.Tainted = nil
     StatTable.Oath = nil
+    StatTable.Renown = nil
     StatTable.EtherCrash = nil
     StatTable.EtherCrashDuration = nil
     StatTable.EtherCrashExhaust = nil
@@ -379,10 +393,13 @@ function GMCP_Vitals()
             -- Check if the affect name exists in the lookup table
             local fieldName = AffectsLookup[k]
             
+            
+            -- MAKE SURE TO ADD THE BELOW TO THE ABOVE AS WELL TO ENSURE THEY ARE CLEARED
             if fieldName then
                 StatTable[fieldName] = GetDuration(v)
             elseif(k == "Spell: tainted genius") then StatTable.Tainted = 1
             elseif(k == "Spell: oath") then StatTable.Oath = splitstring(v, " ")[2]
+            elseif(k == "Spell: renown") then StatTable.Renown = splitstring(v, " ")[2]
             elseif(k == "Spell: ether crash") then
               -- In the affects time, Ether Crash is set to 1 if it's turned on and 2 if its been exhausted
               StatTable.EtherCrash = tonumber(string.match(v, 'by%s*(%d+)'))

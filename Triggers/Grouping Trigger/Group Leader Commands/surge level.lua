@@ -1,5 +1,4 @@
 -- Trigger: surge level 
--- Attribute: isActive
 
 
 -- Trigger Patterns:
@@ -44,6 +43,26 @@ if (StatTable.Class == "Mage" or StatTable.Class == "Wizard" or StatTable.Class 
     printGameMessage("Surge Request", "Surge level set to " .. GlobalVar.SurgeLevel)
   end
 elseif StatTable.Class == "Psionicist" then
+
+  local function PsiQuickenOff()
+    local was_asleep = false
+    
+    if StatTable.Position == "Sleep" then 
+      was_asleep = true 
+      send("rest")
+    end
+    
+    send("quicken off");
+    printGameMessage("Surge Request", "Quicken ended")
+    
+    if was_asleep then
+      send("sleep")
+    end
+  end
+
+
+
+
   if GlobalVar.QuickenStatus then return end
   
   if surgelevel == "up" then
@@ -51,10 +70,10 @@ elseif StatTable.Class == "Psionicist" then
     
     if manapct > 0.75 then
       send("quicken 5",false)
-      tempTimer(60, function() send("quicken off"); printGameMessage("Surge Request", "Quicken ended") end)
+      tempTimer(60, function() PsiQuickenOff() end)
     elseif manapct > 0.5 then
       send("quicken 3",false)
-      tempTimer(60, function() send("quicken off"); printGameMessage("Surge Request", "Quicken ended") end)
+      tempTimer(60, function() PsiQuickenOff() end)
     else
       printGameMessage("Surge Request", "Mana is low, didn't quicken")
     end

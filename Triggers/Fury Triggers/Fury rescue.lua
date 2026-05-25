@@ -1,4 +1,4 @@
--- Trigger: Rescue Heal - alternative 
+-- Trigger: Fury rescue 
 -- Attribute: isActive
 
 
@@ -12,9 +12,17 @@
 --          is only attacking one groupmate and if so, to rescue the groupmate when the mob is low
 -- Con:     works less reliably when using skills with lag as it goes off of the look command
 
-if not GlobalVar.PaladinRescue then return end
-if not (StatTable.InjuredCount > 1 or StatTable.CriticalInjured > 0) then return end -- for rescue heals, not relavent for other types of oaths
-if (StatTable.current_health / StatTable.max_health) < 0.50 then return end
+GlobalVar.FuryRescue = GlobalVar.FuryRescue or true -- for now
+
+if not GlobalVar.FuryRescue  then return end
+if not StatTable.Wildmind then return end
+
+-- set rescue hp % levels for rescueing with sanc vs without
+if StatTable.Sanctuary then
+  if (StatTable.current_health / StatTable.max_health) < 0.50 then return end
+else
+  if (StatTable.current_health / StatTable.max_health) < 0.75 then return end
+end
 
 target = string.lower(gmcp.Char.Status.opponent_name)
 
@@ -28,20 +36,19 @@ for i, j in pairs(Battle.EnemiesAttacking) do
   end
 end
 
-
 -- Only one mob of this name so we can accurately determine who its attacking
 if (count == 1 and StatTable.Level <= 51) then
   rescuetarget = Battle.EnemiesAttacking[index][2]
   -- Is this the only mob attacking our rescue target? Also make sure we're not the rescue target
   if (Battle.GroupiesUnderAttack[rescuetarget] == 1 and rescuetarget ~= StatTable.CharName) then
     -- Are we in a position to rescue?
-    if ((StatTable.JoinedBoon or StatTable.SharedBoon) and tonumber(gmcp.Char.Vitals.lag) <= 2 and (StatTable.current_health / StatTable.max_health) > 0.50 and StatTable.Sanctuary and 
+    if (tonumber(gmcp.Char.Vitals.lag) <= 2 and (StatTable.current_health / StatTable.max_health) > 0.50 and 
     (Battle.GroupiesUnderAttack[StatTable.CharName] == nil or (Battle.GroupiesUnderAttack[StatTable.CharName] ~= nil and tonumber(Battle.GroupiesUnderAttack[StatTable.CharName]) == 0))) then
       
-      -- Only rescue targets with hp < 100%
-      rescuehp_pct = GlobalVar.GroupMates[rescuetarget].hp / GlobalVar.GroupMates[rescuetarget].maxhp
-
-      if (rescuehp_pct < 1 and GlobalVar.GroupMates[rescuetarget].class ~= "Pal" and GlobalVar.GroupMates[rescuetarget].class ~= "Fyr") then TryAction("r " .. rescuetarget,2) end
+      if (GlobalVar.GroupMates[rescuetarget].class ~= "Pal" and GlobalVar.GroupMates[rescuetarget].class ~= "Fyr") then 
+        TryAction("r " .. rescuetarget,2) 
+        TryFunction("printFuryRescue", printGameMessage, {"Fury Rescue!", "Trying to rescue " .. rescuetarget}, 2)
+        end
     
     
     end  

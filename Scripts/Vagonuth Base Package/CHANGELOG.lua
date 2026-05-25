@@ -105,6 +105,17 @@
 -- v1.3.2
 -- bug fix: nec mobs removed from player lookups (eg aoe spells, autotarget, etc)
 
+-- v1.3.3
+-- minor addition: sabletarget <char> now auto gives sable arrows to <char>
+-- minor update: repgold <level> added, makes it easier for checking on gold at specific tier, eg, repgold 125
+-- minor update: updated autorescue logic for fyr, when fyr rescues groupmate, will no longer rescue them until after current combat
+-- minor update: ran no longer added with ar auto
+-- minor update: improved "kin" cmd / casting for psi's
+-- minor update: bod improvements
+-- bug fix: aoe casting had a bug introduced in the last version, fixed here
+-- bug fix: if a psi slept after surge up, it wouldn't turn off quicken, fixed here
+
+
 -- v1.4.0
 -- TODO: add Nec stuff to labels etc.
 -- TODO: add gallop

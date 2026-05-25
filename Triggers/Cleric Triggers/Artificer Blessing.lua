@@ -6,6 +6,8 @@
 -- 0 (start of line): Your artificer blessing is no more.
 
 -- Script Code:
+if GlobalVar.PantheonSpell ~= "artificer blessing" then return end
+
 local ArtBlessCounter = ArtBlessCounter or 0
 
 if gmcp.Char.Status.area_name == "{ ALL  } AVATAR  Sanctum"

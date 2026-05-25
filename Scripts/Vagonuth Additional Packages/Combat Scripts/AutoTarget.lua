@@ -103,13 +103,14 @@ local TargetExclusions = {
 }
 
 AutoTargetCastDelay = AutoTargetCastDelay or 1
-local AutoTargetMinHPPct = AutoTargetMinHPPct or 0.5
+AutoTargetMinHPPct = AutoTargetMinHPPct or 0.5
 
 function AutoTarget()
   if not GlobalVar.AutoTarget or Battle.Combat or SafeArea() then return end
   if StatTable.current_health / StatTable.max_health < AutoTargetMinHPPct then return end
   
   for _,mob in pairs(gmcp.Room.Players) do
+
     if(tonumber(mob.name) ~= nil and not mob.fullname:find("%(CHARMED%)") and ArrayHasSubstring(TargetExclusions, mob.fullname) == false and ArrayHasSubstring(ImmoMobList, mob.fullname) == false) then
       
       --if GroupLeader() then send("emote is killing " .. mob.name) end
