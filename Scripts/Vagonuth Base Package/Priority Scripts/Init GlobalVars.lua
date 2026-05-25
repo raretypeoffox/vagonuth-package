@@ -29,6 +29,8 @@ function Init.GlobalVars()
   GlobalVar.PerformanceMode = GlobalVar.PerformanceMode or false
   GlobalVar.Debug = GlobalVar.Debug or false
   GlobalVar.Verbose = GlobalVar.Verbose or true
+  if GlobalVar.RightContainer == nil then GlobalVar.RightContainer = true end
+  GlobalVar.EchoToMainConsole = GlobalVar.EchoToMainConsole or false
   
   GlobalVar.Boons = {}
   GlobalVar.LastBoon = GlobalVar.LastBoon or nil
@@ -388,6 +390,8 @@ tempTimer(0, function() Init.ProfileOnLogin() end)
 local PROFILE_VARIABLES = {
   {"BuddyChatName", nil},
   {"BuddyChatColour", nil},
+  {"RightContainer", true},
+  {"EchoToMainConsole", false},
   {"Silent", false},
   {"Password", nil},
   {"AutoStance", false},
@@ -407,7 +411,11 @@ function SaveProfileVars()
   -- Save all variables defined in PROFILE_VARIABLES
   for _, pair in ipairs(PROFILE_VARIABLES) do
     local varName, defaultValue = pair[1], pair[2]
-    GlobalVar.Saved[varName] = GlobalVar[varName] or defaultValue
+    if GlobalVar[varName] == nil then
+      GlobalVar.Saved[varName] = defaultValue
+    else
+      GlobalVar.Saved[varName] = GlobalVar[varName]
+    end
   end
   
   local location = getMudletHomeDir() .. "/ProfileVariables.lua"
@@ -427,7 +435,11 @@ function LoadProfileVars()
   
   for _, pair in ipairs(PROFILE_VARIABLES) do
     local varName, defaultValue = pair[1], pair[2]
-    GlobalVar[varName] = GlobalVar.Saved[varName] or defaultValue
+    if GlobalVar.Saved[varName] == nil then
+      GlobalVar[varName] = defaultValue
+    else
+      GlobalVar[varName] = GlobalVar.Saved[varName]
+    end
   end
 end
 

@@ -180,7 +180,11 @@ function printGameMessage(title, message, colour, colour_message)
   colour_message = colour_message or ("ansi_" .. colour)
   
   local formatStr = string.format("<%s>%s<%s>: %s\n", colour, title, colour_message, message)
-  cecho(StaticVars.GameMsgsChatOutput, formatStr)
+  if StaticVars.GameMsgsChatOutput then
+    cecho(StaticVars.GameMsgsChatOutput, formatStr)
+  else
+    cecho(formatStr)
+  end
 end
 
 -- Send less important game messages here so players can turn them off

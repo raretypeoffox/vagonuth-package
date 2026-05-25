@@ -158,6 +158,24 @@ function AutoCastToggle()
   end
 end
 
+function RightContainerToggle()
+  GlobalVar.RightContainer = not GlobalVar.RightContainer
+
+  if not GlobalVar.RightContainer then
+    GlobalVar.EchoToMainConsole = true
+  else
+    GlobalVar.EchoToMainConsole = false
+  end
+
+  if GlobalVar.GUI then
+    LoadLayout()
+  end
+
+  if SaveProfileVars then
+    SaveProfileVars()
+  end
+end
+
 function AutoKillSetGUI()
   if not GlobalVar.GUI then return end
   if not GlobalVar.KillStyle then GlobalVar.KillStyle = "kill" end
@@ -208,11 +226,14 @@ function LoadLayout()
   local LeftPanelPercent = 20 -- left side panel should be what % of available space
   local LeftPanelWidth = tonumber(mainWidth)*(LeftPanelPercent/100)  
   local RightPanelPercent = 25 -- right panel should be 25% of the available space
-  local RightPanelWidth = tonumber(mainWidth)*(RightPanelPercent/100)  
+  local RightContainerEnabled = GlobalVar.RightContainer
+  if RightContainerEnabled == nil then RightContainerEnabled = true end
+  local RightPanelWidth = RightContainerEnabled and tonumber(mainWidth)*(RightPanelPercent/100) or 0
   local CentrePanelWidth = mainWidth - (RightPanelWidth + LeftPanelWidth)-- the middle area left after we have 2 side panels
   local CentrePanelSize = CentrePanelWidth/20 --break the space in middle up into 20 spaces for loading stuff in 
   
   Layout.DefaultFontSize = GlobalVar.FontSize or 8
+  if not RightContainerEnabled then GlobalVar.EchoToMainConsole = true end
   
   -- left hand panel - full height
   setBorderLeft(LeftPanelWidth)
@@ -384,14 +405,14 @@ function LoadLayout()
     end
   end
 
-  -- RIGHT CONTAINER 
+  -- RIGHT CONTAINER
   setBorderRight(RightPanelWidth)
   
   -- Top border
   right_container = Geyser.Container:new({
     name = "right_container",
-    x = mainWidth - RightPanelWidth, y = 0,
-    width = RightPanelWidth, height = "100%",
+    x = mainWidth - math.max(RightPanelWidth, 1), y = 0,
+    width = math.max(RightPanelWidth, 1), height = "100%",
   })
   
   -- RightOutline
@@ -427,13 +448,22 @@ function LoadLayout()
   
   createTraditionalChat(right_container)
 
-  PublicChannels:show()
-  GroupChat:show()
-  BuddyChat:show()
-  
-  ChannelLabel:show()
-  GroupLabel:show()
-  BuddyLabel:show()
+  StaticVars.GameMsgsChatOutput = RightContainerEnabled and "GameChat" or nil
+
+  if RightContainerEnabled then
+    right_container:show()
+    PublicChannels:show()
+    GroupChat:show()
+    BuddyChat:show()
+    GameChat:show()
+
+    ChannelLabel:show()
+    GroupLabel:show()
+    BuddyLabel:show()
+    GameLabel:show()
+  else
+    right_container:hide()
+  end
     
   --BOTTOM STAT PANEL
   setBorderBottom(BottomPanelHeight)
