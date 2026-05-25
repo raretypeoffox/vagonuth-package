@@ -524,6 +524,9 @@ function UpdateGUI()
       setNextAvailableLabel(StatTable.RacialMindFlay, "MindFlay", "MindFlay", "racial mindflay")
       setNextAvailableLabelIfActive(StatTable.RacialMentalAptitude, "Mental Apt.", nil, nil)
     
+    elseif MyRace == "Tokoloshe" then
+      setNextAvailableLabelExhaust(StatTable.RacialDiscorporate, StatTable.RacialDiscorporateFatigue, "Disc.", "Discorporate", "racial discorporate")
+    
     elseif (MyRace == "Dragon") then
       setNextAvailableLabelExhaust(StatTable.RacialBreath, StatTable.RacialBreathFatigue, "Breath", "Breath", "racial breath full")
       setNextAvailableLabelExhaust(nil, StatTable.RacialRoarFatigue, "Roar", "Roar", "racial roar")
