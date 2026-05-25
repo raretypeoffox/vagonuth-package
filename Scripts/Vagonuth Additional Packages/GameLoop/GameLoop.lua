@@ -408,6 +408,15 @@
     elseif MyClass == "Druid" then
       if not GlobalVar.AutoStance then return end
       if StatTable.Level == 125 and not StatTable.SiderealReflections then TryAction("cast 'sidereal reflections'", 30) end -- TODO check what lord level gets it
+    elseif MyClass == "Paladin" then
+      if StatTable.Oath ~= "" and GlobalVar.PaladinRescue then
+        if (StatTable.Level == 51 and StatTable.SubLevel >= 250 and StatTable.JoinedBoon == nil and StatTable.HeroicBoon == nil and StatTable.Foci) then
+          TryAction("cast 'joined boon'", 30)
+        end
+        if (StatTable.Level == 125 and StatTable.SharedBoon == nil and StatTable.ValorousBoon == nil and StatTable.FinalBoon == nil and StatTable.Foci) then
+          TryAction("cast 'shared boon'", 30)
+        end
+      end
     end
     if StatTable.Level == 125 then
       if StatTable.Curse and StatTable.Curse ~= "continuous" and

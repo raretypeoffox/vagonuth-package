@@ -170,6 +170,11 @@ function Battle.EndCombat()
   safeEventHandler("Battle.Recent.SetFalseOnMyDeath", "OnMyDeath", function() Battle.Recent = false; end, false)
   safeEventHandler("Battle.Recent.SetFalseOnPlane", "OnPlane", function() Battle.Recent = false; end, false)
   Battle.KillAct()
+
+  -- Trigger BuffManager to process any queued out-of-combat buffs
+  if type(BuffManager) == "table" and type(BuffManager.Process) == "function" then
+    BuffManager.Process()
+  end
 end
 
 function Battle.KillEventHandlers()
@@ -340,39 +345,13 @@ function Battle.AutoSkill()
   return nextaction, skilllag
 end
 
-Battle.DoAfterCombatTable = Battle.DoAfterCombatTable or {}
-
-function Battle.DoAfterCombat(action, retryCount)
-  retryCount = retryCount or 0  
-  
-  if retryCount == 0 then 
-    if Battle.DoAfterCombatTable[action] then return end
-    Battle.DoAfterCombatTable[action] = true 
+function Battle.DoAfterCombat(action)
+  if type(BuffManager) == "table" and type(BuffManager.Add) == "function" then
+    BuffManager.Add(action, 1)
+  else
+    -- Fallback legacy command sending if BuffManager is not yet loaded
+    send(action)
   end
-  
-  if Battle.Combat or StatTable.Position == "Sleep" or StatTable.Position == "Rest" then
-    local queued = TryQueue(action, 60)
-    if queued then
-      safeEventHandler("BattleDoAfterCombatQueue:" .. tostring(action), "OnMobDeath", function()
-        Battle.DoAfterCombatTable[action] = nil
-      end, true)
-    end
-    return
-  end
-
-  local lag = tonumber(gmcp.Char.Vitals.lag)
-  if lag > 0 then
-    if retryCount < 5 then -- Limit retries to 5 times
-      tempTimer(lag, function() Battle.DoAfterCombat(action, retryCount + 1) end)
-    else
-      printGameMessage("Battle", "Unable to perform action after combat: " .. action)
-      Battle.DoAfterCombatTable[action] = nil
-    end
-    return
-  end
-
-  send(action)
-  Battle.DoAfterCombatTable[action] = nil
 end
 
 function Battle.StormlordCombat()
