@@ -182,6 +182,9 @@ function printGameMessage(title, message, colour, colour_message)
   local formatStr = string.format("<%s>%s<%s>: %s\n", colour, title, colour_message, message)
   if StaticVars.GameMsgsChatOutput then
     cecho(StaticVars.GameMsgsChatOutput, formatStr)
+    if GlobalVar.RightContainer == false then
+      cecho(formatStr)
+    end
   else
     cecho(formatStr)
   end

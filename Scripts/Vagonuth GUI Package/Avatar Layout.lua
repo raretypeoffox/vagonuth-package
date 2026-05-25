@@ -228,7 +228,8 @@ function LoadLayout()
   local RightPanelPercent = 25 -- right panel should be 25% of the available space
   local RightContainerEnabled = GlobalVar.RightContainer
   if RightContainerEnabled == nil then RightContainerEnabled = true end
-  local RightPanelWidth = RightContainerEnabled and tonumber(mainWidth)*(RightPanelPercent/100) or 0
+  local FullRightPanelWidth = tonumber(mainWidth)*(RightPanelPercent/100)
+  local RightPanelWidth = RightContainerEnabled and FullRightPanelWidth or 0
   local CentrePanelWidth = mainWidth - (RightPanelWidth + LeftPanelWidth)-- the middle area left after we have 2 side panels
   local CentrePanelSize = CentrePanelWidth/20 --break the space in middle up into 20 spaces for loading stuff in 
   
@@ -411,8 +412,9 @@ function LoadLayout()
   -- Top border
   right_container = Geyser.Container:new({
     name = "right_container",
-    x = mainWidth - math.max(RightPanelWidth, 1), y = 0,
-    width = math.max(RightPanelWidth, 1), height = "100%",
+    x = RightContainerEnabled and mainWidth - FullRightPanelWidth or mainWidth,
+    y = 0,
+    width = FullRightPanelWidth, height = "100%",
   })
   
   -- RightOutline
@@ -448,7 +450,7 @@ function LoadLayout()
   
   createTraditionalChat(right_container)
 
-  StaticVars.GameMsgsChatOutput = RightContainerEnabled and "GameChat" or nil
+  StaticVars.GameMsgsChatOutput = "GameChat"
 
   if RightContainerEnabled then
     right_container:show()
