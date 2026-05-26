@@ -500,6 +500,8 @@ function UpdateGUI()
       setNextAvailableLabelExhaust(StatTable.RacialFrenzy, StatTable.RacialFrenzyFatigue, "Frenzy", "Racial Frenzy", "racial frenzy")
     elseif MyRace == "Griffon" then
       setNextAvailableLabelExhaust(StatTable.RacialHeraldry, StatTable.RacialHeraldryFatigue, "Heraldry", "Racial Heraldry", "racial heraldry")
+    elseif MyRace == "Centaur" then
+      setNextAvailableLabelExhaust(StatTable.RacialGallop, StatTable.RacialGallopFatigue, "Gallop", "Racial Gallop", "racial gallop")
     
     elseif MyRace == "Hobgoblin" then
       setNextAvailableLabelExhaust(StatTable.RacialFrenzy, StatTable.RacialFrenzyFatigue, "Frenzy", "Racial Frenzy", "racial frenzy")
@@ -523,7 +525,7 @@ function UpdateGUI()
       setNextAvailableLabelExhaust(nil, StatTable.RacialScrambleFatigue, "Scramble", "Scramble", "racial scramble")
       setNextAvailableLabel(StatTable.RacialMindFlay, "MindFlay", "MindFlay", "racial mindflay")
       setNextAvailableLabelIfActive(StatTable.RacialMentalAptitude, "Mental Apt.", nil, nil)
-    
+      
     elseif MyRace == "Tokoloshe" then
       setNextAvailableLabelExhaust(StatTable.RacialDiscorporate, StatTable.RacialDiscorporateFatigue, "Disc.", "Discorporate", "racial discorporate")
     

@@ -282,6 +282,12 @@ local AffectsLookup = {
   ["Spell: mental aptitude"] = "RacialMentalAptitude",
   ["Racial convoke fatigue"] = "RacialConvokeFatigue",
   ["Racial planeshift fatigue"] = "RacialPlaneshiftFatigue",
+  ["Spell: racial discorporate"] = "RacialDiscorporate",
+  ["Exhausted Spell: racial discorporate"] = "RacialDiscorporateFatigue",
+  ["Spell: racial gallop"] = "RacialGallop",
+  ["Racial gallop fatigue"] = "RacialGallopFatigue",
+
+  
 
   
   
