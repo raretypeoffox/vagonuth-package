@@ -257,6 +257,14 @@ function Init.Char(MyClass, MyRace, MyLevel, MySubLevel)
         GlobalVar.SurgeLevel = 1
         GlobalVar.AutoCaster = "ultrablast"    
       end
+    elseif MyClass == "Fury" then
+      if MyLevel == 125 then
+        --TODO
+      elseif MyLevel == 51 then
+        GlobalVar.AutoCast = false
+        GlobalVar.SurgeLevel = 1
+        GlobalVar.AutoCaster = "lash"  
+      end  
         
       
     end
