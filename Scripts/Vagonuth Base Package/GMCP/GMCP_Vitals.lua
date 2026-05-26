@@ -51,6 +51,7 @@ local AffectsLookup = {
   ["Spell: solitude"] = "Solitude",
   ["Spell: protection good"] = "ProtectionGood",
   ["Spell: protection evil"] = "ProtectionEvil",
+  ["Spell: detect haven"] = "DetectHaven",
   
   ["Exhausted Spell: solitude"] = "SolitudeTimer",
   ["Exhausted Spell: intervention"] = "InterventionExhaust",
