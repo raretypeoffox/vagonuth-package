@@ -364,8 +364,8 @@ function LoadLayout()
   local rowStartY = 26
 
   -- affect labels
-  MoveHiddenLabel = createLabel("MoveHiddenLabel", "3%", rowStartY, "28%", affectLabelHeight, "white", [[<left>Move Hidden</left>]], left_container_bottom, nil, styleSheetOn)
-  SneakLabel = createLabel("SneakLabel", "34%", rowStartY, "28%", affectLabelHeight, "white", [[<left>Sneak</left>]], left_container_bottom, nil, styleSheetOn)
+  MoveSneakLabel = createSplitLabel("MoveSneak", "3%", rowStartY, "28%", affectLabelHeight, left_container_bottom)
+  DetectsLabel = createLabel("DetectsLabel", "34%", rowStartY, "28%", affectLabelHeight, "white", [[<left>Detects</left>]], left_container_bottom, nil, styleSheetOn)
   InvisLabel = createLabel("InvisLabel", "65%", rowStartY, "28%", affectLabelHeight, "white", [[<left>Invis</left>]], left_container_bottom, nil, styleSheetOn)
   SancLabel = createLabel("SancLabel", "3%", rowStartY + rowSpacing, "28%", affectLabelHeight, "white", [[<left>Sanctuary</left>]], left_container_bottom, nil, styleSheetOn)
   FrenzyLabel = createLabel("FrenzyLabel", "34%", rowStartY + rowSpacing, "28%", affectLabelHeight, "white", [[<left>Frenzy</left>]], left_container_bottom, nil, styleSheetOn)

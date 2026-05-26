@@ -17,6 +17,27 @@
 StatTable = StatTable or {}
 StatTable.BladetranceLevel = StatTable.BladetranceLevel or 0
 
+local AffectDurationDescriptions = {
+  ["seems to be wavering"] = "Wavering",
+  ["for a tiny amount of time"] = "Tiny Time",
+  ["for a small amount of time"] = "Small Time",
+  ["for a while"] = "A While",
+  ["for a long time"] = "Long Time",
+  ["for a very long time"] = "Very Long",
+  ["for seemingly forever"] = "Forever",
+}
+
+local AffectDurationRank = {
+  ["Wavering"] = 1,
+  ["Tiny Time"] = 2,
+  ["Small Time"] = 3,
+  ["A While"] = 4,
+  ["Long Time"] = 5,
+  ["Very Long"] = 6,
+  ["Forever"] = 7,
+  ["continuous"] = 8,
+}
+
 local AffectsLookup = {
   ["Spell: sneak"] = "Sneak",
   ["Spell: shadow form"] = "Sneak",
@@ -24,6 +45,11 @@ local AffectsLookup = {
   ["Spell: invis"] = "Invis",
   ["Spell: improved invis"] = "Invis",
   ["Spell: mass invis"] = "Invis",
+  ["Spell: detect invis"] = "DetectInvis",
+  ["Spell: infravision"] = "Infravision",
+  ["Spell: detect evil"] = "DetectEvil",
+  ["Spell: detect hidden"] = "DetectHidden",
+  ["Spell: detect magic"] = "DetectMagic",
   ["Spell: water breathing"] = "WaterBreathing",
   ["Spell: fly"] = "Fly",
   ["Spell: sanctuary"] = "Sanctuary",
@@ -424,20 +450,69 @@ function GMCP_Vitals()
         end
     end
 
+    -- Holy sight includes these five spells.
+    StatTable.HolySight = GetLowestAffectDuration({
+      StatTable.DetectInvis,
+      StatTable.Infravision,
+      StatTable.DetectEvil,
+      StatTable.DetectHidden,
+      StatTable.DetectMagic,
+      n = 5,
+    })
+
     if(GlobalVar.GUI) then UpdateGUI() end 
 
 end
     
 function GetDuration(affect)
-    if(affect == "continuous") then return affect
-    elseif (affect == "seems to be wavering") then return "Wavering"
-    elseif(affect == "for a very long time") then return "Very Long"
-    elseif(affect == "for seemingly forever") then return "Forever"
-    elseif(affect == "for a long time") then return "Long Time"
-    elseif(affect == "for a while") then return "A While"
-    elseif(affect == "for a small amount of time") then return "Small Time"
-    elseif(affect == "for a tiny amount of time") then return "Tiny Time"
-    elseif(string.sub(affect, -19) == "for an unknown time") then return 1
-    --else return tonumber(string.match(affect, "for (%d+) hours")) end
-    else return tonumber(string.match(affect,"%d+",string.len(affect) -10)) end
+    if affect == nil then return nil end
+    if type(affect) == "number" then return affect end
+
+    local text = tostring(affect):lower()
+    text = text:gsub("^%s+", ""):gsub("%s+$", "")
+
+    if text == "continuous" or text == "continous" then return "continuous" end
+
+    local description = AffectDurationDescriptions[text]
+    if description then return description end
+
+    if text:find("for an unknown time", 1, true) then return 1 end
+
+    local hours = text:match("for%s+([%d,]+)%s+hours?") or text:match("([%d,]+)%s+hours?")
+    if hours then
+      local cleanHours = hours:gsub(",", "")
+      return tonumber(cleanHours)
+    end
+
+    return nil
+end
+
+function GetLowestAffectDuration(affects)
+    if not affects then return nil end
+
+    local lowestNumber = nil
+    local lowestDescription = nil
+    local lowestDescriptionRank = nil
+
+    local affectCount = affects.n or #affects
+
+    for i = 1, affectCount do
+      local affect = affects[i]
+      if not affect then return nil end
+
+      local duration = tonumber(affect)
+      if duration then
+        if not lowestNumber or duration < lowestNumber then
+          lowestNumber = duration
+        end
+      else
+        local rank = AffectDurationRank[affect]
+        if rank and (not lowestDescriptionRank or rank < lowestDescriptionRank) then
+          lowestDescription = affect
+          lowestDescriptionRank = rank
+        end
+      end
+    end
+
+    return lowestNumber or lowestDescription or "continuous"
 end

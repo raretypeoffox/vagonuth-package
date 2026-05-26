@@ -211,8 +211,9 @@ function UpdateGUI()
     end
     
     -- Skills/spells that apply to all (Rows 1 - 5)
-    setLabelProperties(MoveHiddenLabel, StatTable.MoveHidden, "Move Hidden", "Not Hidden", "move hidden")
-    setLabelProperties(SneakLabel, StatTable.Sneak, "Sneak", "Not Sneaky", "sneak")
+    setLabelProperties(MoveSneakLabel.left, StatTable.MoveHidden, "Move", "Move", "move hidden")
+    setLabelProperties(MoveSneakLabel.right, StatTable.Sneak, "Sneak", "Sneak", "sneak")
+    setLabelProperties(DetectsLabel, StatTable.HolySight, "Detects", "Detects", "cast 'holy sight'")
     setLabelProperties(InvisLabel, StatTable.Invis, "Invis", "Visible", "cast invis")
     setLabelProperties(SancLabel, StatTable.Sanctuary, "Sanc", "Sanctuary", "cast sanctuary")
     setLabelProperties(WaterFlyLabel.left, StatTable.WaterBreathing, "W", "Water", "cast 'water breathing'")

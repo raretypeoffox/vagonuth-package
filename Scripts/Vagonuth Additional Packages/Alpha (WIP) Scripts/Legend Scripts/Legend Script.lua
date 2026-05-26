@@ -65,7 +65,7 @@ Legend.SpellUp.Buffs = {
   { spell = "sanctuary", command = "cast sanctuary", statKey = "Sanctuary", priority = 100, final = true, lores = { "basic theology" } },
   { spell = "fortitudes", command = "cast fortitudes", statKey = "Fortitude", priority = 85, lores = { "basic psionics" } },
   { spell = "foci", command = "cast foci", statKey = "Foci", priority = 80, lores = { "basic magic" } },
-  { spell = "holy sight", command = "cast 'holy sight'", statKey = nil, priority = 78, lores = { "basic theology" } },
+  { spell = "holy sight", command = "cast 'holy sight'", statKey = "HolySight", priority = 78, lores = { "basic theology" } },
   { spell = "invincibility", command = "cast invincibility", statKey = "Invincibility", priority = 77, lores = { "basic theology" } },
   { spell = "fly", command = "cast fly", statKey = "Fly", priority = 75, lores = { "basic magic", "basic theology" } },
   { spell = "water breathing", command = "cast 'water breathing'", statKey = "WaterBreathing", priority = 70, lores = { "basic magic", "basic theology" } },
