@@ -11,7 +11,7 @@ local syntax_tbl = {
   {"autokill (on|off)", "whether to attack with killstyle (see below) on leader emote"},
   {"killstyle <style>", "what autokill style to attack with (e.g. kill, bash, backstab)"},
   {"autobash (on|off)", "automatically tries to bash if enemy is standing"},
-  {"autotarget (on|off)", "auto tries to killstyle mob when entering/looking in rooms"},
+  {"autotarget (on|off|delay #|hp #)", "auto tries to killstyle mob when entering/looking in rooms"},
   {"ar (command)", "autorescue package for tanks, type 'ar' for commands"},
   {"autorevive (on|off|#)", "auto revives when hp % falls below #", condition = (StatTable.Race == "Troll")},
   {"prayer <prayer>", "recast <prayer> when the spell falls", condition = (StatTable.Class == "Paladin")},
