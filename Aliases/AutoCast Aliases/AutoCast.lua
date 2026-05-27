@@ -18,7 +18,7 @@ elseif (args == "off") then
   end
   
   if StatTable.Level == 125 and GlobalVar.SurgeLevel > 1 then
-    send("surge " .. GlobalVar.SurgeLevel)
+    send("surge " .. (Surge and Surge.ClampLevel(GlobalVar.SurgeLevel, Surge.GetMaxLevel()) or GlobalVar.SurgeLevel))
   end  
 elseif (args == "") then
   print("AutoCast - automatically casts spell during combat")

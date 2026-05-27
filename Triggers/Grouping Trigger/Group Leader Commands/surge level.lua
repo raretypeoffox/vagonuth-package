@@ -9,13 +9,17 @@ local SurgeUpMana = (30000 * Battle.GetSpellCostMod("arcane")) or 30000
 local surgelevel = matches[3]
 
 if (StatTable.Class == "Mage" or StatTable.Class == "Wizard" or StatTable.Class == "Sorcerer") then
+  if GlobalVar.AutoSurgeLevel == false then
+    printGameMessage("Surge Request", "Ignored, auto surge is off")
+    return
+  end
   
   if surgelevel == "off" or surgelevel == "1" then
     GlobalVar.SurgeLevel = 1
     printGameMessage("Surge Request", "Surging turned off")
     
   elseif surgelevel == "down" then
-    GlobalVar.SurgeLevel = 2
+    GlobalVar.SurgeLevel = Surge and Surge.ClampLevel(2, Surge.GetMaxLevel()) or 2
     printGameMessage("Surge Request", "Surge level set to " .. GlobalVar.SurgeLevel)
     
   elseif surgelevel == "up" then
@@ -23,11 +27,11 @@ if (StatTable.Class == "Mage" or StatTable.Class == "Wizard" or StatTable.Class 
     if GlobalVar.SurgeLevel <= 3 and manapct > 0.40 then
       local priorsurgelevel = GlobalVar.SurgeLevel
       if StatTable.current_mana  > SurgeUpMana then
-        GlobalVar.SurgeLevel = 5
+        GlobalVar.SurgeLevel = Surge and Surge.ClampLevel(5, Surge.GetMaxLevel()) or 5
       elseif StatTable.current_mana  > (SurgeUpMana * 0.75) then
-        GlobalVar.SurgeLevel = (GlobalVar.SurgeLevel > 4 and GlobalVar.SurgeLevel or 4)
+        GlobalVar.SurgeLevel = Surge and Surge.ClampLevel((GlobalVar.SurgeLevel > 4 and GlobalVar.SurgeLevel or 4), Surge.GetMaxLevel()) or (GlobalVar.SurgeLevel > 4 and GlobalVar.SurgeLevel or 4)
       else
-        GlobalVar.SurgeLevel = (GlobalVar.SurgeLevel > 3 and GlobalVar.SurgeLevel or 3)
+        GlobalVar.SurgeLevel = Surge and Surge.ClampLevel((GlobalVar.SurgeLevel > 3 and GlobalVar.SurgeLevel or 3), Surge.GetMaxLevel()) or (GlobalVar.SurgeLevel > 3 and GlobalVar.SurgeLevel or 3)
       end
       
       tempTimer(60, function() GlobalVar.SurgeLevel = priorsurgelevel; printGameMessage("Surge Request", "Surge level reset to " .. priorsurgelevel) end)
@@ -39,7 +43,12 @@ if (StatTable.Class == "Mage" or StatTable.Class == "Wizard" or StatTable.Class 
   else
     assert(tonumber(surgelevel)~=nil)
     if tonumber(surgelevel) > 5 then return end -- TODO: add check for classes that can't surge 5?
-    GlobalVar.SurgeLevel = tonumber(surgelevel)
+    local requested_surge_level = tonumber(surgelevel)
+    local max_surge_level = Surge and Surge.GetMaxLevel() or 5
+    GlobalVar.SurgeLevel = Surge and Surge.ClampLevel(requested_surge_level, max_surge_level) or requested_surge_level
+    if requested_surge_level > GlobalVar.SurgeLevel then
+      printGameMessage("Surge Request", "Max surge is surge " .. max_surge_level .. ", setting surge level to " .. GlobalVar.SurgeLevel)
+    end
     printGameMessage("Surge Request", "Surge level set to " .. GlobalVar.SurgeLevel)
   end
 elseif StatTable.Class == "Psionicist" then

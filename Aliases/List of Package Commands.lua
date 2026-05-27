@@ -21,6 +21,7 @@ local syntax_tbl = {
   {"",nil},
   {"<blue>Caster Commands",nil},
   {"autocast (on|off|<spell>)", "autocasts <spell> during combat [on by default]"},
+  {"autosurge (on|off)", "allows automation to adjust surge level based on mana/spell context [on by default]"},
   {"(1|2|3|4|5)", "set surge level (only surges when mana is high) [2 by default]"},
   {"auto(weapon|armor|bow) <item>", "autoenchants all items named <item> in your inventory"},
   {"autobrill <#>", "default # of brills for autoenchant to try for [2 by default]"},

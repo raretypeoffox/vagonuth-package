@@ -366,7 +366,6 @@ function GetSpellsAtPreachup()
     if StatTable.Surge > 0 then table.insert(commands, "surge off") end
     if StatTable.Augment > 0 then table.insert(commands, "augment off") end
     if StatTable.Quicken > 0 then table.insert(commands, "quicken off") end
-    GlobalVar.SurgeLevel = 2
   end 
   
   -- choose a monitor target

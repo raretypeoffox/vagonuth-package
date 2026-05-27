@@ -59,6 +59,7 @@ function Init.GlobalVars()
   -- Caster Variables
   GlobalVar.AutoCast = false
   GlobalVar.SurgeLevel = 2
+  if GlobalVar.AutoSurgeLevel == nil then GlobalVar.AutoSurgeLevel = true end
   GlobalVar.AutoCaster = ""
   GlobalVar.AutoCasterAOE = ""
   GlobalVar.QuickenStatus = false
@@ -174,6 +175,7 @@ function Init.Char(MyClass, MyRace, MyLevel, MySubLevel)
     -- Caster Variables
     GlobalVar.AutoCast = false
     GlobalVar.SurgeLevel = (MyLevel == 125 and 2 or 1)
+    if GlobalVar.AutoSurgeLevel == nil then GlobalVar.AutoSurgeLevel = true end
     GlobalVar.AutoCaster = ""
     GlobalVar.AutoCasterSingle = ""
     GlobalVar.AutoCasterAOE = ""
@@ -408,6 +410,7 @@ local PROFILE_VARIABLES = {
   {"Debug", false},
   {"Verbose", false},
   {"AutoFrenzy", true},
+  {"AutoSurgeLevel", true},
   {"PaladinRescue", true},
   {"DownloadMessage", nil},
   {"ShowNecMobs", false},

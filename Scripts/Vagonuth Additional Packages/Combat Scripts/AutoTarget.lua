@@ -120,9 +120,10 @@ function AutoTarget()
         if tonumber(gmcp.Char.Vitals.lag) > 0 then return end
         
         local cast_action = "cast '" .. GlobalVar.AutoCaster .. "' " .. mob.name
+        local surge_level = GetSurgeLevel(GlobalVar.AutoCaster)
         
-        if GlobalVar.SurgeLevel > 1 and StatTable.current_mana > 8000 then 
-          cast_action = "surge " .. GlobalVar.SurgeLevel .. getCommandSeparator() .. cast_action .. getCommandSeparator() .. "surge off"
+        if surge_level > 1 then
+          cast_action = "surge " .. surge_level .. getCommandSeparator() .. cast_action .. getCommandSeparator() .. "surge off"
         end
         -- delay cast by AutoTargetCastDelay seconds to give tanks/stabbers a chance first
         tempTimer(AutoTargetCastDelay,function() if not Battle.Combat then TryCast(cast_action,5); end; end)

@@ -185,10 +185,8 @@ end
 
 function Battle.AutoCast()
   local autocast_minmana = 0
-  local autocast_stopsurge = 3500
   local autocast_spell = GlobalVar.AutoCaster
   local nextaction = ""
-  local surge_level = GlobalVar.SurgeLevel or 1
   local spelllag = (5 * Battle.GetSpellLagMod()) -- assumes in class, ie 5 second, casting
   
   if GlobalVar.AutoCaster == "acid rain" or GlobalVar.AutoCaster == "meteor swarm" or GlobalVar.AutoCaster == "banshee wail" or GlobalVar.AutoCaster == "storm of vengeance" then
@@ -203,15 +201,6 @@ function Battle.AutoCast()
   
   if (StatTable.Level == 125) then
     autocast_minmana = 500
-    if (StatTable.Class == "Mage" or StatTable.Class == "Stormlord") then
-      autocast_stopsurge = (9000 * Battle.GetSpellCostMod("arcane")) or 7000
-    elseif (StatTable.Class == "Wizard") then
-      autocast_stopsurge = (10000 * Battle.GetSpellCostMod("arcane")) or 8000
-    elseif (StatTable.Class == "Sorcerer") then
-      autocast_stopsurge = (10000 * Battle.GetSpellCostMod("arcane")) or 8000
-    elseif IsClass({"Mindbender", "Psionicist"}) then
-      autocast_stopsurge = (9000 * Battle.GetSpellCostMod("psionic")) or 7000
-    end
   elseif (StatTable.Level == 51) then
     autocast_minmana = 100
   elseif (StatTable.Level < 51) then
@@ -230,29 +219,14 @@ function Battle.AutoCast()
   end
   
   if tonumber(gmcp.Char.Status.mana) > autocast_minmana then
-    -- Surge if above autocast_stopsurge mana
-    if (tonumber(gmcp.Char.Status.mana) >= autocast_stopsurge and surge_level > 1) then
-    
-      -- up the surge level when EtherLink / EtherCrash up    
-      if StatTable.Class == "Wizard" and (StatTable.EtherLink or StatTable.EtherCrash == 1) and GlobalVar.AutoCaster == GlobalVar.AutoCasterAOE then
-        if StatTable.EtherCrash == 1 then 
-          surge_level = 5
-          AutoCastSetSpell(GlobalVar.AutoCasterSingle)
-        end
-      end        
+    local surge_level = GetSurgeLevel(autocast_spell)
 
-      -- Add a surge level if current mana exceeds 4x the stop surge mana (eg 8000 mana * 4 = 32000 mana)
-      if surge_level == 2 and tonumber(gmcp.Char.Status.mana) > (autocast_stopsurge * 4) then
-        surge_level = surge_level + 1
+    if surge_level > 1 then
+      if StatTable.Class == "Wizard" and StatTable.EtherCrash == 1 and GlobalVar.AutoCaster == GlobalVar.AutoCasterAOE then
+        AutoCastSetSpell(GlobalVar.AutoCasterSingle)
       end
-      
-      -- If signature spell, add a surge level (experimental)
-      if surge_level < 5 and GlobalVar.AutoCaster == "signature spell" then
-        surge_level = surge_level + 1
-      end
-      
+
       nextaction = "surge " .. surge_level .. getCommandSeparator() .. "cast '" .. autocast_spell .. "'" .. getCommandSeparator() .. "surge off"
-      
     else
       nextaction = "cast '" .. autocast_spell .. "'"
     end 
