@@ -69,6 +69,7 @@ function Init.GlobalVars()
   GlobalVar.SkillStyle = ""
   
   GlobalVar.AutoFrenzy = true
+  if GlobalVar.AutoBuff == nil then GlobalVar.AutoBuff = true end
   
   -- Cleric / Druid Variables
   GlobalVar.AutoHeal = false
@@ -410,6 +411,7 @@ local PROFILE_VARIABLES = {
   {"Debug", false},
   {"Verbose", false},
   {"AutoFrenzy", true},
+  {"AutoBuff", true},
   {"AutoSurgeLevel", true},
   {"PaladinRescue", true},
   {"DownloadMessage", nil},

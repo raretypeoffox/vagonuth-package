@@ -26,6 +26,9 @@ local buffMap = {
   ["cast frenzy"] = "Frenzy",
   ["cast mystical"] = "Mystical",
   ["cast 'death shroud'"] = "DeathShroud",
+  ["cast 'vile philosophy'"] = "VilePhilosophy",
+  ["cast 'unholy bargain'"] = "UnholyBargainExhaust",
+  ["cast stratum gale"] = "GaleStratum",
   ["cast 'glorious conquest'"] = "GloriousConquest",
   ["cast 'artificer blessing'"] = "ArtificerBlessing",
   ["cast discordia"] = "Discordia",
@@ -43,6 +46,8 @@ local buffMap = {
   ["cast 'kahbyss insight'"] = "KahbyssInsight",
   ["cast fervor"] = "Fervor",
   ["cast 'holy zeal'"] = "HolyZeal",
+  ["cast 'joined boon'"] = "JoinedBoon",
+  ["cast 'shared boon'"] = "SharedBoon",
   ["cast 'kinetic chain'"] = "KineticChain",
   ["cast 'stunning weapon'"] = "StunningWeapon",
   ["cast savvy"] = "Savvy",
@@ -65,6 +70,9 @@ function MobDeath.UpdateCommandCheck()
   MobDeath.CommandCheck["cast frenzy"] = StatTable.Frenzy or 0
   MobDeath.CommandCheck["cast mystical"] = StatTable.Mystical or 0
   MobDeath.CommandCheck["cast 'death shroud'"] = StatTable.DeathShroud or 0
+  MobDeath.CommandCheck["cast 'vile philosophy'"] = StatTable.VilePhilosophy or 0
+  MobDeath.CommandCheck["cast 'unholy bargain'"] = StatTable.UnholyBargainExhaust or 0
+  MobDeath.CommandCheck["cast stratum gale"] = StatTable.GaleStratum or 0
   MobDeath.CommandCheck["cast 'glorious conquest'"] = StatTable.GloriousConquest or 0
   MobDeath.CommandCheck["cast 'artificer blessing'"] = StatTable.ArtificerBlessing or 0
   MobDeath.CommandCheck["cast discordia"] = StatTable.Discordia or 0
@@ -92,6 +100,8 @@ function MobDeath.UpdateCommandCheck()
   MobDeath.CommandCheck["cast fervor"] = StatTable.Fervor or 0
   if (StatTable.Fervor == nil and StatTable.Frenzy ~= nil) then MobDeath.CommandCheck["cast fervor"] = StatTable.Frenzy end
   MobDeath.CommandCheck["cast 'holy zeal'"] = StatTable.HolyZeal or 0
+  MobDeath.CommandCheck["cast 'joined boon'"] = StatTable.JoinedBoon or 0
+  MobDeath.CommandCheck["cast 'shared boon'"] = StatTable.SharedBoon or 0
   
   --Psi
   MobDeath.CommandCheck["cast 'kinetic chain'"] = StatTable.KineticChain or 0
