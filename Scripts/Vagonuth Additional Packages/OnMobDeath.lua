@@ -38,6 +38,7 @@ local buffMap = {
   ["cast 'stone fist'"] = "StoneFist",
   ["cast 'gravitas'"] = "Gravitas",
   ["cast 'hive mind'"] = "HiveMind",
+  ["cast 'illusory shield'"] = "IllusoryShield",
   ["cast 'sense weakness'"] = "SenseWeakness",
   ["cast 'kahbyss insight'"] = "KahbyssInsight",
   ["cast fervor"] = "Fervor",
@@ -79,6 +80,7 @@ function MobDeath.UpdateCommandCheck()
   
   MobDeath.CommandCheck["cast 'gravitas'"] = StatTable.Gravitas or 0
   MobDeath.CommandCheck["cast 'hive mind'"] = StatTable.HiveMind or 0
+  MobDeath.CommandCheck["cast 'illusory shield'"] = StatTable.IllusoryShield or 0
   
   MobDeath.CommandCheck["cast 'sense weakness'"] = StatTable.SenseWeakness or 0
   MobDeath.CommandCheck["cast 'kahbyss insight'"] = StatTable.KahbyssInsight or 0

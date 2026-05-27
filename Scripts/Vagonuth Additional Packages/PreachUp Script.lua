@@ -229,10 +229,12 @@ function GetSpellsAtPreachup()
       --table.insert(commands, "cast 'magic light'")
       --table.insert(commands, "cast 'magic light'")
       --table.insert(commands, "quicken off")
+      if not StatTable.IllusoryShield then table.insert(commands, "cast 'illusory shield'") end
       if MySubLevel > 200 and not StatTable.Gravitas then table.insert(commands, "cast 'gravitas'") end
     end
   elseif MyClass == "Mindbender" and MyLevel == 125 then
-    if not StatTable.MindHive then table.insert(commands, "cast 'hive mind'") end
+    if not StatTable.IllusoryShield then table.insert(commands, "cast 'illusory shield'") end
+    if not StatTable.HiveMind then table.insert(commands, "cast 'hive mind'") end
   elseif MyClass == "Fury" and MyLevel >= 51 then
     if not StatTable.Wildmind then table.insert(commands, "cast 'wildmind'") end
   

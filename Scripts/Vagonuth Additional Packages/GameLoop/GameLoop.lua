@@ -394,6 +394,10 @@
       
   end
   
+  if StatTable.Level == 125 and IsClass({"Psionicist", "Mindbender"}) and not StatTable.IllusoryShield and StatTable.current_mana > 1000 then
+    BuffManager.Add("cast 'illusory shield'", 1)
+  end
+  
   
   -- Call Class and Race specific GameLoops if we are in combat
   if not GlobalVar.AutoStance then return end
