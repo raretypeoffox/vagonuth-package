@@ -1,7 +1,3 @@
--- Script: CHANGELOG
--- Attribute: isActive
-
--- Script Code:
 -- Vagonuth AVATAR Package Change Log
 
 
@@ -106,19 +102,24 @@
 -- bug fix: nec mobs removed from player lookups (eg aoe spells, autotarget, etc)
 
 -- v1.3.3
+-- added: gui right [on|off] - turn on or off chats on the right
+-- added (beta): legend command "spellup" - attempts to buff you based on the lores you know
+-- update: rewrote how buff's are cast after battle [BuffManager] - sould be more consistant
+-- update: pantheon, kinetic chain, high magick all updated
 -- minor addition: sabletarget <char> now auto gives sable arrows to <char>
 -- minor update: repgold <level> added, makes it easier for checking on gold at specific tier, eg, repgold 125
 -- minor update: updated autorescue logic for fyr, when fyr rescues groupmate, will no longer rescue them until after current combat
 -- minor update: ran no longer added with ar auto
 -- minor update: improved "kin" cmd / casting for psi's
 -- minor update: bod improvements
+-- minor update: added gallop to cen, discorporate to tok
+-- minor update: added holy sight and detect haven to StatTable
 -- bug fix: aoe casting had a bug introduced in the last version, fixed here
 -- bug fix: if a psi slept after surge up, it wouldn't turn off quicken, fixed here
 
 
 -- v1.4.0
 -- TODO: add Nec stuff to labels etc.
--- TODO: add gallop
 -- TODO: fury
 -- TODO: build in auto resetprofile on update to ensure layout is fixed
 -- TODO: add a downloadable message that's presented once
