@@ -3,9 +3,11 @@
 
 
 -- Trigger Patterns:
--- 0 (regex): ^You have not learned HOW to cast (\w+) yet!
+-- 0 (regex): ^You have not learned HOW to cast (.+) yet!$
 
 -- Script Code:
-if (MobDeath.LastCommand == "cast " .. matches[2]) then
+if type(BuffManager) == "table" and type(BuffManager.MarkSpellUnavailable) == "function" then
+  BuffManager.MarkSpellUnavailable(matches[2], "not learned")
+elseif MobDeath.LastCommand ~= "" then
   MobDeath.LastCommand = ""
 end

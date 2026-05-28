@@ -18,6 +18,8 @@ BuffManager.VerifyTimerID = BuffManager.VerifyTimerID or nil
 BuffManager.LagTimerID = BuffManager.LagTimerID or nil
 BuffManager.RetryTimerID = BuffManager.RetryTimerID or nil
 BuffManager.LastScheduledAt = BuffManager.LastScheduledAt or 0
+BuffManager.BlockedActions = BuffManager.BlockedActions or {}
+BuffManager.BlockedActionsCharName = BuffManager.BlockedActionsCharName or nil
 
 -- Mapping dictionary of commands to StatTable keys
 local buffMap = {
@@ -158,6 +160,114 @@ function BuffManager.IsActionActive(action)
   return false
 end
 
+function BuffManager.GetBlockedActionsKey()
+  local charName = StatTable and StatTable.CharName or nil
+  if charName and charName ~= "" then return charName end
+
+  return "_unknown"
+end
+
+function BuffManager.GetBlockedActionsForCurrentCharacter()
+  local key = BuffManager.GetBlockedActionsKey()
+  BuffManager.BlockedActions[key] = BuffManager.BlockedActions[key] or {}
+
+  if BuffManager.BlockedActionsCharName ~= key then
+    BuffManager.BlockedActionsCharName = key
+    pdebug("BuffManager.GetBlockedActionsForCurrentCharacter(): Using blocked actions for " .. key)
+  end
+
+  return BuffManager.BlockedActions[key]
+end
+
+function BuffManager.NormalizeAction(action)
+  if not action then return "" end
+
+  action = string.lower(action)
+  action = string.gsub(action, "%s+", " ")
+  action = string.gsub(action, "^%s*(.-)%s*$", "%1")
+  return action
+end
+
+function BuffManager.SyncLegacyQueue()
+  MobDeath.Queue = {}
+  for _, qi in ipairs(BuffManager.Queue) do
+    table.insert(MobDeath.Queue, qi.action)
+  end
+end
+
+function BuffManager.GetSpellNameForAction(action)
+  action = BuffManager.NormalizeAction(action)
+  local spell = string.match(action, "^cast%s+'(.+)'$")
+  if not spell then spell = string.match(action, "^cast%s+(.+)$") end
+  if not spell then return nil end
+
+  spell = string.gsub(spell, "^%s*(.-)%s*$", "%1")
+  return spell ~= "" and spell or nil
+end
+
+function BuffManager.IsActionBlocked(action)
+  return BuffManager.GetBlockedActionsForCurrentCharacter()[BuffManager.NormalizeAction(action)] ~= nil
+end
+
+function BuffManager.RemoveAction(action)
+  local normalized = BuffManager.NormalizeAction(action)
+
+  for i = #BuffManager.Queue, 1, -1 do
+    if BuffManager.NormalizeAction(BuffManager.Queue[i].action) == normalized then
+      table.remove(BuffManager.Queue, i)
+    end
+  end
+
+  BuffManager.SyncLegacyQueue()
+end
+
+function BuffManager.BlockAction(action, reason)
+  local normalized = BuffManager.NormalizeAction(action)
+  if normalized == "" then return false end
+
+  BuffManager.GetBlockedActionsForCurrentCharacter()[normalized] = reason or true
+  BuffManager.RemoveAction(action)
+
+  if BuffManager.CurrentCasting and BuffManager.NormalizeAction(BuffManager.CurrentCasting.action) == normalized then
+    BuffManager.CurrentCasting = nil
+  end
+
+  if BuffManager.VerifyTimerID then killTimer(BuffManager.VerifyTimerID); BuffManager.VerifyTimerID = nil end
+  if BuffManager.LagTimerID then killTimer(BuffManager.LagTimerID); BuffManager.LagTimerID = nil end
+  if BuffManager.RetryTimerID then killTimer(BuffManager.RetryTimerID); BuffManager.RetryTimerID = nil end
+
+  if BuffManager.NormalizeAction(MobDeath.LastCommand) == normalized then
+    MobDeath.LastCommand = ""
+  end
+
+  pdebug("BuffManager.BlockAction(): Blocked action: " .. action .. " (" .. tostring(reason or "blocked") .. ")")
+  printGameMessage("BuffManager", "Blocked unavailable action: " .. action)
+  BuffManager.Process()
+  return true
+end
+
+function BuffManager.MarkSpellUnavailable(spellName, reason)
+  if not spellName then return false end
+
+  spellName = string.lower(spellName)
+  spellName = string.gsub(spellName, "^%s*(.-)%s*$", "%1")
+  if spellName == "" then return false end
+
+  local currentAction = BuffManager.CurrentCasting and BuffManager.CurrentCasting.action or MobDeath.LastCommand
+  if BuffManager.GetSpellNameForAction(currentAction) == spellName then
+    return BuffManager.BlockAction(currentAction, reason or "not learned")
+  end
+
+  for _, item in ipairs(BuffManager.Queue) do
+    if BuffManager.GetSpellNameForAction(item.action) == spellName then
+      return BuffManager.BlockAction(item.action, reason or "not learned")
+    end
+  end
+
+  local action = string.find(spellName, "%s") and "cast '" .. spellName .. "'" or "cast " .. spellName
+  return BuffManager.BlockAction(action, reason or "not learned")
+end
+
 -- Check if the queue already contains the specified action
 function BuffManager.QueueContains(action)
   for _, item in ipairs(BuffManager.Queue) do
@@ -171,10 +281,16 @@ end
 -- Add action to the queue with a priority
 function BuffManager.Add(action, priority)
   priority = priority or 1
+  BuffManager.GetBlockedActionsForCurrentCharacter()
   
   -- Strip leading/trailing whitespace
   action = string.gsub(action, "^%s*(.-)%s*$", "%1")
   if action == "" then return false end
+
+  if BuffManager.IsActionBlocked(action) then
+    pdebug("BuffManager.Add(): Action blocked, not queueing: " .. action)
+    return false
+  end
   
   -- Prevent double queueing
   if BuffManager.QueueContains(action) then
@@ -219,10 +335,7 @@ function BuffManager.Add(action, priority)
   pdebug("BuffManager.Add(): Added to queue: " .. action .. " (Priority: " .. priority .. ")")
   
   -- Update legacy queue for any external code inspection
-  MobDeath.Queue = {}
-  for _, qi in ipairs(BuffManager.Queue) do
-    table.insert(MobDeath.Queue, qi.action)
-  end
+  BuffManager.SyncLegacyQueue()
   
   -- Process queue out of combat
   BuffManager.Process()
@@ -247,6 +360,8 @@ end
 
 -- Primary sequential execution loop
 function BuffManager.Process()
+  BuffManager.GetBlockedActionsForCurrentCharacter()
+
   -- 1. Do not process if in combat
   if Battle.Combat then
     pdebug("BuffManager.Process(): Blocked - Currently in combat.")
@@ -294,11 +409,16 @@ function BuffManager.Process()
     table.remove(BuffManager.Queue, 1)
     
     -- Sync legacy queue
-    MobDeath.Queue = {}
-    for _, qi in ipairs(BuffManager.Queue) do
-      table.insert(MobDeath.Queue, qi.action)
-    end
+    BuffManager.SyncLegacyQueue()
     
+    BuffManager.Process()
+    return
+  end
+
+  if BuffManager.IsActionBlocked(item.action) then
+    pdebug("BuffManager.Process(): Skipping blocked action: " .. item.action)
+    table.remove(BuffManager.Queue, 1)
+    BuffManager.SyncLegacyQueue()
     BuffManager.Process()
     return
   end
@@ -308,10 +428,7 @@ function BuffManager.Process()
     table.remove(BuffManager.Queue, 1)
     
     -- Sync legacy queue
-    MobDeath.Queue = {}
-    for _, qi in ipairs(BuffManager.Queue) do
-      table.insert(MobDeath.Queue, qi.action)
-    end
+    BuffManager.SyncLegacyQueue()
     
     BuffManager.Process()
     return
@@ -362,10 +479,7 @@ function BuffManager.VerifySuccess(item)
     table.remove(BuffManager.Queue, 1)
     
     -- Sync legacy queue
-    MobDeath.Queue = {}
-    for _, qi in ipairs(BuffManager.Queue) do
-      table.insert(MobDeath.Queue, qi.action)
-    end
+    BuffManager.SyncLegacyQueue()
     
     BuffManager.CurrentCasting = nil
     BuffManager.Process()
@@ -383,10 +497,7 @@ function BuffManager.VerifySuccess(item)
     table.remove(BuffManager.Queue, 1)
     
     -- Sync legacy queue
-    MobDeath.Queue = {}
-    for _, qi in ipairs(BuffManager.Queue) do
-      table.insert(MobDeath.Queue, qi.action)
-    end
+    BuffManager.SyncLegacyQueue()
     
     MobDeath.LastCommand = ""
     BuffManager.CurrentCasting = nil
@@ -414,10 +525,7 @@ function BuffManager.VerifySuccess(item)
       table.remove(BuffManager.Queue, 1)
       
       -- Sync legacy queue
-      MobDeath.Queue = {}
-      for _, qi in ipairs(BuffManager.Queue) do
-        table.insert(MobDeath.Queue, qi.action)
-      end
+      BuffManager.SyncLegacyQueue()
       
       MobDeath.LastCommand = ""
       BuffManager.CurrentCasting = nil
