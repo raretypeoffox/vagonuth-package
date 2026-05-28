@@ -1,6 +1,7 @@
 *.xml
 *.log
 *.json
+*.md
 
 
 __pycache__/
