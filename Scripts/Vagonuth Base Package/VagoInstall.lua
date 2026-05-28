@@ -2,7 +2,6 @@
 -- Attribute: isActive
 
 -- Script Code:
-
 VagoPackage = VagoPackage or {}
 VagoPackage.Version = "v1.3.2"
 VagoPackage.OnlinePath = "https://github.com/raretypeoffox/vagonuth-package/releases/latest/download/"
@@ -22,15 +21,17 @@ function VagoPackage:CheckVersion()
     local path = VagoPackage.DownloadPath .. "versions.lua"
     local versions = {}
     table.load(path, versions)
-    local pos = table.index_of(versions, VagoPackage.Version) or 0
-    local line = ""
-    if pos ~= #versions then
+    local versionList = versions
+    if type(versions[1]) == "table" then versionList = versions[1] end
+    if type(versionList) ~= "table" then return end
+    local pos = table.index_of(versionList, VagoPackage.Version) or 0
+    if pos > 0 and pos ~= #versionList then
         if GlobalVar and GlobalVar.DownloadMessage == pos then
           return
         else
           cecho("<white>Newer version of Vagonuth AVATAR Package available\n")
           cecho("<white>Type the command <yellow>download <white>to update\n")
-          GlobalVar.DownloadMessage = pos
+          if GlobalVar then GlobalVar.DownloadMessage = pos end
         end
       end
 end
@@ -43,6 +44,7 @@ function VagoPackage:UpdateVersion()
         uninstallPackage("Vagonuth-Package")
       end
     installPackage(VagoPackage.OnlinePath .. "Vagonuth-Package.mpackage")
+    tempTimer(3, [[resetProfile()]])
 end
 
 function VagoPackage:onFileDownloaded(event, ...)

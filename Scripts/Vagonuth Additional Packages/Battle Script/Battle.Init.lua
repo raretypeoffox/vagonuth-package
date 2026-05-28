@@ -4,7 +4,6 @@
 -- Script Code:
 Battle = Battle or {}
 Battle.Combat = Battle.Combat or false
---Battle.Queue = Battle.Queue or {}
 Battle.NextAction = Battle.NextAction or nil
 Battle.NextActionTime = Battle.NextActionTime or 0
 Battle.NextActionWait = Battle.NextActionWait or nil
@@ -170,6 +169,11 @@ function Battle.EndCombat()
   safeEventHandler("Battle.Recent.SetFalseOnMyDeath", "OnMyDeath", function() Battle.Recent = false; end, false)
   safeEventHandler("Battle.Recent.SetFalseOnPlane", "OnPlane", function() Battle.Recent = false; end, false)
   Battle.KillAct()
+
+  -- Trigger BuffManager to process any queued out-of-combat buffs
+  if type(BuffManager) == "table" and type(BuffManager.Process) == "function" then
+    BuffManager.Process()
+  end
 end
 
 function Battle.KillEventHandlers()
@@ -180,10 +184,8 @@ end
 
 function Battle.AutoCast()
   local autocast_minmana = 0
-  local autocast_stopsurge = 3500
   local autocast_spell = GlobalVar.AutoCaster
   local nextaction = ""
-  local surge_level = GlobalVar.SurgeLevel or 1
   local spelllag = (5 * Battle.GetSpellLagMod()) -- assumes in class, ie 5 second, casting
   
   if GlobalVar.AutoCaster == "acid rain" or GlobalVar.AutoCaster == "meteor swarm" or GlobalVar.AutoCaster == "banshee wail" or GlobalVar.AutoCaster == "storm of vengeance" then
@@ -198,15 +200,6 @@ function Battle.AutoCast()
   
   if (StatTable.Level == 125) then
     autocast_minmana = 500
-    if (StatTable.Class == "Mage" or StatTable.Class == "Stormlord") then
-      autocast_stopsurge = (9000 * Battle.GetSpellCostMod("arcane")) or 7000
-    elseif (StatTable.Class == "Wizard") then
-      autocast_stopsurge = (10000 * Battle.GetSpellCostMod("arcane")) or 8000
-    elseif (StatTable.Class == "Sorcerer") then
-      autocast_stopsurge = (10000 * Battle.GetSpellCostMod("arcane")) or 8000
-    elseif IsClass({"Mindbender", "Psionicist"}) then
-      autocast_stopsurge = (9000 * Battle.GetSpellCostMod("psionic")) or 7000
-    end
   elseif (StatTable.Level == 51) then
     autocast_minmana = 100
   elseif (StatTable.Level < 51) then
@@ -225,29 +218,14 @@ function Battle.AutoCast()
   end
   
   if tonumber(gmcp.Char.Status.mana) > autocast_minmana then
-    -- Surge if above autocast_stopsurge mana
-    if (tonumber(gmcp.Char.Status.mana) >= autocast_stopsurge and surge_level > 1) then
-    
-      -- up the surge level when EtherLink / EtherCrash up    
-      if StatTable.Class == "Wizard" and (StatTable.EtherLink or StatTable.EtherCrash == 1) and GlobalVar.AutoCaster == GlobalVar.AutoCasterAOE then
-        if StatTable.EtherCrash == 1 then 
-          surge_level = 5
-          AutoCastSetSpell(GlobalVar.AutoCasterSingle)
-        end
-      end        
+    local surge_level = GetSurgeLevel(autocast_spell)
 
-      -- Add a surge level if current mana exceeds 4x the stop surge mana (eg 8000 mana * 4 = 32000 mana)
-      if surge_level == 2 and tonumber(gmcp.Char.Status.mana) > (autocast_stopsurge * 4) then
-        surge_level = surge_level + 1
+    if surge_level > 1 then
+      if StatTable.Class == "Wizard" and StatTable.EtherCrash == 1 and GlobalVar.AutoCaster == GlobalVar.AutoCasterAOE then
+        AutoCastSetSpell(GlobalVar.AutoCasterSingle)
       end
-      
-      -- If signature spell, add a surge level (experimental)
-      if surge_level < 5 and GlobalVar.AutoCaster == "signature spell" then
-        surge_level = surge_level + 1
-      end
-      
+
       nextaction = "surge " .. surge_level .. getCommandSeparator() .. "cast '" .. autocast_spell .. "'" .. getCommandSeparator() .. "surge off"
-      
     else
       nextaction = "cast '" .. autocast_spell .. "'"
     end 
@@ -340,35 +318,13 @@ function Battle.AutoSkill()
   return nextaction, skilllag
 end
 
-Battle.DoAfterCombatTable = Battle.DoAfterCombatTable or {}
-
-function Battle.DoAfterCombat(action, retryCount)
-  retryCount = retryCount or 0  
-  
-  if retryCount == 0 then 
-    if Battle.DoAfterCombatTable[action] then return end
-    Battle.DoAfterCombatTable[action] = true 
+function Battle.DoAfterCombat(action)
+  if type(BuffManager) == "table" and type(BuffManager.Add) == "function" then
+    BuffManager.Add(action, 1)
+  else
+    -- Fallback legacy command sending if BuffManager is not yet loaded
+    send(action)
   end
-  
-  if Battle.Combat or StatTable.Position == "Sleep" or StatTable.Position == "Rest" then
-    TryQueue(action, 60)
-    safeEventHandler("BattleDoAfterCombatQueueID", "OnMobDeath", function() Battle.DoAfterCombatTable[action] = nil end, true)
-    return
-  end
-
-  local lag = tonumber(gmcp.Char.Vitals.lag)
-  if lag > 0 then
-    if retryCount < 5 then -- Limit retries to 5 times
-      tempTimer(lag, function() Battle.DoAfterCombat(action, retryCount + 1) end)
-    else
-      printGameMessage("Battle", "Unable to perform action after combat: " .. action)
-      Battle.DoAfterCombatTable[action] = nil
-    end
-    return
-  end
-
-  send(action)
-  Battle.DoAfterCombatTable[action] = nil
 end
 
 function Battle.StormlordCombat()

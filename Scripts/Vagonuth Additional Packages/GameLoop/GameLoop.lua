@@ -2,19 +2,38 @@
 -- Attribute: isActive
 
 -- Script Code:
- 
- local function UseSkillAfterExhaust(Skill, SkillExhaust, Command)
+local function TryGameLoopAction(action, wait)
+  if type(BuffManager) == "table" and type(BuffManager.TryAction) == "function" then
+    return BuffManager.TryAction(action, wait)
+  end
+
+  return TryAction(action, wait)
+end
+
+local function UseSkillAfterExhaust(Skill, SkillExhaust, Command)
   if Skill == nil and SkillExhaust == nil then
-    if TryAction(Command, 30) then
+    if TryGameLoopAction(Command, 30) then
       printGameMessageVerbose("GameLoop", Command)
     end
   end 
- end
- 
- -- note: only ran while we're in combat
- function GameLoopClass(MyClass)
-  local mana_pct = StatTable.current_mana / StatTable.max_mana
+end
 
+local function GroupHasClass(classList)
+  if not GlobalVar.GroupMates then return false end
+
+  for _, groupie in pairs(GlobalVar.GroupMates) do
+    for _, class in ipairs(classList) do
+      if groupie.class == class then
+        return true
+      end
+    end
+  end
+
+  return false
+end
+
+-- note: only ran while we're in combat
+function GameLoopClass(MyClass)
   if MyClass == "Sorcerer" then       
 
     if StatTable.Level == 125 then
@@ -26,40 +45,20 @@
       if (StatTable.BrimstoneExhaust == nil and StatTable.Level == 125 and string.lower(GlobalVar.AutoCaster) == "maelstrom") then
         AutoCastSetSpell("brimstone")
       end
-      
-    -- Use Unholy Bargain when avail and at max health
-      if not StatTable.UnholyBargainExhaust and StatTable.current_health >= StatTable.max_health and StatTable.current_moves > 2000 and StatTable.current_mana < (StatTable.max_mana - 1000) and not GroupLeader() then
-        Battle.DoAfterCombat("cast 'unholy bargain'")
-      end      
-    end
-  elseif MyClass == "Stormlord" then
-    if StatTable.Level == 125 then
-      if not StatTable.Solitude and not StatTable.GaleStratum and mana_pct > 0.5 then
-        TryAction("cast stratum gale", 30)
-      end
-
     end
   elseif MyClass == "Black Circle Initiate" then
   
     
     if StatTable.Level == 125 then
-      if not (StatTable.KahbyssInsight and StatTable.KahbyssInsightExhaust and StatTable.SenseWeakness) then 
-        Battle.DoAfterCombat("cast 'kahbyss insight'")
-      elseif not StatTable.SenseWeakness and not StatTable.SenseWeaknessExhaust then
-        Battle.DoAfterCombat("cast 'sense weakness'")
-      end
       if not StatTable.QuickcastExhaust then
         if tonumber(gmcp.Char.Vitals.lag) == 0 and tonumber(gmcp.Char.Status.opponent_level) > 140 and (StatTable.EnemyHP / StatTable.EnemyMaxHP) > 0.40 then
-          TryAction("quickcast mindwipe eye", 30)
+          TryGameLoopAction("quickcast mindwipe eye", 30)
         end
       end
     elseif StatTable.Level == 51 then
-      if not StatTable.SenseWeakness and not StatTable.SenseWeaknessExhaust and StatTable.SubLevel > 250 then 
-        Battle.DoAfterCombat("cast 'sense weakness'") 
-      end
       if not StatTable.QuickcastExhaust and StatTable.SubLevel > 250 then
         if tonumber(gmcp.Char.Vitals.lag) == 0 and tonumber(gmcp.Char.Status.opponent_level) > 60 and (StatTable.EnemyHP / StatTable.EnemyMaxHP) > 0.40 then
-          TryAction("quickcast fear", 30)
+          TryGameLoopAction("quickcast fear", 30)
         end
       end
     end
@@ -88,7 +87,6 @@
     else
       UseSkillAfterExhaust(StatTable.StanceSurefoot, StatTable.StanceSurefootExhaust, "stance surefoot")
     end      
-    if not StatTable.Alertness and Grouped() and StatTable.current_moves > 1000 and TryLock("GameLoopAlertness", 30) then Battle.DoAfterCombat("alertness") end
     
   elseif MyClass == "Ripper" then
     if not GlobalVar.AutoStance then return end -- only swap if GlobalVar.AutoStance is on
@@ -101,7 +99,7 @@
     end
   elseif MyClass == "Berserker" then
     if not GlobalVar.AutoStance then return end
-    if StatTable.Level == 51 and not StatTable.Rally then TryAction("rally", 60) end
+    if StatTable.Level == 51 and not StatTable.Rally then TryGameLoopAction("rally", 60) end
   
   elseif MyClass == "Paladin" then
     if not GlobalVar.AutoStance then return end -- only swap if GlobalVar.AutoStance is on
@@ -119,39 +117,33 @@
       if not StatTable.BearStance then UseSkillAfterExhaust(StatTable.EmuStance, StatTable.EmuStanceExhaust, "stance emu") end
     end
     if StatTable.Level == 125 then
-      if not StatTable.StoneFist then Battle.DoAfterCombat("cast 'stone fist'") end
-      
       -- qi loop      
       local chakra = Battle.EnemiesChakra[gmcp.Char.Status.opponent_name] or nil
       
       if StatTable.OuterQi >= 10 then
          if tonumber(gmcp.Char.Status.opponent_level) > 180 then --or StatTable.OuterQi == 23 (ie max)
             if StatTable.SubLevel >= 250 then
-              TryAction("qi wave", 5)
+              TryGameLoopAction("qi wave", 5)
             else
-              TryAction("qi blast", 5)
+              TryGameLoopAction("qi blast", 5)
             end
          end
       end
       
-      if StatTable.SubLevel >= 200 and not StatTable.FlowLikeWater and not StatTable.FlowLikeWaterExhaust and StatTable.InnerQi >= 5 then
-        Battle.DoAfterCombat("cast 'flow like water'")
-
-      
       -- if there are groupies to rescue or we're in lag, try again later.
       -- TODO: perhaps check if we're the only tank?
-      elseif (AR.Status and table.size(AR.RescueStack) > 0) or tonumber(gmcp.Char.Vitals.lag) > 0 then
+      if (AR.Status and table.size(AR.RescueStack) > 0) or tonumber(gmcp.Char.Vitals.lag) > 0 then
         return
       elseif chakra and StatTable.SubLevel >= 100 and StatTable.InnerQi >= 7 then
-        TryAction("qi invert " .. (chakra and chakra or ""), 15)
+        TryGameLoopAction("qi invert " .. (chakra and chakra or ""), 15)
       elseif chakra and StatTable.InnerQi >= 7 then
-        TryAction("qi strike " .. (chakra and chakra or ""), 15)
+        TryGameLoopAction("qi strike " .. (chakra and chakra or ""), 15)
       elseif StatTable.StoneFist and StatTable.InnerQi >= 7 then
-        TryAction("qi punch", 5)
+        TryGameLoopAction("qi punch", 5)
       elseif StatTable.DaggerHand and StatTable.InnerQi >= 7 then
-        TryAction("qi thrust", 5)  
+        TryGameLoopAction("qi thrust", 5)
       else
-        TryAction("kick", 5)
+        TryGameLoopAction("kick", 5)
       end
       
     end
@@ -159,8 +151,6 @@
     if not GlobalVar.AutoStance then return end -- only swap if GlobalVar.AutoStance is on
     
     if StatTable.Level == 51 and StatTable.SubLevel > 100 then
-      if not StatTable.DaggerHand then Battle.DoAfterCombat("cast 'dagger hand'") end
-      
       -- Vampire fang will be prioritzed when health is less than 75% max, otherwise spectral is prioritized
       if not StatTable.VampireFangExhaust and StatTable.current_health < (StatTable.max_health * 0.75) then
         UseSkillAfterExhaust(StatTable.VampireFang, StatTable.VampireFangExhaust, "stance vampire fang")
@@ -170,16 +160,14 @@
       end
       
     elseif StatTable.Level == 125 then
-      if not StatTable.StoneFist then Battle.DoAfterCombat("cast 'stone fist'") end
-
       -- Vampire fang will be prioritzed when health is less than 75% max, otherwise spectral is prioritized
       if not (StatTable.VampireFang or StatTable.SpectralFang) then
         if not StatTable.VampireFangExhaust and (StatTable.current_health < (StatTable.max_health * 0.75) or StatTable.SpectralFangExhaust) then
-          Battle.DoAfterCombat("stance vampire fang")
-          TryAction("ctr vital stay", 5)
+          BuffManager.Add("stance vampire fang", 1)
+          TryGameLoopAction("ctr vital stay", 5)
         elseif not StatTable.SpectralFangExhaust then
-          Battle.DoAfterCombat("stance spectral fang")
-          TryAction("ctr push stay", 5)
+          BuffManager.Add("stance spectral fang", 1)
+          TryGameLoopAction("ctr push stay", 5)
         end
       end
       
@@ -190,39 +178,37 @@
       if StatTable.OuterQi >= 10 then
         if tonumber(gmcp.Char.Status.opponent_level) > 180 then --or StatTable.OuterQi == 23 (ie max)
           if StatTable.SubLevel >= 250 then
-            TryAction("qi wave", 5)
+            TryGameLoopAction("qi wave", 5)
           else
-            TryAction("qi blast", 5)
+            TryGameLoopAction("qi blast", 5)
           end
         end
       end
 
       -- inner qi logic
-      if StatTable.SubLevel >= 200 and not StatTable.BurningFury and not StatTable.BurningFuryExhaust and StatTable.InnerQi >= 5 then
-          Battle.DoAfterCombat("cast 'burning fury'")
       -- if there are groupies to rescue or we're in lag, try again later.
       -- TODO: perhaps check if we're the only tank?
-      elseif (AR.Status and table.size(AR.RescueStack) > 0) or tonumber(gmcp.Char.Vitals.lag) > 0 then
+      if (AR.Status and table.size(AR.RescueStack) > 0) or tonumber(gmcp.Char.Vitals.lag) > 0 then
         return
       elseif chakra and StatTable.SubLevel >= 100 and StatTable.InnerQi >= 7 then
-        TryAction("qi drain " .. (chakra and chakra or ""), 15)
+        TryGameLoopAction("qi drain " .. (chakra and chakra or ""), 15)
       elseif chakra and StatTable.InnerQi >= 7 then
-        TryAction("qi strike " .. (chakra and chakra or ""), 15)
+        TryGameLoopAction("qi strike " .. (chakra and chakra or ""), 15)
       elseif StatTable.StoneFist and StatTable.InnerQi >= 7 then
-        TryAction("qi punch", 5)
+        TryGameLoopAction("qi punch", 5)
       elseif StatTable.DaggerHand and StatTable.InnerQi >= 7 then
-        TryAction("qi thrust", 5)  
+        TryGameLoopAction("qi thrust", 5)
       else
-        TryAction("vital", 5)
+        TryGameLoopAction("vital", 5)
       end
     end
   elseif MyClass == "Soldier" then
     if not GlobalVar.AutoStance then return end -- only swap if GlobalVar.AutoStance is on
     if StatTable.Level == 125 or StatTable.SubLevel >= 101 then
       if not StatTable.StanceEchelon and not StatTable.EchelonExhaust then
-        Battle.DoAfterCombat("stance echelon")
+        BuffManager.Add("stance echelon", 1)
       elseif not StatTable.StanceEchelon and not StatTable.StanceSquare and not StatTable.SquareExhaust then
-        Battle.DoAfterCombat("stance square")
+        BuffManager.Add("stance square", 1)
       end       
 
     end
@@ -232,28 +218,13 @@
   elseif MyClass == "Priest" then
        
    
-  elseif MyClass == "Psionicist" then
-  
-  
-  elseif MyClass == "Mindbender" then
-    if StatTable.Level == 125 and not StatTable.HiveMind and StatTable.current_mana > 1000 then
-      Battle.DoAfterCombat("cast 'hive mind'") 
-    end
-  
-  elseif MyClass == "Fury" then
-    if not GlobalVar.AutoStance then return end 
-    if StatTable.Level >= 51 and not StatTable.Wildmind and StatTable.current_mana > 250 then
-      Battle.DoAfterCombat("cast 'wildmind'") 
-    end
-    
-  
   end -- end of MyClass
   
   
   
- end
- 
- function GameLoopRace(MyRace)
+end
+
+function GameLoopRace(MyRace)
    if MyRace == "Troll" then
       if (GlobalVar.AutoRevive and (StatTable.current_health / StatTable.max_health) < GlobalVar.AutoReviveHPpct and StatTable.current_health > 100 and StatTable.Foci) then 
         UseSkillAfterExhaust(StatTable.RacialRevival, StatTable.RacialRevivalFatigue, "racial revival")
@@ -262,13 +233,17 @@
       if not StatTable.RacialBreathFatigue and 
          not GroupLeader() 
          and StatTable.Level == 125 and
-         tonumber(gmcp.Char.Status.opponent_level) > 180 then TryAction("racial breath", 30) end
+         tonumber(gmcp.Char.Status.opponent_level) > 180 then 
+          TryGameLoopAction("racial breath", 30)
+        end
   
    elseif MyRace == "Dragon" then
       if not StatTable.RacialBreathFatigue and 
          not GroupLeader() 
          and StatTable.Level == 125 and
-         tonumber(gmcp.Char.Status.opponent_level) > 180 then TryAction("racial breath full", 30) end
+         tonumber(gmcp.Char.Status.opponent_level) > 180 then 
+          TryGameLoopAction("racial breath full", 30)
+        end
    elseif MyRace == "Kzinti" then
    
       if (StatTable.Level == 125 and StatTable.DamRoll > 200) or (StatTable.Level == 51 and StatTable.DamRoll >  100) then
@@ -286,14 +261,14 @@
   elseif MyRace == "Ignatur" then
     
     if StatTable.Level == 51 and not RacialFireaura and not StatTable.RacialFireauraFatigue then
-      TryAction("racial fireaura", 30)
+      TryGameLoopAction("racial fireaura", 30)
     end
   
   elseif MyRace == "Illithid" then
     local level_diff = (StatTable.Level == 125 and 25 or 10)
     
     if not StatTable.MindFlay and tonumber(gmcp.Char.Vitals.lag) == 0 and tonumber(gmcp.Char.Status.opponent_level) > (StatTable.Level + level_diff) then
-      TryAction("racial mindflay", 30)
+      TryGameLoopAction("racial mindflay", 30)
     end
     
 
@@ -301,10 +276,130 @@
   
   
    end -- end of MyRace
- end
- 
+end
 
- function GameLoop()
+function GameLoopOutOfCombatBuffs(MyClass)
+  if not GlobalVar.AutoBuff then return end
+  if SafeArea() then return end
+  if (tonumber(StatTable.Foci) or 0) <= 1 then return end
+  if Battle.Combat then return end
+  if StatTable.Position ~= "Stand" then return end
+
+  local mana_pct = ((StatTable.max_mana or 0) > 0) and (StatTable.current_mana / StatTable.max_mana) or 0
+
+  if MyClass == "Sorcerer" then
+    local min_moves = GroupHasClass({"Pal", "Paladin"}) and 20000 or 2000
+
+    if StatTable.Level >= 51 and not StatTable.DeathShroud then
+      BuffManager.Add("cast 'death shroud'", 1)
+    end
+    if StatTable.Level == 125 and StatTable.SubLevel >= 200 and not StatTable.VilePhilosophy then
+      BuffManager.Add("cast 'vile philosophy'", 1)
+    end
+    if StatTable.max_mana > 5000 and not StatTable.Mystical then
+      BuffManager.Add("cast mystical", 1)
+    end
+    if StatTable.Level == 125 and not StatTable.UnholyBargainExhaust and StatTable.current_health >= StatTable.max_health and StatTable.current_moves > min_moves and StatTable.current_mana < (StatTable.max_mana - 1000) and not GroupLeader() then
+      BuffManager.Add("cast 'unholy bargain'", 1)
+    end
+
+  elseif MyClass == "Wizard" then
+    if StatTable.max_mana > 5000 and not StatTable.Mystical then
+      BuffManager.Add("cast mystical", 1)
+    end
+
+  elseif MyClass == "Mage" then
+    if StatTable.max_mana > 5000 and not StatTable.Mystical then
+      BuffManager.Add("cast mystical", 1)
+    end
+
+  elseif MyClass == "Necromancer" then
+    if StatTable.max_mana > 5000 and not StatTable.Mystical then
+      BuffManager.Add("cast mystical", 1)
+    end
+
+  elseif MyClass == "Stormlord" then
+    if StatTable.Level == 125 and not StatTable.Solitude and not StatTable.GaleStratum and mana_pct > 0.5 then
+      BuffManager.Add("cast stratum gale", 1)
+    end
+
+  elseif MyClass == "Black Circle Initiate" then
+    if StatTable.Level == 125 then
+      if not StatTable.KahbyssInsight and not StatTable.KahbyssInsightExhaust then
+        BuffManager.Add("cast 'kahbyss insight'", 1)
+      elseif not StatTable.SenseWeakness and not StatTable.SenseWeaknessExhaust then
+        BuffManager.Add("cast 'sense weakness'", 1)
+      end
+    elseif StatTable.Level == 51 and StatTable.SubLevel > 250 and not StatTable.SenseWeakness and not StatTable.SenseWeaknessExhaust then
+      BuffManager.Add("cast 'sense weakness'", 1)
+    end
+
+  elseif MyClass == "Bodyguard" then
+    if not StatTable.Alertness and Grouped() and StatTable.current_moves > 1000 and TryLock("GameLoopAlertness", 30) then
+      BuffManager.Add("alertness", 1)
+    end
+
+  elseif MyClass == "Monk" then
+    if StatTable.Level == 125 then
+      if not StatTable.StoneFist then BuffManager.Add("cast 'stone fist'", 1) end
+      if StatTable.SubLevel >= 200 and not StatTable.FlowLikeWater and not StatTable.FlowLikeWaterExhaust and StatTable.InnerQi >= 5 then
+        BuffManager.Add("cast 'flow like water'", 1)
+      end
+    end
+
+  elseif MyClass == "Shadowfist" then
+    if StatTable.Level == 51 and StatTable.SubLevel > 100 then
+      if not StatTable.DaggerHand then BuffManager.Add("cast 'dagger hand'", 1) end
+    elseif StatTable.Level == 125 then
+      if not StatTable.StoneFist then BuffManager.Add("cast 'stone fist'", 1) end
+      if StatTable.SubLevel >= 200 and not StatTable.BurningFury and not StatTable.BurningFuryExhaust and StatTable.InnerQi >= 5 then
+        BuffManager.Add("cast 'burning fury'", 1)
+      end
+    end
+
+  elseif MyClass == "Psionicist" then
+    if StatTable.Level == 125 and not StatTable.IllusoryShield and StatTable.current_mana > 1000 then
+      BuffManager.Add("cast 'illusory shield'", 1)
+    end
+    if StatTable.Level == 125 and not StatTable.KineticChain and not StatTable.KineticChainExhaust and StatTable.current_mana > 10000 then
+      BuffManager.Add("cast 'kinetic chain'", 1)
+    end
+    if StatTable.Level == 125 and StatTable.SubLevel > 200 and not StatTable.Gravitas and StatTable.current_mana > 1000 then
+      BuffManager.Add("cast 'gravitas'", 1)
+    end
+
+  elseif MyClass == "Mindbender" then
+    if StatTable.Level == 125 and not StatTable.IllusoryShield and StatTable.current_mana > 1000 then
+      BuffManager.Add("cast 'illusory shield'", 1)
+    end
+    if StatTable.Level == 125 and not StatTable.HiveMind and StatTable.current_mana > 1000 then
+      BuffManager.Add("cast 'hive mind'", 1)
+    end
+
+  elseif MyClass == "Fury" then
+    if StatTable.Level >= 51 and not StatTable.Wildmind and StatTable.current_mana > 250 then
+      BuffManager.Add("cast 'wildmind'", 1)
+    end
+
+  elseif MyClass == "Druid" then
+    if StatTable.Level == 125 and not StatTable.SiderealReflections then
+      BuffManager.Add("cast 'sidereal reflections'", 1)
+    end
+
+  elseif MyClass == "Paladin" then
+    if StatTable.Oath ~= "" and GlobalVar.PaladinRescue then
+      if StatTable.Level == 51 and StatTable.SubLevel >= 250 and not StatTable.JoinedBoon and not StatTable.HeroicBoon then
+        BuffManager.Add("cast 'joined boon'", 1)
+      end
+      if StatTable.Level == 125 and not StatTable.SharedBoon and not StatTable.ValorousBoon and not StatTable.FinalBoon then
+        BuffManager.Add("cast 'shared boon'", 1)
+      end
+    end
+  end
+end
+
+
+function GameLoop()
   
   local MyClass = StatTable.Class
   local MyRace = StatTable.Race
@@ -336,7 +431,7 @@
     if tonumber(gmcp.Char.Vitals.monhp) and StatTable.current_mon > 0 and StatTable.max_mon > 0 and StatTable.Monitor ~= "" then
         local MonitorHPpct = StatTable.current_mon / StatTable.max_mon
         if MonitorHPpct < AR.MontorRescueHPpct then
-            TryAction("rescue " .. StatTable.Monitor, 5)
+            TryGameLoopAction("rescue " .. StatTable.Monitor, 5)
         end
     end
   end
@@ -345,7 +440,7 @@
   if not StatTable.Bladetrance then 
    StatTable.BladetranceLevel = 0
   elseif StatTable.Bladetrance and StatTable.BladetranceLevel == 0 then
-    TryAction("bladetrance", 30)
+    TryGameLoopAction("bladetrance", 30)
   end
 
   
@@ -384,6 +479,7 @@
       
   end
   
+  GameLoopOutOfCombatBuffs(MyClass)
   
   -- Call Class and Race specific GameLoops if we are in combat
   if not GlobalVar.AutoStance then return end
@@ -395,9 +491,6 @@
     if MyClass == "Cleric" then castPantheonSpell()
     elseif MyClass == "Psionicist" then castKineticEnhancers()
     elseif MyClass == "Mage" then castHighMagickSpell()
-    elseif MyClass == "Druid" then
-      if not GlobalVar.AutoStance then return end
-      if StatTable.Level == 125 and not StatTable.SiderealReflections then TryAction("cast 'sidereal reflections'", 30) end -- TODO check what lord level gets it
     end
     if StatTable.Level == 125 then
       if StatTable.Curse and StatTable.Curse ~= "continuous" and

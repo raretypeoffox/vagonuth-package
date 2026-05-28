@@ -2,7 +2,6 @@
 -- Attribute: isActive
 
 -- Script Code:
-
 cs = getCommandSeparator() -- shortcut for getCommandSeparator()
 
 -- format_int(number), where number is an integer, returns a formatted string
@@ -180,7 +179,14 @@ function printGameMessage(title, message, colour, colour_message)
   colour_message = colour_message or ("ansi_" .. colour)
   
   local formatStr = string.format("<%s>%s<%s>: %s\n", colour, title, colour_message, message)
-  cecho(StaticVars.GameMsgsChatOutput, formatStr)
+  if StaticVars.GameMsgsChatOutput then
+    cecho(StaticVars.GameMsgsChatOutput, formatStr)
+    if GlobalVar.RightContainer == false then
+      cecho(formatStr)
+    end
+  else
+    cecho(formatStr)
+  end
 end
 
 -- Send less important game messages here so players can turn them off

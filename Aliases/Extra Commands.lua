@@ -41,6 +41,8 @@ local syntax_tbl = {
   {"repcharstats <char> <chat>", "reports character's HP/MP stats to chat channel"},
   {"iaw <equip>", "insures and wears a piece of equipment"},
   {"autotrack", "different tracking options, see autotrack for details"},
+  {"buffmanager blocked", "shows blocked spells and skills for the current character"},
+  {"buffmanager reset", "clears blocked spells and skills for the current character"},
   {"dropjunk", "drops all junk in inventory"},
   
 

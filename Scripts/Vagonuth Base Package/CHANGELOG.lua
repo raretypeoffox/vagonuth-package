@@ -4,7 +4,6 @@
 -- Script Code:
 -- Vagonuth AVATAR Package Change Log
 
-
 -- v1.0.0
 -- initial release
 
@@ -105,26 +104,44 @@
 -- v1.3.2
 -- bug fix: nec mobs removed from player lookups (eg aoe spells, autotarget, etc)
 
+-- v1.3.3
+-- added: autosurge (on|off) - script sometimes changes surge level based on its own logic, use off to prevent this
+-- added: gui right [on|off] - turn on or off chats on the right
+-- added: autobuff [on|off] - turns of buffs being reapplied automatically during a run
+-- added: autotarget (delay #|min #) - change the min hp you autotarget / the min spell casting delay
+-- added (beta): legend command "spellup" - attempts to buff you based on the lores you know
+-- added: legend wizard spells will be set in AutoCaster when "lore" is run (now parses learned lores)
+-- update: significant rewrite on how buff's are cast after battle [BuffManager] - sould be more consistant
+-- update: buffmanager now doesn't try to recast spells character hasn't practiced
+-- minor addition: commands for buffmanager [reset|blocked] now exist to reset/show blocked spells (ie if not learned)
+-- update: pantheon, kinetic chain, high magick all updated
+-- minor addition: sabletarget <char> now auto gives sable arrows to <char>
+-- minor update: repgold <level> added, makes it easier for checking on gold at specific tier, eg, repgold 125
+-- minor update: updated autorescue logic for fyr, when fyr rescues groupmate, will no longer rescue them until after current combat
+-- minor update: ran no longer added with ar auto
+-- minor update: improved "kin", "hm" and "panth" commands
+-- minor update: bod improvements
+-- minor update: added gallop to cen, discorporate to tok
+-- minor update: added holy sight and detect haven to StatTable
+-- minor update: added max surge check for surging with classes that can't surge 5
+-- minor update: built in auto resetprofile on update to ensure layout is fixed
+-- bug fix: aoe casting had a bug introduced in the last version
+-- bug fix: if a psi slept after surge up, it wouldn't turn off quicken
+
+
 -- v1.4.0
 -- TODO: add Nec stuff to labels etc.
--- TODO: add gallop
--- TODO: fury
--- TODO: build in auto resetprofile on update to ensure layout is fixed
--- TODO: add a downloadable message that's presented once
-
-
+-- TODO: fury lord stuff
 
 
 -- Long-term Todo
 -- BCI: Lord 75+ (swap bwtn mindstrike & ass)
--- add max surge check for surging with classes that can't surge 5
 -- autoskill scatter doesn't work because its not 5 seconds of lag but rather the next round that it resets
 -- customizable variables
 -- keep custom variables outside of main package so not overwritten when updated
 -- have a script create a script outside of main package on first installation
 -- python script to convert between .lua and .xml
 -- make scan while move client side alias
--- mob death queue, use expandalias?
 -- inprogress: make list of mobs with weapon for decept / shatter (mnk)
 
 -- BUGS:

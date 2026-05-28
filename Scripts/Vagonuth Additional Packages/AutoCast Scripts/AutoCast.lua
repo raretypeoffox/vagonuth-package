@@ -26,7 +26,11 @@ function AutoCastStatus()
   printMessage("AutoCast", "Currently " .. (GlobalVar.AutoCast and "<green>ON" or "<red>OFF"))
   if GlobalVar.AutoCaster and GlobalVar.AutoCaster ~= "" then printMessage("AutoCast", "Spell set to <yellow>" .. GlobalVar.AutoCaster) end
   printMessage("AutoCast", "Surge level set to " .. (GlobalVar.SurgeLevel == 1 and "<red>OFF" or "<yellow>" .. GlobalVar.SurgeLevel))
+  printMessage("AutoCast", "Auto surge set to " .. (GlobalVar.AutoSurgeLevel and "<green>ON" or "<red>OFF"))
 end
+
+
+
 
 
 

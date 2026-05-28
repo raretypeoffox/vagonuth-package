@@ -142,12 +142,26 @@ function AR.RemovePlayerFromStack(name)
   end
 end
 
+
+function AR.FyrRescue(name)
+    if GlobalVar.GroupMates and GlobalVar.GroupMates[GMCP_name(name)] and GlobalVar.GroupMates[GMCP_name(name)].class ~= "Fyr" then 
+        return
+    end
+
+    if AR.RescueList[string.lower(name)] == true then -- if fyr is on our rescue list, we want to add them back on at the end of battle.
+        AR.Debug("\n<white>Fyr rescue, temporarily remove them for rescue list until end of battle")
+        AR.RescueFyr[GMCP_name(name)] = true
+        AR.Remove(name)
+    end
+end
+
 function AR.GroupieRescuesMe(name)
   if AR.Status == true then 
     if GlobalVar.GroupMates and GlobalVar.GroupMates[GMCP_name(name)] and  GlobalVar.GroupMates[GMCP_name(name)].class == "Bzk" then return end
     
     if GlobalVar.GroupMates and GlobalVar.GroupMates[GMCP_name(name)] and  GlobalVar.GroupMates[GMCP_name(name)].class == "Fyr" then 
-      AR.RescueFyr[GMCP_name(name)] = true
+      AR.FyrRescue(name)
+      return
     end
     
     if AR.RescueList[string.lower(name)] == true then
@@ -255,11 +269,11 @@ function AR.Auto()
     elseif v.level:find("Mob", 1, true) then
      -- not adding nec mobs (shouldn't reach here but just incase)
     else
-      if StatTable.Level == 125 and (v.class == "Pal" or v.class == "Bld" or v.class == "War" or v.class == "Rip" or v.class == "Bod" or v.class == "Mon" or v.class == "Shf") then
+      if StatTable.Level == 125 and (v.class == "Pal" or v.class == "Bld" or v.class == "War" or v.class == "Rip" or v.class == "Bod" or v.class == "Mon" or v.class == "Shf" or v.class == "Ran") then
         AR_excluded = AR_excluded .. v.name .. " |BW|||BY| "
       elseif StatTable.Level == 51 and (
               (v.class == "Pal" and tonumber(string.match(v.level, "%d+")) >= 250) or 
-              ((v.class == "War" or v.class == "Rip" or v.class == "Bod" or v.class == "Mon" or v.class == "Shf") and tonumber(v.hp) > 2500)) then
+              ((v.class == "War" or v.class == "Rip" or v.class == "Bod" or v.class == "Mon" or v.class == "Shf" or v.class == "Ran") and tonumber(v.hp) > 2500)) then
         AR_excluded = AR_excluded .. v.name .. " |BW|||BY| "
       else
         -- exclude mutants as well

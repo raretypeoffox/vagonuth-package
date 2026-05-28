@@ -22,6 +22,9 @@
 -- 16 (substring): an ebony longbow
 -- 17 (substring): an ebony crossbow
 -- 18 (substring): a celestial sling
+-- 19 (substring): a shard of accuracy
+-- 20 (substring): a shard of damage
+-- 21 (substring): a shard of protection
 
 -- Script Code:
 cecho (string.rep (" ",80-tonumber(string.len(line))) .."<blue> [TRANSMOG]")

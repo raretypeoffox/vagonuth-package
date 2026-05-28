@@ -211,8 +211,9 @@ function UpdateGUI()
     end
     
     -- Skills/spells that apply to all (Rows 1 - 5)
-    setLabelProperties(MoveHiddenLabel, StatTable.MoveHidden, "Move Hidden", "Not Hidden", "move hidden")
-    setLabelProperties(SneakLabel, StatTable.Sneak, "Sneak", "Not Sneaky", "sneak")
+    setLabelProperties(MoveSneakLabel.left, StatTable.MoveHidden, "Move", "Move", "move hidden")
+    setLabelProperties(MoveSneakLabel.right, StatTable.Sneak, "Sneak", "Sneak", "sneak")
+    setLabelProperties(DetectsLabel, StatTable.HolySight, "Detects", "Detects", "cast 'holy sight'")
     setLabelProperties(InvisLabel, StatTable.Invis, "Invis", "Visible", "cast invis")
     setLabelProperties(SancLabel, StatTable.Sanctuary, "Sanc", "Sanctuary", "cast sanctuary")
     setLabelProperties(WaterFlyLabel.left, StatTable.WaterBreathing, "W", "Water", "cast 'water breathing'")
@@ -410,6 +411,8 @@ function UpdateGUI()
       setNextAvailableLabelExhaust(StatTable.StanceSurefoot, StatTable.StanceSurefootExhaust, "Surefoot", "Surefoot", "stance surefoot")
       setNextAvailableLabelExhaust(StatTable.StanceRelentless, StatTable.StanceRelentlessExhaust, "Relentless", "Relentless", "stance relentless")
       setNextAvailableLabel(StatTable.Alertness, "Alert", "Alertness", "alertness")
+      setNextAvailableLabelIfActive(StatTable.Renown, "Renown", "Renown", "brag")
+      setNextAvailableLabelIfActive(StatTable.Payback, "Payback", "Payback", nil)
     
     
     elseif(MyClass == "Paladin") then
@@ -444,6 +447,9 @@ function UpdateGUI()
     elseif (StatTable.Class == "Psionicist") then
       setNextAvailableLabel(StatTable.Savvy, "Savvy", "Savvy", "cast savvy")
       setNextAvailableLabelExhaust(StatTable.KineticChain, StatTable.KineticChainExhaust, "Kin Chain", "Kinetic Chain", "cast 'kinetic chain'") 
+      if MyLevel == 125 or (MyLevel == 51 and MySubLevel >= 500) then
+        setNextAvailableLabel(StatTable.IllusoryShield, "Illusory", "Illusory Shield", "cast 'illusory shield'")
+      end
       setNextAvailableLabel(StatTable.FuryOfTheMind, "Fury", "Fury Of The Mind", "cast 'fury of the mind'")
       setNextAvailableLabel(StatTable.MindsEye, "Minds Eye", "Minds Eye", "cast 'minds eye'")
       setNextAvailableLabel(StatTable.Orbit, "Orbit", "Orbit", "")
@@ -463,9 +469,12 @@ function UpdateGUI()
     elseif (StatTable.Class == "Mindbender") then
       setNextAvailableLabel(StatTable.Savvy, "Savvy", "Savvy", "cast savvy")
       setNextAvailableLabel(StatTable.MindsEye, "Minds Eye", "Minds Eye", "cast 'minds eye'")
+      if MyLevel == 125 or (MyLevel == 51 and MySubLevel >= 500) then
+        setNextAvailableLabel(StatTable.IllusoryShield, "Illusory", "Illusory Shield", "cast 'illusory shield'")
+      end
       setNextAvailableLabel(StatTable.HiveMind, "Hive Mind", "Hive Mind", "cast 'hive mind'")
       setNextAvailableLabel(StatTable.EmpathicResonance, "Emp. Res.", "Emp. Res.", "cast 'empathic resonance'")
-      if StatTable.PsyphonExhaust then setNextAvailableLabelDebuff(StatTable.PsyphonExhaust, "Psyphon") end
+      setNextAvailableLabelExhaust(nil, StatTable.PsyphonExhaust, "Psyphon", "Psyphon", "cast psyphon")
     elseif StatTable.Class == "Fury" then
       setNextAvailableLabel(StatTable.Wildmind, "Wildmind", "Wildmind", "cast wildmind")
       setNextAvailableLabelIfActiveFury(StatTable.DaringFury,      "Daring Fury",      "Daring Fury",      nil)
@@ -498,6 +507,8 @@ function UpdateGUI()
       setNextAvailableLabelExhaust(StatTable.RacialFrenzy, StatTable.RacialFrenzyFatigue, "Frenzy", "Racial Frenzy", "racial frenzy")
     elseif MyRace == "Griffon" then
       setNextAvailableLabelExhaust(StatTable.RacialHeraldry, StatTable.RacialHeraldryFatigue, "Heraldry", "Racial Heraldry", "racial heraldry")
+    elseif MyRace == "Centaur" then
+      setNextAvailableLabelExhaust(StatTable.RacialGallop, StatTable.RacialGallopFatigue, "Gallop", "Racial Gallop", "racial gallop")
     
     elseif MyRace == "Hobgoblin" then
       setNextAvailableLabelExhaust(StatTable.RacialFrenzy, StatTable.RacialFrenzyFatigue, "Frenzy", "Racial Frenzy", "racial frenzy")
@@ -521,6 +532,9 @@ function UpdateGUI()
       setNextAvailableLabelExhaust(nil, StatTable.RacialScrambleFatigue, "Scramble", "Scramble", "racial scramble")
       setNextAvailableLabel(StatTable.RacialMindFlay, "MindFlay", "MindFlay", "racial mindflay")
       setNextAvailableLabelIfActive(StatTable.RacialMentalAptitude, "Mental Apt.", nil, nil)
+      
+    elseif MyRace == "Tokoloshe" then
+      setNextAvailableLabelExhaust(StatTable.RacialDiscorporate, StatTable.RacialDiscorporateFatigue, "Disc.", "Discorporate", "racial discorporate")
     
     elseif (MyRace == "Dragon") then
       setNextAvailableLabelExhaust(StatTable.RacialBreath, StatTable.RacialBreathFatigue, "Breath", "Breath", "racial breath full")
@@ -579,6 +593,10 @@ function UpdateGUI()
       setNextAvailableLabelIfActive(StatTable.Intervention, "Interv.", nil, nil) 
       setNextAvailableLabelIfActive(StatTable.Solitude, "Solitude", nil, nil)
     end
+    
+    -- Bld Buffs
+    setNextAvailableLabelIfActive(StatTable.ThousandCuts, "Thousand Cuts", nil, nil)
+    
     
     
     -- Commune / Hog!!

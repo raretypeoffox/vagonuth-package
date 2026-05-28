@@ -12,6 +12,8 @@
 
 -- Script Code:
 if matches.dmgdesc == "terminal" or matches.dmgdesc == "your" then return end
+if matches[0] == "You wield sharp folder with a bunch of arcane scrolls." then return end
+
 
 if not DamageVerbTable[matches.dmgdesc] then 
   if Battle.Combat and GlobalVar.Debug then 

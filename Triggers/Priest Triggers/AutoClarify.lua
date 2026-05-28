@@ -10,13 +10,17 @@
 -- 4 (regex): ^Bhyss has come for you, (w\+)$
 -- 5 (regex): ^A smarmy grin crosses (\w+)'s face!$
 -- 6 (regex): ^(\w+) pales as (he|she|it) (see|sees) (his|her|its) death before (him|her|it).$
+-- 7 (regex): ^(\w+) is cursed with something...$
 
 -- Script Code:
+-- ^(\w+) is cursed with something...$ -- mass unrest would cause this to trigger on every groupmate, does that break the trig?
+
+
 if not IsGroupMate(matches[2]) then return; end
 
 -- Check if we have a feared tank, if so, clarify immediately
 if string.find(matches[1], "death before") then 
-  for _, class in ipairs({"War", "Rip", "Bod", "Mon", "Shf", "Bzk", "Bld", "Pal"}) do
+  for _, class in ipairs({"War", "Rip", "Bod", "Mon", "Shf", "Bzk", "Bld", "Pal", "Fsk"}) do
     if GlobalVar.GroupMates[GMCP_name(matches[2])].class == class then
         TryAction("quicken 5" .. getCommandSeparator() .. "preach clarify"  .. getCommandSeparator() .. "preach clarify"   .. getCommandSeparator() .. "quicken off", 5)
         return

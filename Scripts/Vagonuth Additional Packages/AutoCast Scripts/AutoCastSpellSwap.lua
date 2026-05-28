@@ -14,13 +14,15 @@ local DoNotArea_RoomList = {
   "Ponderous Flowers",
   "A menagerie",
   "A tiny cell",
+  "A Battle of Wits",
 }
 
 local DoNotArea_MobList = {
   "A long, dark figure cracks his knuckles.", -- Bailey
   "A disinterested halfling glares at you.", -- Rickitt
   "An elven woman is here, in plain clothes.", --Mayraema
-  "A naiad is here, staring fearfully at you." -- Kiahla
+  "A naiad is here, staring fearfully at you.", -- Kiahla
+  "The mess hall cook licks his lips and ogles you like a piece of meat.", -- forsaken asylum
 }
 
 local AutoCastOnMobDeathEventHandler = AutoCastOnMobDeathEventHandler or nil
@@ -94,7 +96,7 @@ function UpdateAutoCastSpell()
   
   -- Second check if there are any mobs that we do not AOE. If so, swap to single target
   for _,mob in pairs(gmcp.Room.Players) do
-    if(tonumber(mob.name) ~= nil and not Players[PlayerName].fullname:find("%(CHARMED%)") and ArrayHasSubstring(DoNotArea_MobList, mob.fullname)) then
+    if(tonumber(mob.name) ~= nil and not mob.fullname:find("%(CHARMED%)") and ArrayHasSubstring(DoNotArea_MobList, mob.fullname)) then
         AutoCastSetSpell(GlobalVar.AutoCasterSingle)
       return
     end

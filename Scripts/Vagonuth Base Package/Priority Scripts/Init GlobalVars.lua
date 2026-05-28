@@ -29,6 +29,8 @@ function Init.GlobalVars()
   GlobalVar.PerformanceMode = GlobalVar.PerformanceMode or false
   GlobalVar.Debug = GlobalVar.Debug or false
   GlobalVar.Verbose = GlobalVar.Verbose or true
+  if GlobalVar.RightContainer == nil then GlobalVar.RightContainer = true end
+  GlobalVar.EchoToMainConsole = GlobalVar.EchoToMainConsole or false
   
   GlobalVar.Boons = {}
   GlobalVar.LastBoon = GlobalVar.LastBoon or nil
@@ -57,6 +59,7 @@ function Init.GlobalVars()
   -- Caster Variables
   GlobalVar.AutoCast = false
   GlobalVar.SurgeLevel = 2
+  if GlobalVar.AutoSurgeLevel == nil then GlobalVar.AutoSurgeLevel = true end
   GlobalVar.AutoCaster = ""
   GlobalVar.AutoCasterAOE = ""
   GlobalVar.QuickenStatus = false
@@ -66,6 +69,7 @@ function Init.GlobalVars()
   GlobalVar.SkillStyle = ""
   
   GlobalVar.AutoFrenzy = true
+  if GlobalVar.AutoBuff == nil then GlobalVar.AutoBuff = true end
   
   -- Cleric / Druid Variables
   GlobalVar.AutoHeal = false
@@ -172,6 +176,7 @@ function Init.Char(MyClass, MyRace, MyLevel, MySubLevel)
     -- Caster Variables
     GlobalVar.AutoCast = false
     GlobalVar.SurgeLevel = (MyLevel == 125 and 2 or 1)
+    if GlobalVar.AutoSurgeLevel == nil then GlobalVar.AutoSurgeLevel = true end
     GlobalVar.AutoCaster = ""
     GlobalVar.AutoCasterSingle = ""
     GlobalVar.AutoCasterAOE = ""
@@ -255,6 +260,14 @@ function Init.Char(MyClass, MyRace, MyLevel, MySubLevel)
         GlobalVar.SurgeLevel = 1
         GlobalVar.AutoCaster = "ultrablast"    
       end
+    elseif MyClass == "Fury" then
+      if MyLevel == 125 then
+        --TODO
+      elseif MyLevel == 51 then
+        GlobalVar.AutoCast = false
+        GlobalVar.SurgeLevel = 1
+        GlobalVar.AutoCaster = "lash"  
+      end  
         
       
     end
@@ -388,6 +401,8 @@ tempTimer(0, function() Init.ProfileOnLogin() end)
 local PROFILE_VARIABLES = {
   {"BuddyChatName", nil},
   {"BuddyChatColour", nil},
+  {"RightContainer", true},
+  {"EchoToMainConsole", false},
   {"Silent", false},
   {"Password", nil},
   {"AutoStance", false},
@@ -396,6 +411,8 @@ local PROFILE_VARIABLES = {
   {"Debug", false},
   {"Verbose", false},
   {"AutoFrenzy", true},
+  {"AutoBuff", true},
+  {"AutoSurgeLevel", true},
   {"PaladinRescue", true},
   {"DownloadMessage", nil},
   {"ShowNecMobs", false},
@@ -407,7 +424,11 @@ function SaveProfileVars()
   -- Save all variables defined in PROFILE_VARIABLES
   for _, pair in ipairs(PROFILE_VARIABLES) do
     local varName, defaultValue = pair[1], pair[2]
-    GlobalVar.Saved[varName] = GlobalVar[varName] or defaultValue
+    if GlobalVar[varName] == nil then
+      GlobalVar.Saved[varName] = defaultValue
+    else
+      GlobalVar.Saved[varName] = GlobalVar[varName]
+    end
   end
   
   local location = getMudletHomeDir() .. "/ProfileVariables.lua"
@@ -427,7 +448,11 @@ function LoadProfileVars()
   
   for _, pair in ipairs(PROFILE_VARIABLES) do
     local varName, defaultValue = pair[1], pair[2]
-    GlobalVar[varName] = GlobalVar.Saved[varName] or defaultValue
+    if GlobalVar.Saved[varName] == nil then
+      GlobalVar[varName] = defaultValue
+    else
+      GlobalVar[varName] = GlobalVar.Saved[varName]
+    end
   end
 end
 

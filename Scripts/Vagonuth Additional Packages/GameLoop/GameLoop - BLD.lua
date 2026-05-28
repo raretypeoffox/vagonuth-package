@@ -141,6 +141,21 @@ local dancePatterns = {
     },
     RestartDance = {"Inspire", "Veil", "Dervish", "Bladedance", "Unend"},
   },
+  unend_inspire = {
+    PrimaryDance = {
+      NextDance = "Unend",
+      BladetranceBinary = true,
+      DanceList = {"Inspire", "Veil"},
+      StanceTimer = {1, 1},
+    },
+    SecondaryDance = {
+      NextDance = "Inspire",
+      BladetranceBinary = false,
+      DanceList = {"Unend", "Veil", "Bladedance", "Dervish"},
+      StanceTimer = {5, 1, 5, 5},
+    },
+    RestartDance = {"Unend", "Inspire", "Veil", "Dervish", "Bladedance"},
+  },
   hero = {
     -- For hero, we only need one stage:
     PrimaryDance = {

@@ -1,5 +1,4 @@
 -- Trigger: Death Shroud down 
--- Attribute: isActive
 
 
 -- Trigger Patterns:

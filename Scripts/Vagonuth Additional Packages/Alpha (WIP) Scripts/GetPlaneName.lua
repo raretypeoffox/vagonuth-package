@@ -115,6 +115,7 @@ function GetPlaneName(area_name)
   if not area_name then area_name = gmcp.Room.Info.zone end
   --print("Area name:", area_name)
   
+  if GetTier(area_name) == "Legend" then return "Legend" end
   if GetTier(area_name) ~= "Lord" then return "Midgaardia" end
  
   -- Look up the area name in the table and return the result,

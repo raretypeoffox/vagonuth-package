@@ -158,6 +158,24 @@ function AutoCastToggle()
   end
 end
 
+function RightContainerToggle()
+  GlobalVar.RightContainer = not GlobalVar.RightContainer
+
+  if not GlobalVar.RightContainer then
+    GlobalVar.EchoToMainConsole = true
+  else
+    GlobalVar.EchoToMainConsole = false
+  end
+
+  if GlobalVar.GUI then
+    LoadLayout()
+  end
+
+  if SaveProfileVars then
+    SaveProfileVars()
+  end
+end
+
 function AutoKillSetGUI()
   if not GlobalVar.GUI then return end
   if not GlobalVar.KillStyle then GlobalVar.KillStyle = "kill" end
@@ -208,11 +226,15 @@ function LoadLayout()
   local LeftPanelPercent = 20 -- left side panel should be what % of available space
   local LeftPanelWidth = tonumber(mainWidth)*(LeftPanelPercent/100)  
   local RightPanelPercent = 25 -- right panel should be 25% of the available space
-  local RightPanelWidth = tonumber(mainWidth)*(RightPanelPercent/100)  
+  local RightContainerEnabled = GlobalVar.RightContainer
+  if RightContainerEnabled == nil then RightContainerEnabled = true end
+  local FullRightPanelWidth = tonumber(mainWidth)*(RightPanelPercent/100)
+  local RightPanelWidth = RightContainerEnabled and FullRightPanelWidth or 0
   local CentrePanelWidth = mainWidth - (RightPanelWidth + LeftPanelWidth)-- the middle area left after we have 2 side panels
   local CentrePanelSize = CentrePanelWidth/20 --break the space in middle up into 20 spaces for loading stuff in 
   
   Layout.DefaultFontSize = GlobalVar.FontSize or 8
+  if not RightContainerEnabled then GlobalVar.EchoToMainConsole = true end
   
   -- left hand panel - full height
   setBorderLeft(LeftPanelWidth)
@@ -342,8 +364,8 @@ function LoadLayout()
   local rowStartY = 26
 
   -- affect labels
-  MoveHiddenLabel = createLabel("MoveHiddenLabel", "3%", rowStartY, "28%", affectLabelHeight, "white", [[<left>Move Hidden</left>]], left_container_bottom, nil, styleSheetOn)
-  SneakLabel = createLabel("SneakLabel", "34%", rowStartY, "28%", affectLabelHeight, "white", [[<left>Sneak</left>]], left_container_bottom, nil, styleSheetOn)
+  MoveSneakLabel = createSplitLabel("MoveSneak", "3%", rowStartY, "28%", affectLabelHeight, left_container_bottom)
+  DetectsLabel = createLabel("DetectsLabel", "34%", rowStartY, "28%", affectLabelHeight, "white", [[<left>Detects</left>]], left_container_bottom, nil, styleSheetOn)
   InvisLabel = createLabel("InvisLabel", "65%", rowStartY, "28%", affectLabelHeight, "white", [[<left>Invis</left>]], left_container_bottom, nil, styleSheetOn)
   SancLabel = createLabel("SancLabel", "3%", rowStartY + rowSpacing, "28%", affectLabelHeight, "white", [[<left>Sanctuary</left>]], left_container_bottom, nil, styleSheetOn)
   FrenzyLabel = createLabel("FrenzyLabel", "34%", rowStartY + rowSpacing, "28%", affectLabelHeight, "white", [[<left>Frenzy</left>]], left_container_bottom, nil, styleSheetOn)
@@ -384,14 +406,15 @@ function LoadLayout()
     end
   end
 
-  -- RIGHT CONTAINER 
+  -- RIGHT CONTAINER
   setBorderRight(RightPanelWidth)
   
   -- Top border
   right_container = Geyser.Container:new({
     name = "right_container",
-    x = mainWidth - RightPanelWidth, y = 0,
-    width = RightPanelWidth, height = "100%",
+    x = RightContainerEnabled and mainWidth - FullRightPanelWidth or mainWidth,
+    y = 0,
+    width = FullRightPanelWidth, height = "100%",
   })
   
   -- RightOutline
@@ -427,13 +450,22 @@ function LoadLayout()
   
   createTraditionalChat(right_container)
 
-  PublicChannels:show()
-  GroupChat:show()
-  BuddyChat:show()
-  
-  ChannelLabel:show()
-  GroupLabel:show()
-  BuddyLabel:show()
+  StaticVars.GameMsgsChatOutput = "GameChat"
+
+  if RightContainerEnabled then
+    right_container:show()
+    PublicChannels:show()
+    GroupChat:show()
+    BuddyChat:show()
+    GameChat:show()
+
+    ChannelLabel:show()
+    GroupLabel:show()
+    BuddyLabel:show()
+    GameLabel:show()
+  else
+    right_container:hide()
+  end
     
   --BOTTOM STAT PANEL
   setBorderBottom(BottomPanelHeight)

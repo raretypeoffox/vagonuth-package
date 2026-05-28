@@ -1,5 +1,4 @@
 -- Trigger: Vile Philosophy 
--- Attribute: isActive
 
 
 -- Trigger Patterns:

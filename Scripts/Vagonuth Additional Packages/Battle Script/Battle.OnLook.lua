@@ -29,7 +29,8 @@ local function MakeSet(t)
 end
 
 -- =============== Data (exact-case) ===============
-local ImmoMobList = {
+-- also used by AutoTarget, don't make local
+ImmoMobList = {
   "This Githyanki coughs, blood bubbling up through his open mouth.",
   "A dying Githzerai crawls, dragging his useless legs behind him.",
   "Unsure on his feet, this young Githzerai tries to stay out of the way.",
@@ -52,6 +53,7 @@ local ImmoMobList = {
   "A united ent and giant army is fighting to preserve Midgaardia!",
   "Jacklyn leads refugees from Hospice refugee camp elsewhere.",
 }
+
 local ImmoMobSet = MakeSet(ImmoMobList)
 
 local DeceptArea = {
@@ -177,7 +179,8 @@ local function ParseCombatLine(fullname)
   if i then
     -- Keep exact-case description by removing the fighting tail.
     local desc = Trim((s:gsub("is here, fighting [^.]+%.?", "")))
-    local target = s:match("is here, fighting (.+)%.?%s*$")
+    local target = s:match("is here, fighting%s+(.+)%.%s*$")
+          or s:match("is here, fighting%s+(.+)%s*$")
     return {
       isFighting   = true,
       mobDesc      = desc,

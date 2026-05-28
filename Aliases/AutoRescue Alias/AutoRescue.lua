@@ -46,7 +46,12 @@ elseif cmd == "small" then
   if matches[3] == "" then
     AR.Small(2000)
   else
-    AR.Small(tonumber(args))
+    local smallhp = tonumber(argS)
+    if smallhp == "" or smallhp <= 0 then
+      printMessage("AutoRescue", "Error: Please choose a number > 0")
+      return
+    end
+    AR.Small(smallhp)
   end
 elseif cmd == "remove" then
   if args == nil or args == "" then

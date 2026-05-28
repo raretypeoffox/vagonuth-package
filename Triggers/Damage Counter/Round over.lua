@@ -70,9 +70,9 @@ if (GlobalVar.GUI) then
     -- need to fix and StatTable.Oath == "evolution"
     rescuehp_pct = GlobalVar.GroupMates[rescuetarget].hp / GlobalVar.GroupMates[rescuetarget].maxhp
     
-    if (mobcount == 1 and matches[1] == "is in awful condition." and rescuetarget ~= my_char_name and rescuehp_pct < 1) then TryAction("r " .. rescuetarget,2) end
+    if (mobcount == 1 and matches[1] == "is in awful condition." and rescuetarget ~= my_char_name and GlobalVar.GroupMates[rescuetarget].class ~= "Fyr" and rescuehp_pct < 1) then TryAction("r " .. rescuetarget,2) end
     -- for easier runs, uncomment below
-    if (mobcount == 1 and matches[1] == "looks pretty hurt." and rescuetarget ~= my_char_name and rescuehp_pct < 1) then TryAction("r " .. rescuetarget,2) end
+    if (mobcount == 1 and matches[1] == "looks pretty hurt." and rescuetarget ~= my_char_name and GlobalVar.GroupMates[rescuetarget].class ~= "Fyr" and rescuehp_pct < 1) then TryAction("r " .. rescuetarget,2) end
     --
   end  
   
