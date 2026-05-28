@@ -19,7 +19,7 @@ StaticVars.PrsBots = {"Martyr", "Gobo", "Eiri", "Arby", "Textual", "Logic"}
 
 -- Some defualts
 StaticVars.DarkRaces = {"Drow", "Duergar", "Gargoyle", "Kobold", "Deep Gnome", "Demonseed", "Troll"}
-StaticVars.FrenzyClasses = {"Berserker", "Archer", "Assassin", "Fusilier", "Soldier", "Psionicist", "Rogue", "Black Circle Initiate", "Druid"}
+StaticVars.FrenzyClasses = {"Berserker", "Archer", "Assassin", "Fusilier", "Soldier", "Psionicist", "Rogue", "Black Circle Initiate", "Druid", "Fury"}
 StaticVars.GameMsgsChatOutput = "GameChat"
 
 -- Priest Config: for soul cleanse trigger, set your characters bag name (eg loot) and default held (eg lodestone) for the trigger to work properly

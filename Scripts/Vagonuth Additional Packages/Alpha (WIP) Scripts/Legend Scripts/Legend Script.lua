@@ -59,8 +59,8 @@ Legend.SpellUp.Sneak = Legend.SpellUp.Sneak or nil
 
 Legend.SpellUp.Buffs = {
   -- Core spellup / travel
-  { spell = "aegis", command = "cast aegis", statKey = "Awen", planStatKeys = { "Sanctuary", "Invincibility" }, priority = 110, final = true, lores = { "basic piety", "greater chivalry" } },
-  { spell = "awen", command = "cast awen", statKey = "Awen", planStatKeys = { "Sanctuary" }, priority = 108, final = true, lores = { "basic theology" } },
+  { spell = "aegis", command = "cast aegis", statKey = "Sanctuary", planStatKeys = { "Awen", "Invincibility" }, priority = 110, final = true, lores = { "basic piety", "greater chivalry" } },
+  { spell = "awen", command = "cast awen", statKey = "Sanctuary", planStatKeys = { "Awen" }, priority = 108, final = true, lores = { "basic theology" } },
   { spell = "iron monk", command = "cast 'iron monk'", statKey = "Sanctuary", priority = 105, final = true, lores = { "basic empty hand" } },
   { spell = "sanctuary", command = "cast sanctuary", statKey = "Sanctuary", priority = 100, final = true, lores = { "basic theology" } },
   { spell = "fortitudes", command = "cast fortitudes", statKey = "Fortitude", priority = 85, lores = { "basic psionics" } },

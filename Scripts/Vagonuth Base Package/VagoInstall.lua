@@ -2,7 +2,6 @@
 -- Attribute: isActive
 
 -- Script Code:
-
 VagoPackage = VagoPackage or {}
 VagoPackage.Version = "v1.3.2"
 VagoPackage.OnlinePath = "https://github.com/raretypeoffox/vagonuth-package/releases/latest/download/"
@@ -45,6 +44,7 @@ function VagoPackage:UpdateVersion()
         uninstallPackage("Vagonuth-Package")
       end
     installPackage(VagoPackage.OnlinePath .. "Vagonuth-Package.mpackage")
+    tempTimer(3, [[resetProfile()]])
 end
 
 function VagoPackage:onFileDownloaded(event, ...)

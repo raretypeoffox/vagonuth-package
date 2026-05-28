@@ -2,7 +2,6 @@
 -- Attribute: isActive
 
 -- Script Code:
-
 local function TryGameLoopAction(action, wait)
   if type(BuffManager) == "table" and type(BuffManager.TryAction) == "function" then
     return BuffManager.TryAction(action, wait)

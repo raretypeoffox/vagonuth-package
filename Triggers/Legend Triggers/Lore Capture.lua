@@ -1,4 +1,4 @@
--- Trigger: Lore Capture
+-- Trigger: Lore Capture 
 -- Attribute: isActive
 
 

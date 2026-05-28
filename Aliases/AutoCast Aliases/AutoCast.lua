@@ -4,7 +4,6 @@
 -- Pattern: ^(?i)(autocast|ac)(?: (.*))?$
 
 -- Script Code:
-
 args = matches[3] or ""
 args = string.lower(args)
 
@@ -32,4 +31,3 @@ else
   AutoCastSetSpell(args)
 end
 
---old: ^(?i)(autocast|ac)\*(.*)

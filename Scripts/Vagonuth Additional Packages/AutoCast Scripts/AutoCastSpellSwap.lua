@@ -14,13 +14,15 @@ local DoNotArea_RoomList = {
   "Ponderous Flowers",
   "A menagerie",
   "A tiny cell",
+  "A Battle of Wits",
 }
 
 local DoNotArea_MobList = {
   "A long, dark figure cracks his knuckles.", -- Bailey
   "A disinterested halfling glares at you.", -- Rickitt
   "An elven woman is here, in plain clothes.", --Mayraema
-  "A naiad is here, staring fearfully at you." -- Kiahla
+  "A naiad is here, staring fearfully at you.", -- Kiahla
+  "The mess hall cook licks his lips and ogles you like a piece of meat.", -- forsaken asylum
 }
 
 local AutoCastOnMobDeathEventHandler = AutoCastOnMobDeathEventHandler or nil

@@ -266,6 +266,7 @@ local AffectsLookup = {
   ["Exhausted Spell: conscious weapon"] = "ConsciousWeaponExhaust",
   ["Exhausted Spell: intelligent weapon"] = "IntelligentWeaponExhaust",
   ["Spell: illusory shield"] = "IllusoryShield",
+
   
   -- fyr
   ["Spell: wildmind"] = "Wildmind",

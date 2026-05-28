@@ -222,6 +222,11 @@ function AutoLotto.Start()
 end
 
 function AutoLotto.ProcessLotto()
+    if not AutoLotto.Status then
+    printMessage("AutoLotto ERROR", "AutoLotto not started")
+    return false
+  end
+  
   AutoLotto.LottoList = deepcopy(LottoCapture)
 
   if not AutoLotto.LottoList then
@@ -281,7 +286,9 @@ function AutoLotto.NextWinner()
   end
 
   local msg = "|BY|" .. player_name .. "|N|'s pick! Check |BW|pinfo " .. string.lower(StatTable.CharName) .. "|N| and |BC|gtell <#>|N| or |BC|gtell pass|N|."
-
+  if player_name == StatTable.CharName then send("pinfo show") end
+  
+  
   local next_player = {}
   local next_inc = {}
   local N = math.min(5, AutoLotto.TotalItems)

@@ -4,7 +4,6 @@
 -- Script Code:
 Battle = Battle or {}
 Battle.Combat = Battle.Combat or false
---Battle.Queue = Battle.Queue or {}
 Battle.NextAction = Battle.NextAction or nil
 Battle.NextActionTime = Battle.NextActionTime or 0
 Battle.NextActionWait = Battle.NextActionWait or nil
