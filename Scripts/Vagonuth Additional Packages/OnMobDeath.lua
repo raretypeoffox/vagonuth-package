@@ -22,6 +22,8 @@ BuffManager.BlockedActions = BuffManager.BlockedActions or {}
 BuffManager.BlockedActionsCharName = BuffManager.BlockedActionsCharName or nil
 BuffManager.LastAttemptedAction = BuffManager.LastAttemptedAction or nil
 BuffManager.LastAttemptedAt = BuffManager.LastAttemptedAt or 0
+BuffManager.NoSpellUntil = BuffManager.NoSpellUntil or 0
+BuffManager.NoSpellRoomName = BuffManager.NoSpellRoomName or nil
 
 -- Mapping dictionary of commands to StatTable keys
 local buffMap = {
@@ -190,6 +192,28 @@ function BuffManager.NormalizeAction(action)
   return action
 end
 
+function BuffManager.IsSpellAction(action)
+  action = BuffManager.NormalizeAction(action)
+  return string.sub(action, 1, 5) == "cast " or string.sub(action, 1, 2) == "c "
+end
+
+function BuffManager.GetSpellPauseRemaining()
+  return math.max(0, (BuffManager.NoSpellUntil or 0) - os.clock())
+end
+
+function BuffManager.GetCurrentRoomName()
+  return gmcp and gmcp.Room and gmcp.Room.Info and gmcp.Room.Info.name or nil
+end
+
+function BuffManager.ScheduleProcess(wait)
+  if BuffManager.RetryTimerID then killTimer(BuffManager.RetryTimerID) end
+  BuffManager.LastScheduledAt = os.clock()
+  BuffManager.RetryTimerID = tempTimer(wait, function()
+    BuffManager.RetryTimerID = nil
+    BuffManager.Process()
+  end)
+end
+
 function BuffManager.SyncLegacyQueue()
   MobDeath.Queue = {}
   for _, qi in ipairs(BuffManager.Queue) do
@@ -315,6 +339,28 @@ function BuffManager.BlockLastAttemptedAction(reason)
   end
 
   return false
+end
+
+function BuffManager.PauseSpellcasting(wait)
+  wait = wait or 10
+  BuffManager.NoSpellUntil = math.max(BuffManager.NoSpellUntil or 0, os.clock() + wait)
+  BuffManager.NoSpellRoomName = BuffManager.GetCurrentRoomName()
+
+  if BuffManager.CurrentCasting and BuffManager.IsSpellAction(BuffManager.CurrentCasting.action) then
+    BuffManager.CurrentCasting = nil
+  end
+
+  if BuffManager.VerifyTimerID then killTimer(BuffManager.VerifyTimerID); BuffManager.VerifyTimerID = nil end
+  if BuffManager.LagTimerID then killTimer(BuffManager.LagTimerID); BuffManager.LagTimerID = nil end
+  if BuffManager.RetryTimerID then killTimer(BuffManager.RetryTimerID); BuffManager.RetryTimerID = nil end
+
+  MobDeath.LastCommand = ""
+
+  local remaining = BuffManager.GetSpellPauseRemaining()
+  pdebug("BuffManager.PauseSpellcasting(): Pausing spellcasts for " .. remaining .. "s")
+  printGameMessageVerbose("BuffManager", "Spellcasting paused in no-spell room")
+
+  BuffManager.ScheduleProcess(remaining + 0.1)
 end
 
 function BuffManager.MarkSpellUnavailable(spellName, reason)
@@ -460,9 +506,7 @@ function BuffManager.Process()
     end
     
     pdebug("BuffManager.Process(): In lag (" .. lag .. "s). Scheduling process when lag ends.")
-    if BuffManager.RetryTimerID then killTimer(BuffManager.RetryTimerID) end
-    BuffManager.LastScheduledAt = os.clock()
-    BuffManager.RetryTimerID = tempTimer(lag + 0.1, function() BuffManager.RetryTimerID = nil; BuffManager.Process() end)
+    BuffManager.ScheduleProcess(lag + 0.1)
     return
   end
   
@@ -473,6 +517,22 @@ function BuffManager.Process()
   
   -- Get the next item
   local item = BuffManager.Queue[1]
+
+  if BuffManager.IsSpellAction(item.action) then
+    local remaining = BuffManager.GetSpellPauseRemaining()
+    if remaining > 0 then
+      pdebug("BuffManager.Process(): Spellcasting paused (" .. remaining .. "s). Scheduling process when pause ends.")
+      BuffManager.ScheduleProcess(remaining + 0.1)
+      return
+    elseif BuffManager.NoSpellRoomName and BuffManager.GetCurrentRoomName() == BuffManager.NoSpellRoomName then
+      BuffManager.NoSpellUntil = os.clock() + 10
+      pdebug("BuffManager.Process(): Still in no-spell room. Extending spellcasting pause.")
+      BuffManager.ScheduleProcess(10.1)
+      return
+    else
+      BuffManager.NoSpellRoomName = nil
+    end
+  end
   
   -- Check if already active (could have been applied in between)
   if BuffManager.IsActionActive(item.action) then
