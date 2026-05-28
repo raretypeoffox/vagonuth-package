@@ -102,20 +102,25 @@
 -- bug fix: nec mobs removed from player lookups (eg aoe spells, autotarget, etc)
 
 -- v1.3.3
+-- added: autosurge (on|off) - script sometimes changes surge level based on its own logic, use off to prevent this
 -- added: gui right [on|off] - turn on or off chats on the right
+-- added: autobuff [on|off] - turns of buffs being reapplied automatically during a run
+-- added: autotarget (delay #|min #) - change the min hp you autotarget / the min spell casting delay
 -- added (beta): legend command "spellup" - attempts to buff you based on the lores you know
 -- update: rewrote how buff's are cast after battle [BuffManager] - sould be more consistant
+-- update: buffmanager now doesn't try to recast spells character hasn't practiced
+-- minor addition: commands for buffmanager [reset|blocked] now exist to reset/show blocked spells (ie if not learned)
 -- update: pantheon, kinetic chain, high magick all updated
 -- minor addition: sabletarget <char> now auto gives sable arrows to <char>
 -- minor update: repgold <level> added, makes it easier for checking on gold at specific tier, eg, repgold 125
 -- minor update: updated autorescue logic for fyr, when fyr rescues groupmate, will no longer rescue them until after current combat
 -- minor update: ran no longer added with ar auto
--- minor update: improved "kin" cmd / casting for psi's
+-- minor update: improved "kin", "hm" and "panth" commands
 -- minor update: bod improvements
 -- minor update: added gallop to cen, discorporate to tok
 -- minor update: added holy sight and detect haven to StatTable
--- bug fix: aoe casting had a bug introduced in the last version, fixed here
--- bug fix: if a psi slept after surge up, it wouldn't turn off quicken, fixed here
+-- bug fix: aoe casting had a bug introduced in the last version
+-- bug fix: if a psi slept after surge up, it wouldn't turn off quicken
 
 
 -- v1.4.0
