@@ -447,6 +447,9 @@ function UpdateGUI()
     elseif (StatTable.Class == "Psionicist") then
       setNextAvailableLabel(StatTable.Savvy, "Savvy", "Savvy", "cast savvy")
       setNextAvailableLabelExhaust(StatTable.KineticChain, StatTable.KineticChainExhaust, "Kin Chain", "Kinetic Chain", "cast 'kinetic chain'") 
+      if MyLevel == 125 or (MyLevel == 51 and MySubLevel >= 500) then
+        setNextAvailableLabel(StatTable.IllusoryShield, "Illusory", "Illusory Shield", "cast 'illusory shield'")
+      end
       setNextAvailableLabel(StatTable.FuryOfTheMind, "Fury", "Fury Of The Mind", "cast 'fury of the mind'")
       setNextAvailableLabel(StatTable.MindsEye, "Minds Eye", "Minds Eye", "cast 'minds eye'")
       setNextAvailableLabel(StatTable.Orbit, "Orbit", "Orbit", "")
@@ -466,9 +469,12 @@ function UpdateGUI()
     elseif (StatTable.Class == "Mindbender") then
       setNextAvailableLabel(StatTable.Savvy, "Savvy", "Savvy", "cast savvy")
       setNextAvailableLabel(StatTable.MindsEye, "Minds Eye", "Minds Eye", "cast 'minds eye'")
+      if MyLevel == 125 or (MyLevel == 51 and MySubLevel >= 500) then
+        setNextAvailableLabel(StatTable.IllusoryShield, "Illusory", "Illusory Shield", "cast 'illusory shield'")
+      end
       setNextAvailableLabel(StatTable.HiveMind, "Hive Mind", "Hive Mind", "cast 'hive mind'")
       setNextAvailableLabel(StatTable.EmpathicResonance, "Emp. Res.", "Emp. Res.", "cast 'empathic resonance'")
-      if StatTable.PsyphonExhaust then setNextAvailableLabelDebuff(StatTable.PsyphonExhaust, "Psyphon") end
+      setNextAvailableLabelExhaust(nil, StatTable.PsyphonExhaust, "Psyphon", "Psyphon", "cast psyphon")
     elseif StatTable.Class == "Fury" then
       setNextAvailableLabel(StatTable.Wildmind, "Wildmind", "Wildmind", "cast wildmind")
       setNextAvailableLabelIfActiveFury(StatTable.DaringFury,      "Daring Fury",      "Daring Fury",      nil)
