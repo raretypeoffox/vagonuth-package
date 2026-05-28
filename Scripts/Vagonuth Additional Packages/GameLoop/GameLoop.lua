@@ -3,9 +3,17 @@
 
 -- Script Code:
 
+local function TryGameLoopAction(action, wait)
+  if type(BuffManager) == "table" and type(BuffManager.TryAction) == "function" then
+    return BuffManager.TryAction(action, wait)
+  end
+
+  return TryAction(action, wait)
+end
+
 local function UseSkillAfterExhaust(Skill, SkillExhaust, Command)
   if Skill == nil and SkillExhaust == nil then
-    if TryAction(Command, 30) then
+    if TryGameLoopAction(Command, 30) then
       printGameMessageVerbose("GameLoop", Command)
     end
   end 
@@ -45,13 +53,13 @@ function GameLoopClass(MyClass)
     if StatTable.Level == 125 then
       if not StatTable.QuickcastExhaust then
         if tonumber(gmcp.Char.Vitals.lag) == 0 and tonumber(gmcp.Char.Status.opponent_level) > 140 and (StatTable.EnemyHP / StatTable.EnemyMaxHP) > 0.40 then
-          TryAction("quickcast mindwipe eye", 30)
+          TryGameLoopAction("quickcast mindwipe eye", 30)
         end
       end
     elseif StatTable.Level == 51 then
       if not StatTable.QuickcastExhaust and StatTable.SubLevel > 250 then
         if tonumber(gmcp.Char.Vitals.lag) == 0 and tonumber(gmcp.Char.Status.opponent_level) > 60 and (StatTable.EnemyHP / StatTable.EnemyMaxHP) > 0.40 then
-          TryAction("quickcast fear", 30)
+          TryGameLoopAction("quickcast fear", 30)
         end
       end
     end
@@ -92,7 +100,7 @@ function GameLoopClass(MyClass)
     end
   elseif MyClass == "Berserker" then
     if not GlobalVar.AutoStance then return end
-    if StatTable.Level == 51 and not StatTable.Rally then TryAction("rally", 60) end
+    if StatTable.Level == 51 and not StatTable.Rally then TryGameLoopAction("rally", 60) end
   
   elseif MyClass == "Paladin" then
     if not GlobalVar.AutoStance then return end -- only swap if GlobalVar.AutoStance is on
@@ -116,9 +124,9 @@ function GameLoopClass(MyClass)
       if StatTable.OuterQi >= 10 then
          if tonumber(gmcp.Char.Status.opponent_level) > 180 then --or StatTable.OuterQi == 23 (ie max)
             if StatTable.SubLevel >= 250 then
-              TryAction("qi wave", 5)
+              TryGameLoopAction("qi wave", 5)
             else
-              TryAction("qi blast", 5)
+              TryGameLoopAction("qi blast", 5)
             end
          end
       end
@@ -128,15 +136,15 @@ function GameLoopClass(MyClass)
       if (AR.Status and table.size(AR.RescueStack) > 0) or tonumber(gmcp.Char.Vitals.lag) > 0 then
         return
       elseif chakra and StatTable.SubLevel >= 100 and StatTable.InnerQi >= 7 then
-        TryAction("qi invert " .. (chakra and chakra or ""), 15)
+        TryGameLoopAction("qi invert " .. (chakra and chakra or ""), 15)
       elseif chakra and StatTable.InnerQi >= 7 then
-        TryAction("qi strike " .. (chakra and chakra or ""), 15)
+        TryGameLoopAction("qi strike " .. (chakra and chakra or ""), 15)
       elseif StatTable.StoneFist and StatTable.InnerQi >= 7 then
-        TryAction("qi punch", 5)
+        TryGameLoopAction("qi punch", 5)
       elseif StatTable.DaggerHand and StatTable.InnerQi >= 7 then
-        TryAction("qi thrust", 5)  
+        TryGameLoopAction("qi thrust", 5)
       else
-        TryAction("kick", 5)
+        TryGameLoopAction("kick", 5)
       end
       
     end
@@ -157,10 +165,10 @@ function GameLoopClass(MyClass)
       if not (StatTable.VampireFang or StatTable.SpectralFang) then
         if not StatTable.VampireFangExhaust and (StatTable.current_health < (StatTable.max_health * 0.75) or StatTable.SpectralFangExhaust) then
           BuffManager.Add("stance vampire fang", 1)
-          TryAction("ctr vital stay", 5)
+          TryGameLoopAction("ctr vital stay", 5)
         elseif not StatTable.SpectralFangExhaust then
           BuffManager.Add("stance spectral fang", 1)
-          TryAction("ctr push stay", 5)
+          TryGameLoopAction("ctr push stay", 5)
         end
       end
       
@@ -171,9 +179,9 @@ function GameLoopClass(MyClass)
       if StatTable.OuterQi >= 10 then
         if tonumber(gmcp.Char.Status.opponent_level) > 180 then --or StatTable.OuterQi == 23 (ie max)
           if StatTable.SubLevel >= 250 then
-            TryAction("qi wave", 5)
+            TryGameLoopAction("qi wave", 5)
           else
-            TryAction("qi blast", 5)
+            TryGameLoopAction("qi blast", 5)
           end
         end
       end
@@ -184,15 +192,15 @@ function GameLoopClass(MyClass)
       if (AR.Status and table.size(AR.RescueStack) > 0) or tonumber(gmcp.Char.Vitals.lag) > 0 then
         return
       elseif chakra and StatTable.SubLevel >= 100 and StatTable.InnerQi >= 7 then
-        TryAction("qi drain " .. (chakra and chakra or ""), 15)
+        TryGameLoopAction("qi drain " .. (chakra and chakra or ""), 15)
       elseif chakra and StatTable.InnerQi >= 7 then
-        TryAction("qi strike " .. (chakra and chakra or ""), 15)
+        TryGameLoopAction("qi strike " .. (chakra and chakra or ""), 15)
       elseif StatTable.StoneFist and StatTable.InnerQi >= 7 then
-        TryAction("qi punch", 5)
+        TryGameLoopAction("qi punch", 5)
       elseif StatTable.DaggerHand and StatTable.InnerQi >= 7 then
-        TryAction("qi thrust", 5)  
+        TryGameLoopAction("qi thrust", 5)
       else
-        TryAction("vital", 5)
+        TryGameLoopAction("vital", 5)
       end
     end
   elseif MyClass == "Soldier" then
@@ -227,7 +235,7 @@ function GameLoopRace(MyRace)
          not GroupLeader() 
          and StatTable.Level == 125 and
          tonumber(gmcp.Char.Status.opponent_level) > 180 then 
-          TryAction("racial breath", 30) 
+          TryGameLoopAction("racial breath", 30)
         end
   
    elseif MyRace == "Dragon" then
@@ -235,7 +243,7 @@ function GameLoopRace(MyRace)
          not GroupLeader() 
          and StatTable.Level == 125 and
          tonumber(gmcp.Char.Status.opponent_level) > 180 then 
-          TryAction("racial breath full", 30) 
+          TryGameLoopAction("racial breath full", 30)
         end
    elseif MyRace == "Kzinti" then
    
@@ -254,14 +262,14 @@ function GameLoopRace(MyRace)
   elseif MyRace == "Ignatur" then
     
     if StatTable.Level == 51 and not RacialFireaura and not StatTable.RacialFireauraFatigue then
-      TryAction("racial fireaura", 30)
+      TryGameLoopAction("racial fireaura", 30)
     end
   
   elseif MyRace == "Illithid" then
     local level_diff = (StatTable.Level == 125 and 25 or 10)
     
     if not StatTable.MindFlay and tonumber(gmcp.Char.Vitals.lag) == 0 and tonumber(gmcp.Char.Status.opponent_level) > (StatTable.Level + level_diff) then
-      TryAction("racial mindflay", 30)
+      TryGameLoopAction("racial mindflay", 30)
     end
     
 
@@ -424,7 +432,7 @@ function GameLoop()
     if tonumber(gmcp.Char.Vitals.monhp) and StatTable.current_mon > 0 and StatTable.max_mon > 0 and StatTable.Monitor ~= "" then
         local MonitorHPpct = StatTable.current_mon / StatTable.max_mon
         if MonitorHPpct < AR.MontorRescueHPpct then
-            TryAction("rescue " .. StatTable.Monitor, 5)
+            TryGameLoopAction("rescue " .. StatTable.Monitor, 5)
         end
     end
   end
@@ -433,7 +441,7 @@ function GameLoop()
   if not StatTable.Bladetrance then 
    StatTable.BladetranceLevel = 0
   elseif StatTable.Bladetrance and StatTable.BladetranceLevel == 0 then
-    TryAction("bladetrance", 30)
+    TryGameLoopAction("bladetrance", 30)
   end
 
   

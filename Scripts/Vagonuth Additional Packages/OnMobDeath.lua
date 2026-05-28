@@ -20,6 +20,8 @@ BuffManager.RetryTimerID = BuffManager.RetryTimerID or nil
 BuffManager.LastScheduledAt = BuffManager.LastScheduledAt or 0
 BuffManager.BlockedActions = BuffManager.BlockedActions or {}
 BuffManager.BlockedActionsCharName = BuffManager.BlockedActionsCharName or nil
+BuffManager.LastAttemptedAction = BuffManager.LastAttemptedAction or nil
+BuffManager.LastAttemptedAt = BuffManager.LastAttemptedAt or 0
 
 -- Mapping dictionary of commands to StatTable keys
 local buffMap = {
@@ -209,6 +211,41 @@ function BuffManager.IsActionBlocked(action)
   return BuffManager.GetBlockedActionsForCurrentCharacter()[BuffManager.NormalizeAction(action)] ~= nil
 end
 
+function BuffManager.ClearBlockedActions()
+  local key = BuffManager.GetBlockedActionsKey()
+  BuffManager.BlockedActions[key] = {}
+
+  if BuffManager.BlockedActionsCharName ~= key then
+    BuffManager.BlockedActionsCharName = key
+  end
+
+  printGameMessage("BuffManager", "Blocked actions reset for " .. key)
+end
+
+function BuffManager.ShowBlockedActions()
+  local key = BuffManager.GetBlockedActionsKey()
+  local blockedActions = BuffManager.GetBlockedActionsForCurrentCharacter()
+  local actions = {}
+
+  for action, reason in pairs(blockedActions) do
+    table.insert(actions, { action = action, reason = reason })
+  end
+
+  table.sort(actions, function(a, b) return a.action < b.action end)
+
+  if #actions == 0 then
+    printMessage("BuffManager", "No blocked actions for " .. key)
+    return
+  end
+
+  local message = "Blocked actions for " .. key .. ":"
+  for _, item in ipairs(actions) do
+    message = message .. "\n  <yellow>" .. item.action .. "<white> (" .. tostring(item.reason) .. ")"
+  end
+
+  printMessage("BuffManager", message)
+end
+
 function BuffManager.RemoveAction(action)
   local normalized = BuffManager.NormalizeAction(action)
 
@@ -244,6 +281,40 @@ function BuffManager.BlockAction(action, reason)
   printGameMessage("BuffManager", "Blocked unavailable action: " .. action)
   BuffManager.Process()
   return true
+end
+
+function BuffManager.TryAction(action, wait)
+  if BuffManager.IsActionBlocked(action) then
+    pdebug("BuffManager.TryAction(): Action blocked, not sending: " .. action)
+    return false
+  end
+
+  if TryAction(action, wait) then
+    BuffManager.LastAttemptedAction = action
+    BuffManager.LastAttemptedAt = os.clock()
+    tempTimer(3, function()
+      if BuffManager.LastAttemptedAction == action and os.clock() - BuffManager.LastAttemptedAt >= 3 then
+        BuffManager.LastAttemptedAction = nil
+        BuffManager.LastAttemptedAt = 0
+      end
+    end)
+    return true
+  end
+
+  return false
+end
+
+function BuffManager.BlockLastAttemptedAction(reason)
+  local currentAction = BuffManager.CurrentCasting and BuffManager.CurrentCasting.action or MobDeath.LastCommand
+  if currentAction and currentAction ~= "" then
+    return BuffManager.BlockAction(currentAction, reason or "unavailable")
+  end
+
+  if BuffManager.LastAttemptedAction and os.clock() - (BuffManager.LastAttemptedAt or 0) <= 3 then
+    return BuffManager.BlockAction(BuffManager.LastAttemptedAction, reason or "unavailable")
+  end
+
+  return false
 end
 
 function BuffManager.MarkSpellUnavailable(spellName, reason)
