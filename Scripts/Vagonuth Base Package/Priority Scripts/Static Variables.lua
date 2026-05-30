@@ -288,6 +288,9 @@ StaticVars.Junk = {
 ["glittering white pearl"] = "white pearl",
 ["deep green emerald"] = "green emerald",
 ["cultist long sword"] = "cultist sword",
+["amulet of imagery"] = "amulet imagery",
+["reinforced gloves"] = "reinforced gloves",
+["apprentice imager's robe"] = "apprentice imager robe lordabout",
 
 
 
