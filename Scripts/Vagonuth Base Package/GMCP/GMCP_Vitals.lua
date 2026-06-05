@@ -280,6 +280,8 @@ local AffectsLookup = {
   ["Spell: scathing fury"] = "ScathingFury",
   ["Spell: vengeful fury"] = "VengefulFury",
   
+  -- nec
+ 
   
   
   
@@ -348,6 +350,7 @@ local AffectsLookup = {
   ["Spell: dark embrace"] = "DarkEmbrace",
   ["Spell: commune"] = "Commune",
 
+
   
   
   
@@ -415,6 +418,7 @@ function GMCP_Vitals()
     StatTable.Tainted = nil
     StatTable.Oath = nil
     StatTable.Renown = nil
+    StatTable.BlackGlow = nil
     StatTable.EtherCrash = nil
     StatTable.EtherCrashDuration = nil
     StatTable.EtherCrashExhaust = nil
@@ -435,6 +439,7 @@ function GMCP_Vitals()
             elseif(k == "Spell: tainted genius") then StatTable.Tainted = 1
             elseif(k == "Spell: oath") then StatTable.Oath = splitstring(v, " ")[2]
             elseif(k == "Spell: renown") then StatTable.Renown = splitstring(v, " ")[2]
+            elseif(k == "Spell: black glow") then StatTable.BlackGlow = 1
             elseif(k == "Spell: ether crash") then
               -- In the affects time, Ether Crash is set to 1 if it's turned on and 2 if its been exhausted
               StatTable.EtherCrash = tonumber(string.match(v, 'by%s*(%d+)'))

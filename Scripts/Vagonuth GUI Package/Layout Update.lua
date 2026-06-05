@@ -566,6 +566,7 @@ function UpdateGUI()
     -- Misc buffs      
     setNextAvailableLabelIfActive(StatTable.Regeneration, "Regen", nil, nil)
     setNextAvailableLabelIfActive(StatTable.Endurance, "Endur.", nil, nil)
+    setNextAvailableLabelIfActive(StatTable.BlackGlow, "Black Glow", nil, nil)
     
     if MyRace ~= "Griffon" then
       setNextAvailableLabelIfActive(StatTable.RacialHeraldry, "Heraldry", nil, nil)
