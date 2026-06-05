@@ -515,7 +515,9 @@ function UpdateGUI()
       
     elseif (MyRace == "Ignatur") then
       setNextAvailableLabelExhaust(StatTable.RacialFireaura, StatTable.RacialFireauraFatigue, "Fire Aura", "Fire Aura", "racial fireaura")
+      setNextAvailableLabelExhaust(StatTable.RacialPyroclasticFlow, StatTable.RacialPyroclasticFlowFatigue, "PyroFlow", "PyroFlow", "racial pyroclastic flow")
       setNextAvailableLabelExhaust(StatTable.RacialInnervate, StatTable.RacialInnervateFatigue, "Innervate (" .. (StatTable.RacialInnervateRegen or 0) .. "%)", "Innervate", "racial innervate")
+      
       
       
     elseif (MyRace == "Golem") then
