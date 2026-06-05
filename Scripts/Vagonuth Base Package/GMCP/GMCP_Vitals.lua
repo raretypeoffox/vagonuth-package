@@ -52,6 +52,7 @@ local AffectsLookup = {
   ["Spell: detect magic"] = "DetectMagic",
   ["Spell: water breathing"] = "WaterBreathing",
   ["Spell: fly"] = "Fly",
+  ["Spell: racial fly"] = "Fly",
   ["Spell: sanctuary"] = "Sanctuary",
   ["Spell: iron monk"] = "Sanctuary",
   ["Spell: fortitudes"] = "Fortitude",
