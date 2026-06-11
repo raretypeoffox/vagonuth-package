@@ -54,7 +54,6 @@ StormlordStratums = {
   },
 }
 
-GlobalVar.StratumOne = GlobalVar.StratumOne or "gale"
 GlobalVar.StratumTwo = GlobalVar.StratumTwo or nil
 
 local function normalizeStratumInput(input)
@@ -153,8 +152,24 @@ function getStratumLimit()
   return hasStrataControl() and 2 or 1
 end
 
+function getDefaultStratumOne()
+  if StatTable.Level == 125 then
+    return "gale"
+  end
+
+  return nil
+end
+
+function getPreferredStratumOne()
+  if GlobalVar.StratumOne ~= nil then
+    return GlobalVar.StratumOne
+  end
+
+  return getDefaultStratumOne()
+end
+
 function isStratumAutomationOff()
-  return GlobalVar.StratumOne == "off"
+  return getPreferredStratumOne() == "off"
 end
 
 function getStratumCommand(input)
@@ -180,7 +195,7 @@ function getPreferredStratumCommands()
   end
 
   local preferredStratums = {
-    GlobalVar.StratumOne or "gale",
+    getPreferredStratumOne(),
     GlobalVar.StratumTwo,
   }
 
@@ -240,8 +255,10 @@ function castStratums()
     return
   end
 
-  if GlobalVar.StratumOne then
-    if castStratumIfNeeded(GlobalVar.StratumOne) then
+  local stratumOne = getPreferredStratumOne()
+
+  if stratumOne then
+    if castStratumIfNeeded(stratumOne) then
       return
     end
   end

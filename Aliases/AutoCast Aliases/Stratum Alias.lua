@@ -117,13 +117,15 @@ if args == "" then
     {"stratum clear", "Clears automatic stratum casting"},
   })
 
-  if isStratumAutomationOff() then
+  local stratumOne = getPreferredStratumOne()
+
+  if isStratumAutomationOff() or not stratumOne then
     printMessage("Stratum One", "No stratum currently set")
   else
-    printMessage("Stratum One", "Stratum currently set to: <yellow>" .. (GlobalVar.StratumOne or "gale"))
+    printMessage("Stratum One", "Stratum currently set to: <yellow>" .. stratumOne)
   end
 
-  if isStratumAutomationOff() then
+  if isStratumAutomationOff() or not stratumOne then
     printMessage("Stratum Two", "No stratum currently set")
   elseif GlobalVar.StratumTwo then
     printMessage("Stratum Two", "Stratum currently set to: <yellow>" .. GlobalVar.StratumTwo)
