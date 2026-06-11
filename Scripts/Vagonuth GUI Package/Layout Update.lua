@@ -274,7 +274,17 @@ function UpdateGUI()
     elseif MyClass == "Stormlord" then  
       setNextAvailableLabel(StatTable.Savvy, "Savvy", "Savvy", "cast savvy")
       setNextAvailableLabel(StatTable.SpringRain, "Spring Rain", "Spring Rain", "cast 'spring rain'")
-      setNextAvailableLabel(StatTable.GaleStratum, "Gale", "Gale Stratum", "cast stratum gale")
+      if MyLevel == 125 or (MyLevel == 51 and (MySubLevel or 0) >= 675) then
+        setNextAvailableLabelIfActive(StatTable.StratumGale, "Gale", "Gale Stratum", "cast stratum gale")
+        setNextAvailableLabelIfActive(StatTable.StratumSleet, "Sleet", "Sleet Stratum", "cast stratum sleet")
+        setNextAvailableLabelIfActive(StatTable.StratumSpringRain, "SpringRain", "Spring Rain Stratum", "cast stratum spring rain")
+        setNextAvailableLabelIfActive(StatTable.StratumCloudburst, "Cloudburst", "Cloudburst Stratum", "cast stratum cloudburst")
+        setNextAvailableLabelIfActive(StatTable.StratumHailStorm, "HailStorm", "Hail Storm Stratum", "cast stratum hail storm")
+      end
+      if MyLevel == 125 then
+        setNextAvailableLabelIfActive(StatTable.StratumThunderhead, "Thunderhead", "Thunderhead Stratum", "cast stratum thunderhead")
+        setNextAvailableLabelIfActive(StatTable.StratumBlizzard, "Blizzard", "Blizzard Stratum", "cast stratum blizzard")
+      end
       
     elseif MyClass =="Sorcerer" then
       setNextAvailableLabel(StatTable.Savvy, "Savvy", "Savvy", "cast savvy")

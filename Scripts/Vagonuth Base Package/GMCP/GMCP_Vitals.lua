@@ -118,7 +118,13 @@ local AffectsLookup = {
   -- stm
   ["Spell: spring rain"] = "SpringRain",
   ["Spell: blizzard"] = "Blizzard",
-  ["Spell: gale stratum"] = "GaleStratum",
+  ["Spell: gale stratum"] = "StratumGale",
+  ["Spell: sleet stratum"] = "StratumSleet",
+  ["Spell: spring rain stratum"] = "StratumSpringRain",
+  ["Spell: cloudburst stratum"] = "StratumCloudburst",
+  ["Spell: hail storm stratum"] = "StratumHailStorm",
+  ["Spell: thunderhead stratum"] = "StratumThunderhead",
+  ["Spell: blizzard stratum"] = "StratumBlizzard",
   
   -- exhausts
   ["Exhausted Spell: water breathing"] = "WaterBreathingExhaust",
