@@ -250,7 +250,11 @@ function GetSpellsAtPreachup()
     
   elseif MyClass == "Stormlord" and MyLevel >= 51 then
     if (MyLevel == 125 or MySubLevel > 101) and not StatTable.Savvy then table.insert(commands, "cast savvy") end
-    if (MyLevel == 125 and not StatTable.StratumGale) then table.insert(commands, "cast stratum gale") end
+    if MyLevel == 125 or (MyLevel == 51 and (MySubLevel or 0) >= 675) then
+      for _, stratumCommand in ipairs(getPreferredStratumCommands()) do
+        table.insert(commands, stratumCommand)
+      end
+    end
     
   elseif MyClass == "Sorcerer" and MyLevel >= 51 then
     if (StatTable.max_mana > 5000) and not StatTable.Savvy then table.insert(commands, "cast savvy") end

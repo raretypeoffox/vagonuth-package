@@ -27,6 +27,7 @@ local syntax_tbl = {
   {"autobrill <#>", "default # of brills for autoenchant to try for [2 by default]"},
   {"kin (<spell1> <spell2>|clear)", "set kinetic enhancers spells to autocast (psi's only)", condition = (StatTable.Class == "Psionicist")},
   {"hm (<spell>|clear)", "set high magick (mag's only)"},
+  {"stratum (<spell1> <spell2>|clear)", "set Stormlord stratums to autocast", condition = (StatTable.Class == "Stormlord")},
   {"",nil},
   {"<yellow>Healer Commands",nil},
   {"autoheal (on|off|<options>)", "autoheal either <target> or <lowest> groupmate [default: lowest]"},

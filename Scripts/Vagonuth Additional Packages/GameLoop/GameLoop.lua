@@ -319,8 +319,8 @@ function GameLoopOutOfCombatBuffs(MyClass)
     end
 
   elseif MyClass == "Stormlord" then
-    if StatTable.Level == 125 and not StatTable.Solitude and not StatTable.StratumGale and mana_pct > 0.5 then
-      BuffManager.Add("cast stratum gale", 1)
+    if not StatTable.Solitude and mana_pct > 0.5 then
+      castStratums()
     end
 
   elseif MyClass == "Black Circle Initiate" then
