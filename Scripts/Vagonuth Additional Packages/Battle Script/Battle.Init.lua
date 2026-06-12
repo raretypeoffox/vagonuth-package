@@ -508,11 +508,19 @@ function Battle.StormlordCallLightningLanded()
   Battle.StormlordCallLightningWasBoosted = false
 end
 
+function Battle.StormlordOnNewRoom()
+  Battle.StormlordThunderheadRoomKey = nil
+  Battle.StormlordLastSpell = nil
+  Battle.StormlordCallLightningPending = false
+  Battle.StormlordCallLightningWasBoosted = false
+end
+
 
 
 Battle.KillEventHandlers()
 Battle.OnCombatEventHandler = registerAnonymousEventHandler("OnCombat", "Battle.OnCombat", false)
 Battle.EndCombatEventHandler = registerAnonymousEventHandler("EndCombat", "Battle.EndCombat", false)
+safeEventHandler("StormlordOnNewRoomEvent", "OnNewRoom", function() Battle.StormlordOnNewRoom() end, false)
 safeTempTrigger("StormlordCallLightningNoThunderhead", "You must be out of doors.", function() Battle.StormlordCallLightningFailed() end, "begin")
 safeTempTrigger("StormlordCallLightningBoosted", "You harness the fury of a Stormlord's might!", function() Battle.StormlordCallLightningBoosted() end, "begin")
 safeTempTrigger("StormlordCallLightningLanded", "Lightning strikes your foes!", function() Battle.StormlordCallLightningLanded() end, "begin")

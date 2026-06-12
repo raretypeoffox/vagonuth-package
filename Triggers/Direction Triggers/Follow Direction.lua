@@ -7,3 +7,4 @@
 
 -- Script Code:
 AddDir(matches.direction)
+raiseEvent("OnNewRoom")
