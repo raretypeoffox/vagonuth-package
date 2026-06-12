@@ -25,6 +25,7 @@ Battle.StormlordCallLightningWasBoosted = Battle.StormlordCallLightningWasBooste
 
 local ACT_WAIT_TIME_SECONDS = 0.5 -- constant, amount of time to wait before calling another loop of Battle.Act
 local STORMLORD_LOW_MANA = 5000
+local STORMLORD_THUNDERHEAD_WAIT = 5
 
 -- Adds compatability for people not running the inventory package
 function Battle.GetSpellLagMod()
@@ -123,6 +124,8 @@ end
 
 function Battle.OnLagReduce()
   if not Battle.LagStartTime or not Battle.LastSpellLag then return end
+  if Battle.StormlordLastSpell == "thunderhead" then return end
+
   local elapsed   = os.clock() - Battle.LagStartTime
   local gmcpLag = tonumber(gmcp.Char.Vitals.lag)
   local procLag = Battle.LastSpellLag * 0.4
@@ -441,12 +444,12 @@ function Battle.AutoCastStormlord()
   local mobCount = Battle.StormlordMobCount()
 
   if not Battle.StormlordRoomHasThunderhead() then
-    return Battle.StormlordCast("thunderhead", false), spelllag
+    return Battle.StormlordCast("thunderhead", false), STORMLORD_THUNDERHEAD_WAIT
   end
 
   if not Battle.StormlordRoomAllowsAOE() then
     if not StatTable.Thunderhead then
-      return Battle.StormlordCast("thunderhead", false), spelllag
+      return Battle.StormlordCast("thunderhead", false), STORMLORD_THUNDERHEAD_WAIT
     end
 
     return nil, ACT_WAIT_TIME_SECONDS
@@ -462,7 +465,7 @@ function Battle.AutoCastStormlord()
     end
 
     if not StatTable.Thunderhead then
-      return Battle.StormlordCast("thunderhead", false), spelllag
+      return Battle.StormlordCast("thunderhead", false), STORMLORD_THUNDERHEAD_WAIT
     end
 
     return nil, ACT_WAIT_TIME_SECONDS
