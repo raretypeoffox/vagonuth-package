@@ -172,9 +172,14 @@ function isStratumAutomationOff()
   return getPreferredStratumOne() == "off"
 end
 
+function isStratumExhausted()
+  return StatTable.StratumExhaust ~= nil
+end
+
 function getStratumCommand(input)
   local stratum = matchStratum(input)
 
+  if isStratumExhausted() then return nil end
   if not stratum then return nil end
   if not hasStratumUnlocked(stratum) then return nil end
 
@@ -185,6 +190,10 @@ function getPreferredStratumCommands()
   local commands = {}
   local seen = {}
   local slotsAvailable = getStratumLimit() - checkStratums()
+
+  if isStratumExhausted() then
+    return commands
+  end
 
   if isStratumAutomationOff() then
     return commands
@@ -220,6 +229,10 @@ local function castStratumIfNeeded(input)
     return false
   end
 
+  if isStratumExhausted() then
+    return false
+  end
+
   if not hasStratumUnlocked(stratum) then
     return false
   end
@@ -245,6 +258,7 @@ function castStratums()
   if Battle.Combat then return end
   if StatTable.Class ~= "Stormlord" then return end
   if isStratumAutomationOff() then return end
+  if isStratumExhausted() then return end
   if StatTable.Position ~= "Stand" then return end
 
   if StatTable.Level < 51 then return end

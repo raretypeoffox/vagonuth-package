@@ -274,6 +274,8 @@ function UpdateGUI()
     elseif MyClass == "Stormlord" then  
       setNextAvailableLabel(StatTable.Savvy, "Savvy", "Savvy", "cast savvy")
       setNextAvailableLabel(StatTable.SpringRain, "Spring Rain", "Spring Rain", "cast 'spring rain'")
+      setNextAvailableLabelIfActive(StatTable.Thunderhead, "Thunderhead", "Thunderhead", nil)
+      setNextAvailableLabelIfActive(StatTable.Blizzard, "Blizzard", "Blizzard", nil)
       if MyLevel == 125 or (MyLevel == 51 and (MySubLevel or 0) >= 675) then
         setNextAvailableLabelIfActive(StatTable.StratumGale, "Gale", "Gale Stratum", "cast stratum gale")
         setNextAvailableLabelIfActive(StatTable.StratumSleet, "Sleet", "Sleet Stratum", "cast stratum sleet")

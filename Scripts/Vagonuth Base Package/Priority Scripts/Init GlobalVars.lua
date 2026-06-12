@@ -231,9 +231,10 @@ function Init.Char(MyClass, MyRace, MyLevel, MySubLevel)
     elseif MyClass == "Stormlord" then
       if MyLevel == 125 then
         GlobalVar.AutoKill = false
-        GlobalVar.AutoCast = false
-        GlobalVar.AutoCaster = ""
-        GlobalVar.AutoCasterAOE = ""
+        GlobalVar.AutoCast = true
+        GlobalVar.AutoCaster = "call lightning"
+        GlobalVar.AutoCasterSingle = "thunderhead"
+        GlobalVar.AutoCasterAOE = "call lightning"
       elseif MyLevel == 51 then
         GlobalVar.AutoCast = true
         GlobalVar.AutoCaster = "disintegrate"

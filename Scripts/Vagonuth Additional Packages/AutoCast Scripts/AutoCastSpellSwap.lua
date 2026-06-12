@@ -58,19 +58,45 @@ function AutoCastSpellSwap()
   
   if not AutoCastOnMobDeathEventHandler then AutoCastInit() end
   
-  local Players = gmcp.Room.Players
+  GlobalVar.MobCount = AutoCastCountMobs()
+  UpdateAutoCastSpell()
+end
+
+function AutoCastCountMobs()
+  local Players = gmcp and gmcp.Room and gmcp.Room.Players or {}
   local MobCount = 0
 
   -- Sort all Players into enemies and friendlies
-  for PlayerName,_ in pairs(Players) do
+  for _, mob in pairs(Players) do
     -- Mobs have numbered "names" vs PCs who have real names, can eliminate PCs by removing non-numbered names
-    if tonumber(Players[PlayerName].name) and not Players[PlayerName].fullname:find("%(CHARMED%)") then
+    local fullname = mob.fullname or ""
+    if tonumber(mob.name) and not fullname:find("%(CHARMED%)") then
       MobCount = MobCount + 1
     end
   end
-  
-  GlobalVar.MobCount = MobCount
-  UpdateAutoCastSpell()
+
+  return MobCount
+end
+
+function AutoCastRoomAllowsAOE()
+  if not gmcp or not gmcp.Room or not gmcp.Room.Info then return true end
+
+  -- First check if we are in a room that we do not AOE in.
+  for _, DoNotArea_RoomName in ipairs(DoNotArea_RoomList) do
+    if gmcp.Room.Info.name == DoNotArea_RoomName then
+      return false
+    end
+  end
+
+  -- Second check if there are any mobs that we do not AOE.
+  for _,mob in pairs(gmcp.Room.Players or {}) do
+    local fullname = mob.fullname or ""
+    if(tonumber(mob.name) ~= nil and not fullname:find("%(CHARMED%)") and ArrayHasSubstring(DoNotArea_MobList, fullname)) then
+      return false
+    end
+  end
+
+  return true
 end
 
 -- The function called to swap spells
@@ -84,22 +110,12 @@ function UpdateAutoCastSpell()
     return
   end
 
-  -- First check if we are in a room that we do not AOE in. If we are, swap to single target spell.
-  for _, DoNotArea_RoomName in ipairs(DoNotArea_RoomList) do
-    if gmcp.Room.Info.name == DoNotArea_RoomName then
-      if GlobalVar.AutoCaster == GlobalVar.AutoCasterAOE then
-        AutoCastSetSpell(GlobalVar.AutoCasterSingle)
-      end
-      return
+  -- First check if we are in a room that we do not AOE in, or if there are any mobs that we do not AOE.
+  if not AutoCastRoomAllowsAOE() then
+    if GlobalVar.AutoCaster == GlobalVar.AutoCasterAOE then
+      AutoCastSetSpell(GlobalVar.AutoCasterSingle)
     end
-  end
-  
-  -- Second check if there are any mobs that we do not AOE. If so, swap to single target
-  for _,mob in pairs(gmcp.Room.Players) do
-    if(tonumber(mob.name) ~= nil and not mob.fullname:find("%(CHARMED%)") and ArrayHasSubstring(DoNotArea_MobList, mob.fullname)) then
-        AutoCastSetSpell(GlobalVar.AutoCasterSingle)
-      return
-    end
+    return
   end
   
   -- Check if the MobCount is 3 or more. If so, AOE
