@@ -22,6 +22,8 @@ BuffManager.BlockedActions = BuffManager.BlockedActions or {}
 BuffManager.BlockedActionsCharName = BuffManager.BlockedActionsCharName or nil
 BuffManager.LastAttemptedAction = BuffManager.LastAttemptedAction or nil
 BuffManager.LastAttemptedAt = BuffManager.LastAttemptedAt or 0
+BuffManager.LastManagedAction = BuffManager.LastManagedAction or nil
+BuffManager.LastManagedAt = BuffManager.LastManagedAt or 0
 BuffManager.NoSpellUntil = BuffManager.NoSpellUntil or 0
 BuffManager.NoSpellRoomName = BuffManager.NoSpellRoomName or nil
 
@@ -247,6 +249,13 @@ function BuffManager.IsActionBlocked(action)
   return BuffManager.GetBlockedActionsForCurrentCharacter()[BuffManager.NormalizeAction(action)] ~= nil
 end
 
+function BuffManager.RecordManagedAction(action)
+  if not action or action == "" then return end
+
+  BuffManager.LastManagedAction = action
+  BuffManager.LastManagedAt = os.clock()
+end
+
 function BuffManager.ClearBlockedActions()
   local key = BuffManager.GetBlockedActionsKey()
   BuffManager.BlockedActions[key] = {}
@@ -256,6 +265,26 @@ function BuffManager.ClearBlockedActions()
   end
 
   printGameMessage("BuffManager", "Blocked actions reset for " .. key)
+end
+
+function BuffManager.ClearBlockedActionsByReason(reason, echo)
+  if not reason then return 0 end
+
+  local blockedActions = BuffManager.GetBlockedActionsForCurrentCharacter()
+  local cleared = 0
+
+  for action, blockedReason in pairs(blockedActions) do
+    if blockedReason == reason then
+      blockedActions[action] = nil
+      cleared = cleared + 1
+    end
+  end
+
+  if cleared > 0 and echo ~= false then
+    printGameMessage("BuffManager", "Cleared " .. cleared .. " temporary " .. reason .. " block(s)")
+  end
+
+  return cleared
 end
 
 function BuffManager.ShowBlockedActions()
@@ -312,9 +341,17 @@ function BuffManager.BlockAction(action, reason)
   if BuffManager.NormalizeAction(MobDeath.LastCommand) == normalized then
     MobDeath.LastCommand = ""
   end
+  if BuffManager.NormalizeAction(BuffManager.LastAttemptedAction) == normalized then
+    BuffManager.LastAttemptedAction = nil
+    BuffManager.LastAttemptedAt = 0
+  end
+  if BuffManager.NormalizeAction(BuffManager.LastManagedAction) == normalized then
+    BuffManager.LastManagedAction = nil
+    BuffManager.LastManagedAt = 0
+  end
 
   pdebug("BuffManager.BlockAction(): Blocked action: " .. action .. " (" .. tostring(reason or "blocked") .. ")")
-  printGameMessage("BuffManager", "Blocked unavailable action: " .. action)
+  printGameMessage("BuffManager", "Blocked action: " .. action .. " (" .. tostring(reason or "blocked") .. ")")
   BuffManager.Process()
   return true
 end
@@ -328,6 +365,7 @@ function BuffManager.TryAction(action, wait)
   if TryAction(action, wait) then
     BuffManager.LastAttemptedAction = action
     BuffManager.LastAttemptedAt = os.clock()
+    BuffManager.RecordManagedAction(action)
     tempTimer(3, function()
       if BuffManager.LastAttemptedAction == action and os.clock() - BuffManager.LastAttemptedAt >= 3 then
         BuffManager.LastAttemptedAction = nil
@@ -340,8 +378,12 @@ function BuffManager.TryAction(action, wait)
   return false
 end
 
+function BuffManager.GetCurrentAction()
+  return BuffManager.CurrentCasting and BuffManager.CurrentCasting.action or MobDeath.LastCommand
+end
+
 function BuffManager.BlockLastAttemptedAction(reason)
-  local currentAction = BuffManager.CurrentCasting and BuffManager.CurrentCasting.action or MobDeath.LastCommand
+  local currentAction = BuffManager.GetCurrentAction()
   if currentAction and currentAction ~= "" then
     return BuffManager.BlockAction(currentAction, reason or "unavailable")
   end
@@ -350,6 +392,19 @@ function BuffManager.BlockLastAttemptedAction(reason)
     return BuffManager.BlockAction(BuffManager.LastAttemptedAction, reason or "unavailable")
   end
 
+  return false
+end
+
+function BuffManager.BlockLastManagedAction(reason)
+  if BuffManager.BlockLastAttemptedAction(reason or "manual") then
+    return true
+  end
+
+  if BuffManager.LastManagedAction and os.clock() - (BuffManager.LastManagedAt or 0) <= 120 then
+    return BuffManager.BlockAction(BuffManager.LastManagedAction, reason or "manual")
+  end
+
+  printGameMessage("BuffManager", "No recent BuffManager action to block")
   return false
 end
 
@@ -580,6 +635,7 @@ function BuffManager.Process()
   -- Set active item and execute
   BuffManager.CurrentCasting = item
   MobDeath.LastCommand = item.action
+  BuffManager.RecordManagedAction(item.action)
   
   pdebug("BuffManager.Process(): Sending action: " .. item.action)
   printGameMessageVerbose("BuffManager", "Trying: " .. item.action)
@@ -701,4 +757,23 @@ end
 function OnMobDeathWake()
   pdebug("OnMobDeathWake() wrapper called")
   BuffManager.Process()
+end
+
+if type(safeTempTrigger) == "function" then
+  safeTempTrigger("BuffManager.ShadowFormSpellTooPowerful",
+    "^(.+) is too powerful for you to cast in shadow form\\.$",
+    function()
+      if type(BuffManager) == "table" and type(BuffManager.MarkSpellUnavailable) == "function" then
+        BuffManager.MarkSpellUnavailable(matches[2], "shadow form")
+      elseif MobDeath and MobDeath.LastCommand ~= "" then
+        MobDeath.LastCommand = ""
+      end
+    end,
+    "regex")
+end
+
+if type(safeTempAlias) == "function" then
+  safeTempAlias("BuffManager.BlockLastAlias", "^[Bb][Uu][Ff][Ff][Mm][Aa][Nn][Aa][Gg][Ee][Rr]\\s+[Bb][Ll][Oo][Cc][Kk][Ll][Aa][Ss][Tt]$", function()
+    BuffManager.BlockLastManagedAction("manual")
+  end)
 end
