@@ -754,9 +754,19 @@ function OnMobDeathQueue(command)
   BuffManager.Add(command, 1)
 end
 
-function OnMobDeathWake()
+function OnMobDeathWake(wait)
   pdebug("OnMobDeathWake() wrapper called")
-  BuffManager.Process()
+  wait = wait or 0.3
+
+  local process = function()
+    BuffManager.Process()
+  end
+
+  if type(safeTempTimer) == "function" then
+    safeTempTimer("BuffManager.WakeProcess", wait, process)
+  else
+    tempTimer(wait, process)
+  end
 end
 
 if type(safeTempTrigger) == "function" then
