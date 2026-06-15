@@ -8,9 +8,62 @@
 -------------------------------------------------
 
 local SmallScreen = true
+VagoGUI = VagoGUI or {}
+VagoGUI.GroupVisibleCount = VagoGUI.GroupVisibleCount or nil
+
+local function guiEcho(label, text)
+  if type(VagoGUI.Echo) == "function" then
+    VagoGUI.Echo(label, text)
+  elseif label then
+    label:echo(text)
+  end
+end
+
+local function guiSetClick(label, key, callback, ...)
+  if type(VagoGUI.SetClick) == "function" then
+    VagoGUI.SetClick(label, key, callback, ...)
+  elseif label then
+    label:setClickCallback(callback, ...)
+  end
+end
+
+local function guiSetGauge(gauge, current, maximum, text)
+  if type(VagoGUI.SetGauge) == "function" then
+    VagoGUI.SetGauge(gauge, current, maximum, text)
+  elseif gauge then
+    gauge:setValue(current, maximum, text)
+  end
+end
+
+local function guiSetStyle(label, style)
+  if type(VagoGUI.SetStyle) == "function" then
+    VagoGUI.SetStyle(label, style)
+  elseif label then
+    label:setStyleSheet(style)
+  end
+end
+
+local function guiShow(widget)
+  if type(VagoGUI.Show) == "function" then
+    VagoGUI.Show(widget)
+  elseif widget then
+    widget:show()
+  end
+end
+
+local function guiHide(widget)
+  if type(VagoGUI.Hide) == "function" then
+    VagoGUI.Hide(widget)
+  elseif widget then
+    widget:hide()
+  end
+end
 
 -- called on update to GMCP_Group()
 function UpdateGroupGUI(GroupieTableIndex, Player)
+  if not GroupieTable or not GroupieTable[GroupieTableIndex] then return end
+
+  local groupRow = GroupieTable[GroupieTableIndex]
   local player_name = Player.name
   
   if StatTable.CharName == Player.name then
@@ -22,14 +75,14 @@ function UpdateGroupGUI(GroupieTableIndex, Player)
   end
   
   if AR.Status then
-      GroupieTable[GroupieTableIndex].NameLabel:echo("<left>" .. (AR.RescueList[string.lower(Player.name)] and "<b><span style='color: rgb(10,126,242)'>*</span></b>" or "<span style='color: rgb(0,0,0)'>*</span>") .. player_name .. "</left>")
+      guiEcho(groupRow.NameLabel, "<left>" .. (AR.RescueList[string.lower(Player.name)] and "<b><span style='color: rgb(10,126,242)'>*</span></b>" or "<span style='color: rgb(0,0,0)'>*</span>") .. player_name .. "</left>")
   else
-      GroupieTable[GroupieTableIndex].NameLabel:echo("<left>" .. (AR.RescueList[string.lower(Player.name)] and "<b><span style='color: rgb(125,125,125)'>*</span></b>" or "<span style='color: rgb(0,0,0)'>*</span>") .. player_name  .. "</left>")
+      guiEcho(groupRow.NameLabel, "<left>" .. (AR.RescueList[string.lower(Player.name)] and "<b><span style='color: rgb(125,125,125)'>*</span></b>" or "<span style='color: rgb(0,0,0)'>*</span>") .. player_name  .. "</left>")
   end
   
-  GroupieTable[GroupieTableIndex].NameLabel:setClickCallback(function() send("r " .. Player.name) end)
-  GroupieTable[GroupieTableIndex].InfoLabel:echo(SmallScreen and "<center>" .. Player.class .. "</center>" or "<left>" .. Player.race .. "-" .. Player.class .. "</left>")
-  GroupieTable[GroupieTableIndex].InfoLabel:setClickCallback(function() OnMobDeathQueue("monitor " .. Player.name) end)
+  guiSetClick(groupRow.NameLabel, "rescue:" .. Player.name, function() send("r " .. Player.name) end)
+  guiEcho(groupRow.InfoLabel, SmallScreen and "<center>" .. Player.class .. "</center>" or "<left>" .. Player.race .. "-" .. Player.class .. "</left>")
+  guiSetClick(groupRow.InfoLabel, "monitor:" .. Player.name, function() OnMobDeathQueue("monitor " .. Player.name) end)
 
   local PosistionLabelEcho = ""
   if Player.position == "Busy" or Player.position == "STUN" then
@@ -43,31 +96,60 @@ function UpdateGroupGUI(GroupieTableIndex, Player)
   end
   
   PosistionLabelEcho = PosistionLabelEcho .. (SmallScreen and string.sub(Player.position, 1, 3) or Player.position)
-  GroupieTable[GroupieTableIndex].PositionLabel:echo("<right>" .. PosistionLabelEcho .. "</right>")
+  guiEcho(groupRow.PositionLabel, "<right>" .. PosistionLabelEcho .. "</right>")
  
-  local PlayerMaxHP = tonumber(Player.maxhp)
-  local PlayerHP = math.min(tonumber(Player.hp), PlayerMaxHP)
+  local PlayerMaxHP = tonumber(Player.maxhp) or 1
+  local PlayerHP = math.min(tonumber(Player.hp) or 0, PlayerMaxHP)
 
-  GroupieTable[GroupieTableIndex].HPBar:setValue(PlayerHP, PlayerMaxHP,"<center><font-size ='4px'><span style='color: rgb(0,0,0)'>".. Player.hp .. (SmallScreen and "" or "/" .. PlayerMaxHP) .. "</center>")
+  guiSetGauge(groupRow.HPBar, PlayerHP, PlayerMaxHP,"<center><font-size ='4px'><span style='color: rgb(0,0,0)'>".. Player.hp .. (SmallScreen and "" or "/" .. PlayerMaxHP) .. "</center>")
   local HPBar_HealSpell = StatTable.Level == 125 and "cast comfort " .. Player.name or "cast divinity ".. Player.name
-  GroupieTable[GroupieTableIndex].HPMaskLabel:setClickCallback(function() send(HPBar_HealSpell) end)
+  guiSetClick(groupRow.HPMaskLabel, "heal:" .. HPBar_HealSpell, function() send(HPBar_HealSpell) end)
   
   local PlayerMaxMana = tonumber(Player.maxmp)
-  local PlayerMana = math.min(tonumber(Player.mp), PlayerMaxMana)    
       
   if(PlayerMaxMana == nil or PlayerMaxMana == 0) then
-    GroupieTable[GroupieTableIndex].ManaBar:setValue(1,1,"<center><font-size ='5px'>No MP</center>")
+    guiSetGauge(groupRow.ManaBar, 1,1,"<center><font-size ='5px'>No MP</center>")
   else
-    GroupieTable[GroupieTableIndex].ManaBar:setValue(PlayerMana,PlayerMaxMana,"<center><font-size ='4px'><span style='color: rgb(0,0,0)'>".. Player.mp .. (SmallScreen and "" or "/" .. PlayerMaxMana) .. "</center>")
+    local PlayerMana = math.min(tonumber(Player.mp) or 0, PlayerMaxMana)
+    guiSetGauge(groupRow.ManaBar, PlayerMana,PlayerMaxMana,"<center><font-size ='4px'><span style='color: rgb(0,0,0)'>".. Player.mp .. (SmallScreen and "" or "/" .. PlayerMaxMana) .. "</center>")
   end
 
   if (Player.class == "Sor" or Player.class == "Mag" or Player.class == "Wzd" or Player.class == "Psi" or Player.class == "Mnd" or Player.class == "Stm" or Player.class == "Fyr" or Player.class == "Nec") then
-      GroupieTable[GroupieTableIndex].ManaBar.front:setStyleSheet([[background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #000099, stop: 0.1 #000099, stop: 0.49 #3399ff, stop: 0.5 #0000ff, stop: 1 #0033cc);]])
+      guiSetStyle(groupRow.ManaBar.front, [[background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #000099, stop: 0.1 #000099, stop: 0.49 #3399ff, stop: 0.5 #0000ff, stop: 1 #0033cc);]])
   elseif (Player.class == "Prs" or Player.class == "Cle" or Player.class == "Dru" or Player.class == "Pal" or Player.class == "Viz") then
-      GroupieTable[GroupieTableIndex].ManaBar.front:setStyleSheet([[background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #ffff66, stop: 0.3 #ffff00, stop: 1 #ff9900);]])           
+      guiSetStyle(groupRow.ManaBar.front, [[background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #ffff66, stop: 0.3 #ffff00, stop: 1 #ff9900);]])
   else
-      GroupieTable[GroupieTableIndex].ManaBar.front:setStyleSheet([[background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #3399ff, stop: 0.1 #3399ff, stop: 0.49 #92c7fc, stop: 0.5 #178bff, stop: 1 #17aaff);]])
+      guiSetStyle(groupRow.ManaBar.front, [[background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #3399ff, stop: 0.1 #3399ff, stop: 0.49 #92c7fc, stop: 0.5 #178bff, stop: 1 #17aaff);]])
   end
 
-  GroupieTable[GroupieTableIndex]:show()
+  guiShow(groupRow)
+end
+
+function RenderGroupGUI(players)
+  if not GlobalVar.GUI or not GroupieTable or not players then return false end
+
+  local visibleCount = math.min(#players, StaticVars.MaxGroupLabels)
+  for index = 1, visibleCount do
+    UpdateGroupGUI(index, players[index])
+  end
+
+  local previousVisibleCount = VagoGUI.GroupVisibleCount or StaticVars.MaxGroupLabels
+  for index = visibleCount + 1, previousVisibleCount do
+    guiHide(GroupieTable[index])
+  end
+
+  VagoGUI.GroupVisibleCount = visibleCount
+  return true
+end
+
+function ScheduleGroupGUIUpdate(players)
+  if not GlobalVar.GUI then return false end
+
+  if type(VagoGUI.Schedule) == "function" then
+    return VagoGUI.Schedule("group", function()
+      RenderGroupGUI(players)
+    end)
+  end
+
+  return RenderGroupGUI(players)
 end

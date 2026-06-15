@@ -6,12 +6,28 @@
 -- Script Code:
 local IncludeNecMobName = false -- set to true to show the Nec Mob's name
 
+local function AddGroupGUIPlayer(guiPlayers, index, Player)
+  if not guiPlayers or index > StaticVars.MaxGroupLabels then return end
+
+  table.insert(guiPlayers, {
+    name = Player.name,
+    class = Player.class,
+    race = Player.race,
+    position = Player.position,
+    hp = Player.hp,
+    maxhp = Player.maxhp,
+    mp = Player.mp,
+    maxmp = Player.maxmp,
+    leader = Player.leader,
+  })
+end
+
 function GMCP_Group()
     local GroupieTableIndex = 0
     StatTable.InjuredCount = 0
     StatTable.CriticalInjured = 0
     GlobalVar.VizMonitor = ""
-    LastGroupUpdate = deepcopy(GlobalVar.GroupMates) or {}
+    LastGroupUpdate = GlobalVar.GroupMates or {}
     GlobalVar.GroupMates = {}
     GlobalVar.NecMobList = {}
     GlobalVar.PsiInGroup = false
@@ -22,6 +38,7 @@ function GMCP_Group()
     local smallest_hppct = InjuredPercent -- swap monitors to groupie with lowest hp% < 85%
     local GroupList = gmcp.Char.Group.List or nil
     local PlayersInRoom = gmcp.Room.Players or nil
+    local guiPlayers = GlobalVar.GUI and {} or nil
     
     
     if not GroupList then return end
@@ -33,11 +50,6 @@ function GMCP_Group()
         table.insert(GlobalVar.NecMobList, GroupList[i])
         table.remove(GroupList, i)
       end
-    end
-    
-    -- Hide all the group labels
-    for index = 1, StaticVars.MaxGroupLabels do
-      GroupieTable[index]:hide()
     end
 
     for _, Player in ipairs(GroupList) do
@@ -55,9 +67,7 @@ function GMCP_Group()
       UpdateGroupMateVitals(Player)
      
       -- Update GUI Groupmate table
-      if GlobalVar.GUI and GroupieTableIndex <= StaticVars.MaxGroupLabels then
-          UpdateGroupGUI(GroupieTableIndex, Player)
-      end
+      AddGroupGUIPlayer(guiPlayers, GroupieTableIndex, Player)
     
       -- Save who the GroupLeader is for use in other functions
       if Player.leader then 
@@ -120,11 +130,19 @@ function GMCP_Group()
         NecMob.name = "<left><span style='color: rgb(211,211,211)'>" .. NecMob.name .. "</span>"
         
         if GlobalVar.GUI and GroupieTableIndex <= StaticVars.MaxGroupLabels then
-          UpdateGroupGUI(GroupieTableIndex, NecMob)
+          AddGroupGUIPlayer(guiPlayers, GroupieTableIndex, NecMob)
         end
         
       end
     end -- end of NecMob for loop
+
+    if guiPlayers then
+      if type(ScheduleGroupGUIUpdate) == "function" then
+        ScheduleGroupGUIUpdate(guiPlayers)
+      elseif type(RenderGroupGUI) == "function" then
+        RenderGroupGUI(guiPlayers)
+      end
+    end
 end
 
 function UpdateGroupMatesFindSomeone(Player, LastGroupUpdate)

@@ -392,6 +392,20 @@ local AffectsLookup = {
   
 }
 
+function GMCP_HandleDoomToxin()
+    if not StatTable.DoomToxin then return end
+
+    if type(IsMDAY) == "function" and IsMDAY() then
+      TryAction("gtell |BR|doom toxin!|N|", 60)
+      TryAction("gtell panacea", 60)
+    elseif not Grouped() then
+      TryFunction("DoomToxinBeep", beep, nil, 60)
+      TryFunction("DoomToxinMsg", printGameMessage, {"Beep!", "Doom toxin!!", "red", "white"}, 60)
+    else
+      TryAction("emote is afflicted with |BR|DOOM TOXIN|N|!", 60)
+    end
+end
+
 function GMCP_Vitals()    
     StatTable.CharName = GMCP_name(gmcp.Char.Status.character_name)
     StatTable.Race, StatTable.Class = gmcp.Char.Status.race, gmcp.Char.Status.class
@@ -477,7 +491,15 @@ function GMCP_Vitals()
       n = 5,
     })
 
-    if(GlobalVar.GUI) then UpdateGUI() end 
+    GMCP_HandleDoomToxin()
+
+    if(GlobalVar.GUI) then
+      if type(ScheduleUpdateGUI) == "function" then
+        ScheduleUpdateGUI()
+      else
+        UpdateGUI()
+      end
+    end
 
 end
     
