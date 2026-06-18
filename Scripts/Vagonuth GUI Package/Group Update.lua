@@ -59,6 +59,11 @@ local function guiHide(widget)
   end
 end
 
+local function groupGaugeText(value)
+  local textSize = math.max(6, (Layout and Layout.DefaultFontSize or 8) - 1)
+  return "<center><span style='font-size: " .. textSize .. "pt; color: rgb(0,0,0);'>" .. value .. "</span></center>"
+end
+
 -- called on update to GMCP_Group()
 function UpdateGroupGUI(GroupieTableIndex, Player)
   if not GroupieTable or not GroupieTable[GroupieTableIndex] then return end
@@ -101,17 +106,17 @@ function UpdateGroupGUI(GroupieTableIndex, Player)
   local PlayerMaxHP = tonumber(Player.maxhp) or 1
   local PlayerHP = math.min(tonumber(Player.hp) or 0, PlayerMaxHP)
 
-  guiSetGauge(groupRow.HPBar, PlayerHP, PlayerMaxHP,"<center><font-size ='4px'><span style='color: rgb(0,0,0)'>".. Player.hp .. (SmallScreen and "" or "/" .. PlayerMaxHP) .. "</center>")
+  guiSetGauge(groupRow.HPBar, PlayerHP, PlayerMaxHP, groupGaugeText(Player.hp .. (SmallScreen and "" or "/" .. PlayerMaxHP)))
   local HPBar_HealSpell = StatTable.Level == 125 and "cast comfort " .. Player.name or "cast divinity ".. Player.name
   guiSetClick(groupRow.HPMaskLabel, "heal:" .. HPBar_HealSpell, function() send(HPBar_HealSpell) end)
   
   local PlayerMaxMana = tonumber(Player.maxmp)
       
   if(PlayerMaxMana == nil or PlayerMaxMana == 0) then
-    guiSetGauge(groupRow.ManaBar, 1,1,"<center><font-size ='5px'>No MP</center>")
+    guiSetGauge(groupRow.ManaBar, 1, 1, groupGaugeText("No MP"))
   else
     local PlayerMana = math.min(tonumber(Player.mp) or 0, PlayerMaxMana)
-    guiSetGauge(groupRow.ManaBar, PlayerMana,PlayerMaxMana,"<center><font-size ='4px'><span style='color: rgb(0,0,0)'>".. Player.mp .. (SmallScreen and "" or "/" .. PlayerMaxMana) .. "</center>")
+    guiSetGauge(groupRow.ManaBar, PlayerMana, PlayerMaxMana, groupGaugeText(Player.mp .. (SmallScreen and "" or "/" .. PlayerMaxMana)))
   end
 
   if (Player.class == "Sor" or Player.class == "Mag" or Player.class == "Wzd" or Player.class == "Psi" or Player.class == "Mnd" or Player.class == "Stm" or Player.class == "Fyr" or Player.class == "Nec") then

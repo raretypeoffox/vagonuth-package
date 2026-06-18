@@ -288,13 +288,13 @@ function LoadLayout()
       border-left: 1px black solid;
       border-bottom: 1px black solid;
       border-radius: 2;
-      padding: 3px;]])
+      padding: 0px;]])
     GroupieTable[i].HPBar.back:setStyleSheet([[background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #FFFFFF, stop: 1 #FFFFFF);
       border-width: 1px;
       border-color: black;
       border-style: solid;
       border-radius: 2;
-      padding: 3px;]])
+      padding: 0px;]])
          
     GroupieTable[i].HPMaskLabel = createLabel("HPMaskLabel"..tostring(i), "45%", "5%", "25%", "90%", "yellow", "", GroupieTable[i], 0, nil)
     GroupieTable[i].HPMaskLabel:setColor(0,0,0,0)
@@ -311,13 +311,13 @@ function LoadLayout()
       border-left: 1px black solid;
       border-bottom: 1px black solid;
       border-radius: 2;
-      padding: 3px;]])
+      padding: 0px;]])
     GroupieTable[i].ManaBar.back:setStyleSheet([[background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #FFFFFF, stop: 1 #FFFFFF);
       border-width: 1px;
       border-color: black;
       border-style: solid;
       border-radius: 2;
-      padding: 3px;]])
+      padding: 0px;]])
       
       GroupieTable[i]:hide()
 
