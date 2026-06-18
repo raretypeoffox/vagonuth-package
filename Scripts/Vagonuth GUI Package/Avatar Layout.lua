@@ -10,6 +10,7 @@
 Layout = Layout or {}
 Layout.Labels = Layout.Labels or {}
 Layout.DefaultFontSize = GlobalVar.FontSize or 8
+Layout.GroupRowHeight = math.max(12, Layout.DefaultFontSize + 4)
 Layout.AffectLabelHeight = 20
 Layout.BottomPanelHeight = 140
 
@@ -234,6 +235,7 @@ function LoadLayout()
   local CentrePanelSize = CentrePanelWidth/20 --break the space in middle up into 20 spaces for loading stuff in 
   
   Layout.DefaultFontSize = GlobalVar.FontSize or 8
+  Layout.GroupRowHeight = math.max(12, Layout.DefaultFontSize + 4)
   if not RightContainerEnabled then GlobalVar.EchoToMainConsole = true end
   
   -- left hand panel - full height
@@ -267,10 +269,10 @@ function LoadLayout()
   --group is set to max StaticVars.MaxGroupLabels (default 32)
   for i=1, StaticVars.MaxGroupLabels do
   
-    GroupieTable[i] = Geyser.Container:new({name="groupy"..tostring(i),height="10",width="90%"},GroupContainerInner)
-    GroupieTable[i].NameLabel = createLabel("NameLabel"..tostring(i), "0", "0", "22%", "90%", "yellow", "<left> Name </left>", GroupieTable[i], 0, nil)
-    GroupieTable[i].InfoLabel = createLabel("InfoLabel"..tostring(i), "22%", "0", "13%", "90%", "yellow", "<left> Info </left>", GroupieTable[i], 0, nil)
-    GroupieTable[i].PositionLabel = createLabel("PositionLabel"..tostring(i), "36%", "0", "12%", "90%", "white", "<left> Pos </left>", GroupieTable[i], 0, nil)
+    GroupieTable[i] = Geyser.Container:new({name="groupy"..tostring(i),height=Layout.GroupRowHeight,width="90%"},GroupContainerInner)
+    GroupieTable[i].NameLabel = createLabel("NameLabel"..tostring(i), "0", "0", "22%", "100%", "yellow", "<left> Name </left>", GroupieTable[i], 0, nil)
+    GroupieTable[i].InfoLabel = createLabel("InfoLabel"..tostring(i), "22%", "0", "13%", "100%", "yellow", "<left> Info </left>", GroupieTable[i], 0, nil)
+    GroupieTable[i].PositionLabel = createLabel("PositionLabel"..tostring(i), "36%", "0", "12%", "100%", "white", "<left> Pos </left>", GroupieTable[i], 0, nil)
     GroupieTable[i].NameLabel:setStyleSheet([[ background-color: black; ]])
     GroupieTable[i].InfoLabel:setStyleSheet([[ background-color: black; ]])
     GroupieTable[i].PositionLabel:setStyleSheet([[ background-color: black; ]])

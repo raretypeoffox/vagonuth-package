@@ -450,7 +450,7 @@ function GMCP_Vitals()
     StatTable.RacialInnervateRegen = nil
     
     -- Iterate over gmcp.Char.Status.affects and set StatTable variables using the lookup table
-    if StatTable.Level >= 25 and not (gmcp.Char.Status.affects == "" or gmcp.Char.Status.affects == nil) then  
+      if StatTable.Level >= 25 and type(gmcp.Char.Status.affects) == "table" then  
         for k,v in pairs(gmcp.Char.Status.affects) do
         
             -- Check if the affect name exists in the lookup table
