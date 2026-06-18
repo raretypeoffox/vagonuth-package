@@ -18,16 +18,13 @@ Battle.EndCombatEventHandler = Battle.EndCombatEventHandler or nil
 Battle.ActEventHandler = Battle.ActEventHandler or nil
 
 Battle.LagAdjustSeq = Battle.LagAdjustSeq or 0
-Battle.StormlordThunderheadRoomKey = Battle.StormlordThunderheadRoomKey or nil
 Battle.StormlordLastSpell = Battle.StormlordLastSpell or nil
-Battle.StormlordCallLightningPending = Battle.StormlordCallLightningPending or false
-Battle.StormlordCallLightningWasBoosted = Battle.StormlordCallLightningWasBoosted or false
-Battle.StormlordWaitingForThunderheadShock = Battle.StormlordWaitingForThunderheadShock or false
+Battle.StormlordThunderheadPendingUntil = Battle.StormlordThunderheadPendingUntil or nil
 
 local ACT_WAIT_TIME_SECONDS = 0.5 -- constant, amount of time to wait before calling another loop of Battle.Act
 local STORMLORD_LOW_MANA = 5000
 local STORMLORD_SUSTAINED_MIN_MANA = 1000
-local STORMLORD_THUNDERHEAD_FALLBACK_WAIT = 10
+local STORMLORD_THUNDERHEAD_RETRY_WAIT = 10
 
 -- Adds compatability for people not running the inventory package
 function Battle.GetSpellLagMod()
@@ -177,9 +174,7 @@ function Battle.EndCombat()
   Battle.Combat = false
   Battle.Stomper = false
   Battle.StormlordLastSpell = nil
-  Battle.StormlordCallLightningPending = false
-  Battle.StormlordCallLightningWasBoosted = false
-  Battle.StormlordWaitingForThunderheadShock = false
+  Battle.StormlordThunderheadPendingUntil = nil
   safeTempTimer("Battle.Recent.EndofCombat", 30, function() Battle.Recent = false; end)
   safeEventHandler("Battle.Recent.SetFalseOnMyDeath", "OnMyDeath", function() Battle.Recent = false; end, false)
   safeEventHandler("Battle.Recent.SetFalseOnPlane", "OnPlane", function() Battle.Recent = false; end, false)
@@ -198,7 +193,7 @@ function Battle.KillEventHandlers()
 end
 
 function Battle.AutoCast()
-  if StatTable.Class == "Stormlord" and StatTable.Level == 125 then
+  if StatTable.Class == "Stormlord" and StatTable.Level == 125 and GlobalVar.AutoCaster == "call lightning" then
     return Battle.AutoCastStormlord()
   end
 
@@ -346,36 +341,6 @@ function Battle.DoAfterCombat(action)
   end
 end
 
-function Battle.GetStormlordRoomKey()
-  local info = gmcp and gmcp.Room and gmcp.Room.Info or nil
-  if not info then return nil end
-
-  if info.num then return tostring(info.num) end
-  if info.id then return tostring(info.id) end
-  if info.vnum then return tostring(info.vnum) end
-
-  local exits = {}
-  for exitName, _ in pairs(info.exits or {}) do
-    table.insert(exits, tostring(exitName))
-  end
-  table.sort(exits)
-
-  return table.concat({
-    tostring(info.zone or ""),
-    tostring(info.name or ""),
-    table.concat(exits, ","),
-  }, "|")
-end
-
-function Battle.StormlordRoomHasThunderhead()
-  local roomKey = Battle.GetStormlordRoomKey()
-  return roomKey and Battle.StormlordThunderheadRoomKey == roomKey
-end
-
-function Battle.MarkStormlordThunderheadRoom()
-  Battle.StormlordThunderheadRoomKey = Battle.GetStormlordRoomKey()
-end
-
 function Battle.StormlordMobCount()
   if type(AutoCastCountMobs) == "function" then
     return AutoCastCountMobs()
@@ -403,6 +368,21 @@ function Battle.StormlordRoomAllowsAOE()
   return true
 end
 
+function Battle.StormlordThunderheadUp()
+  if type(IsThunderhead) ~= "function" then return false end
+
+  if IsThunderhead() then
+    Battle.StormlordThunderheadPendingUntil = nil
+    return true
+  end
+
+  return false
+end
+
+function Battle.StormlordThunderheadPending()
+  return Battle.StormlordThunderheadPendingUntil and os.clock() < Battle.StormlordThunderheadPendingUntil
+end
+
 function Battle.StormlordSpellLag()
   local spelllag = (5 * Battle.GetSpellLagMod())
 
@@ -415,12 +395,9 @@ end
 
 function Battle.StormlordCast(spell, allowSurge)
   Battle.StormlordLastSpell = spell
-  Battle.StormlordCallLightningPending = (spell == "call lightning")
-  Battle.StormlordCallLightningWasBoosted = false
-  Battle.StormlordWaitingForThunderheadShock = (spell == "thunderhead")
 
   if spell == "thunderhead" then
-    Battle.MarkStormlordThunderheadRoom()
+    Battle.StormlordThunderheadPendingUntil = os.clock() + STORMLORD_THUNDERHEAD_RETRY_WAIT
   end
 
   if allowSurge then
@@ -437,9 +414,7 @@ end
 function Battle.AutoCastStormlord()
   if not GlobalVar.AutoCast then
     Battle.StormlordLastSpell = nil
-    Battle.StormlordCallLightningPending = false
-    Battle.StormlordCallLightningWasBoosted = false
-    Battle.StormlordWaitingForThunderheadShock = false
+    Battle.StormlordThunderheadPendingUntil = nil
     return nil, ACT_WAIT_TIME_SECONDS
   end
 
@@ -448,15 +423,17 @@ function Battle.AutoCastStormlord()
   local mana = tonumber(status.mana) or tonumber(StatTable.current_mana) or 0
   local mobCount = Battle.StormlordMobCount()
 
-  if not Battle.StormlordRoomHasThunderhead() then
+  if not Battle.StormlordThunderheadUp() then
+    if Battle.StormlordThunderheadPending() then return nil, ACT_WAIT_TIME_SECONDS end
     if mana < STORMLORD_SUSTAINED_MIN_MANA then return nil, ACT_WAIT_TIME_SECONDS end
-    return Battle.StormlordCast("thunderhead", false), STORMLORD_THUNDERHEAD_FALLBACK_WAIT
+    return Battle.StormlordCast("thunderhead", false), ACT_WAIT_TIME_SECONDS
   end
 
   if not Battle.StormlordRoomAllowsAOE() then
-    if not StatTable.Thunderhead then
+    if not Battle.StormlordThunderheadUp() then
+      if Battle.StormlordThunderheadPending() then return nil, ACT_WAIT_TIME_SECONDS end
       if mana < STORMLORD_SUSTAINED_MIN_MANA then return nil, ACT_WAIT_TIME_SECONDS end
-      return Battle.StormlordCast("thunderhead", false), STORMLORD_THUNDERHEAD_FALLBACK_WAIT
+      return Battle.StormlordCast("thunderhead", false), ACT_WAIT_TIME_SECONDS
     end
 
     return nil, ACT_WAIT_TIME_SECONDS
@@ -472,9 +449,10 @@ function Battle.AutoCastStormlord()
       return nil, ACT_WAIT_TIME_SECONDS
     end
 
-    if not StatTable.Thunderhead then
+    if not Battle.StormlordThunderheadUp() then
+      if Battle.StormlordThunderheadPending() then return nil, ACT_WAIT_TIME_SECONDS end
       if mana < STORMLORD_SUSTAINED_MIN_MANA then return nil, ACT_WAIT_TIME_SECONDS end
-      return Battle.StormlordCast("thunderhead", false), STORMLORD_THUNDERHEAD_FALLBACK_WAIT
+      return Battle.StormlordCast("thunderhead", false), ACT_WAIT_TIME_SECONDS
     end
 
     return nil, ACT_WAIT_TIME_SECONDS
@@ -483,85 +461,17 @@ function Battle.AutoCastStormlord()
   return Battle.StormlordCast("call lightning", true), spelllag
 end
 
-function Battle.StormlordCallLightningFailed()
-  if Battle.StormlordLastSpell ~= "call lightning" then return end
-
-  Battle.StormlordThunderheadRoomKey = nil
-  Battle.StormlordLastSpell = nil
-  Battle.StormlordCallLightningPending = false
-  Battle.StormlordCallLightningWasBoosted = false
-  Battle.StormlordWaitingForThunderheadShock = false
-
-  if Battle.Combat and GlobalVar.AutoCast then
-    if Battle.NextActionTimerID then killTimer(Battle.NextActionTimerID) end
-    Battle.NextActionTimerID = scheduleActTimer(ACT_WAIT_TIME_SECONDS)
-  end
-end
-
-function Battle.StormlordCallLightningBoosted()
-  if Battle.StormlordLastSpell ~= "call lightning" then return end
-  if not Battle.StormlordCallLightningPending then return end
-
-  Battle.StormlordCallLightningWasBoosted = true
-  Battle.MarkStormlordThunderheadRoom()
-end
-
-function Battle.StormlordCallLightningLanded()
-  if Battle.StormlordLastSpell ~= "call lightning" then return end
-  if not Battle.StormlordCallLightningPending then return end
-
-  if not Battle.StormlordCallLightningWasBoosted then
-    Battle.StormlordThunderheadRoomKey = nil
-  end
-
-  Battle.StormlordCallLightningPending = false
-  Battle.StormlordCallLightningWasBoosted = false
-end
-
-function Battle.StormlordThunderheadReady()
-  if not Battle.StormlordWaitingForThunderheadShock then return end
-
-  Battle.StormlordWaitingForThunderheadShock = false
-  Battle.MarkStormlordThunderheadRoom()
-
-  if Battle.Combat and GlobalVar.AutoCast then
-    if Battle.NextActionTimerID then killTimer(Battle.NextActionTimerID) end
-    Battle.NextActionTimerID = scheduleActTimer(0)
-  end
-end
-
-function Battle.StormlordThunderheadFailed()
-  if not Battle.StormlordWaitingForThunderheadShock then return end
-
-  Battle.StormlordThunderheadRoomKey = nil
-  Battle.StormlordLastSpell = nil
-  Battle.StormlordWaitingForThunderheadShock = false
-
-  if Battle.Combat and GlobalVar.AutoCast then
-    if Battle.NextActionTimerID then killTimer(Battle.NextActionTimerID) end
-    Battle.NextActionTimerID = scheduleActTimer(ACT_WAIT_TIME_SECONDS)
-  end
-end
-
-function Battle.StormlordOnNewRoom()
-  Battle.StormlordThunderheadRoomKey = nil
-  Battle.StormlordLastSpell = nil
-  Battle.StormlordCallLightningPending = false
-  Battle.StormlordCallLightningWasBoosted = false
-  Battle.StormlordWaitingForThunderheadShock = false
-end
-
 
 
 Battle.KillEventHandlers()
 Battle.OnCombatEventHandler = registerAnonymousEventHandler("OnCombat", "Battle.OnCombat", false)
 Battle.EndCombatEventHandler = registerAnonymousEventHandler("EndCombat", "Battle.EndCombat", false)
-safeEventHandler("StormlordOnNewRoomEvent", "OnNewRoom", function() Battle.StormlordOnNewRoom() end, false)
-safeTempTrigger("StormlordCallLightningNoThunderhead", "You must be out of doors.", function() Battle.StormlordCallLightningFailed() end, "begin")
-safeTempTrigger("StormlordCallLightningBoosted", "You harness the fury of a Stormlord's might!", function() Battle.StormlordCallLightningBoosted() end, "begin")
-safeTempTrigger("StormlordCallLightningLanded", "Lightning strikes your foes!", function() Battle.StormlordCallLightningLanded() end, "begin")
-safeTempTrigger("StormlordThunderheadReady", "You shock", function() Battle.StormlordThunderheadReady() end, "begin")
-safeTempTrigger("StormlordThunderheadFailed", "The rumbling stops, and the thunder clouds depart.", function() Battle.StormlordThunderheadFailed() end, "begin")
+safeKillEventHandler("StormlordOnNewRoomEvent")
+safeKillTrigger("StormlordCallLightningNoThunderhead")
+safeKillTrigger("StormlordCallLightningBoosted")
+safeKillTrigger("StormlordCallLightningLanded")
+safeKillTrigger("StormlordThunderheadReady")
+safeKillTrigger("StormlordThunderheadFailed")
 --Battle.ActEventHandler = registerAnonymousEventHandler("ActCombat", "Battle.Act", false)
 
 
