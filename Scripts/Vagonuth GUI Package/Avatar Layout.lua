@@ -279,8 +279,8 @@ function LoadLayout()
     
     GroupieTable[i].HPBar = Geyser.Gauge:new({
       name="HPBar"..tostring(i),
-      x="45%", y="3%",
-      width="25%", height="80%",
+      x="45%", y="5%",
+      width="25%", height="90%",
     },GroupieTable[i])
           
     GroupieTable[i].HPBar.front:setStyleSheet([[background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #f04141, stop: 0.1 #ef2929, stop: 0.49 #cc0000, stop: 0.5 #a40000, stop: 1 #cc0000);
@@ -296,14 +296,14 @@ function LoadLayout()
       border-radius: 2;
       padding: 3px;]])
          
-    GroupieTable[i].HPMaskLabel = createLabel("HPMaskLabel"..tostring(i), "45%", "3%", "25%", "90%", "yellow", "", GroupieTable[i], 0, nil)
+    GroupieTable[i].HPMaskLabel = createLabel("HPMaskLabel"..tostring(i), "45%", "5%", "25%", "90%", "yellow", "", GroupieTable[i], 0, nil)
     GroupieTable[i].HPMaskLabel:setColor(0,0,0,0)
     GroupieTable[i].HPMaskLabel:setToolTip("Click the HP Bar to provide a divinity / comfort to target", 10)
     
     GroupieTable[i].ManaBar = Geyser.Gauge:new({
     name="ManaBar"..tostring(i),
-    x="72%", y="3%",
-    width="25%", height="80%",
+    x="72%", y="5%",
+    width="25%", height="90%",
     },GroupieTable[i])
               
     GroupieTable[i].ManaBar.front:setStyleSheet([[background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #000099, stop: 0.1 #000099, stop: 0.49 #3399ff, stop: 0.5 #0000ff, stop: 1 #0033cc);
