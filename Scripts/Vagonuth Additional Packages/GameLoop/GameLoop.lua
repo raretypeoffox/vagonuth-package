@@ -229,13 +229,13 @@ function GameLoopRace(MyRace)
       if (GlobalVar.AutoRevive and (StatTable.current_health / StatTable.max_health) < GlobalVar.AutoReviveHPpct and StatTable.current_health > 100 and StatTable.Foci) then 
         UseSkillAfterExhaust(StatTable.RacialRevival, StatTable.RacialRevivalFatigue, "racial revival")
       end
-   elseif MyRace == "Firedrake" and StatTable.Level == 125 then
-      if not StatTable.RacialBreathFatigue and 
-         not GroupLeader() 
-         and StatTable.Level == 125 and
-         tonumber(gmcp.Char.Status.opponent_level) > 180 then 
-          TryGameLoopAction("racial breath", 30)
-        end
+   elseif MyRace == "Firedrake" then
+      if not StatTable.RacialBreathFatigue and not GroupLeader() then
+          if (StatTable.Level == 125 and tonumber(gmcp.Char.Status.opponent_level) > 160) or
+             (StatTable.Level == 51 and tonumber(gmcp.Char.Status.opponent_level) > 65) then 
+            TryGameLoopAction("racial breath", 30)
+          end
+      end
   
    elseif MyRace == "Dragon" then
       if not StatTable.RacialBreathFatigue and 
