@@ -75,6 +75,7 @@ function Init.GlobalVars()
   GlobalVar.AutoHeal = false
   GlobalVar.AutoHealTarget = nil
   GlobalVar.AutoHealLowest =  true
+  GlobalVar.AutoHealLowestTarget = nil
   GlobalVar.InterventionTarget = nil
   GlobalVar.AutoHealExclusionList = GlobalVar.AutoHealExclusionList or {}
 

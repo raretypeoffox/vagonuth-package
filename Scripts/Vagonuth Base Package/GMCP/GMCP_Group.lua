@@ -10,6 +10,18 @@ local function PlayerCanReceiveDirectHeals(Player)
   return Player and Player.class ~= "Nec"
 end
 
+local function IsAutoHealExcluded(name)
+  return name and GlobalVar.AutoHealExclusionList and GlobalVar.AutoHealExclusionList[GMCP_name(name)]
+end
+
+local function PlayerCountsForAutoHeal(Player)
+  return Player
+    and Player.position ~= "Sleep"
+    and Player.position ~= "Rest"
+    and PlayerCanReceiveDirectHeals(Player)
+    and not IsAutoHealExcluded(Player.name)
+end
+
 local function AddGroupGUIPlayer(guiPlayers, index, Player)
   if not guiPlayers or index > StaticVars.MaxGroupLabels then return end
 
@@ -31,6 +43,7 @@ function GMCP_Group()
     StatTable.InjuredCount = 0
     StatTable.CriticalInjured = 0
     GlobalVar.VizMonitor = ""
+    GlobalVar.AutoHealLowestTarget = nil
     LastGroupUpdate = GlobalVar.GroupMates or {}
     GlobalVar.GroupMates = {}
     GlobalVar.NecMobList = {}
@@ -40,6 +53,7 @@ function GMCP_Group()
     local CriticalPercent = StaticVars.CriticalPercent
     
     local smallest_hppct = InjuredPercent -- swap monitors to groupie with lowest hp% < 85%
+    local lowest_autoheal_hppct = nil
     local GroupList = gmcp.Char.Group.List or nil
     local PlayersInRoom = gmcp.Room.Players or nil
     local guiPlayers = GlobalVar.GUI and {} or nil
@@ -85,7 +99,7 @@ function GMCP_Group()
       end
 
       -- Code to count how many injured and wounded (defined at the top) are in the group
-      if(Player.position ~= "Sleep" and Player.position ~= "Rest" and PlayerCanReceiveDirectHeals(Player)) then --we don't want to capture groupies regening or Necs we cannot directly heal
+      if(PlayerCountsForAutoHeal(Player)) then --we don't want to capture groupies regening, Necs we cannot directly heal, or excluded targets
         
         local player_hppct = tonumber(Player.hp) / tonumber(Player.maxhp)
           
@@ -95,10 +109,15 @@ function GMCP_Group()
             StatTable.CriticalInjured = StatTable.CriticalInjured +1
           end
         end
+
+        if (not lowest_autoheal_hppct or player_hppct < lowest_autoheal_hppct) then
+          lowest_autoheal_hppct = player_hppct
+          GlobalVar.AutoHealLowestTarget = Player.name
+        end
         
         -- For all groupies that are not us, check who has the lowest % of HP and set them as our monitor
         if (Player.name ~= StatTable.CharName) then
-          if (player_hppct < smallest_hppct) and not GlobalVar.AutoHealExclusionList[Player.name] then
+          if (player_hppct < smallest_hppct) then
             smallest_hppct = player_hppct
             GlobalVar.VizMonitor = Player.name
           end

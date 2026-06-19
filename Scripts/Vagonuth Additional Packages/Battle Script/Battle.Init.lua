@@ -265,8 +265,7 @@ function Battle.AutoHeal()
   local MonitorHPPct = (StatTable.Level == 125) and 0.875 or 0.725 -- at what % (expressed in decimal) should we auto heal at
   MonitorHPPct = math.floor((MonitorHPPct + (math.random() * 0.05)) * 1000 + 0.5) / 1000 -- adds a random number between 0 and 5% so that when multiple people use the package, they don't all start healing at the exact same amonut
   
-  local MinManaPct = (StatTable.Level == 125) and 0.1 or 0.25 -- at what mana level should we stop auto healing at
-  local MinMana = (MinManaPct * StatTable.max_mana) or 0
+ 
   -- At Lord, save enough mana for create shrine + planeshift
   local MinMana = (StatTable.Level == 125) and (2500 * Battle.GetSpellCostMod("divine") + 500 * Battle.GetSpellCostMod("arcane")) or 300
   
@@ -290,10 +289,8 @@ function Battle.AutoHeal()
   end
   
   -- Auto Heal Lowest HP % - set our heal target to the lowest HP groupie if lowest hp % mode activated
-  if GlobalVar.AutoHealLowest and GlobalVar.VizMonitor ~= "" then 
-    HealTarget = GlobalVar.VizMonitor -- GlobalVizMonitor holds the name of the lowest hp groupmate (excluding us!), check below to see if our hp is lower
-    if (StatTable.current_health / StatTable.max_health) < (GlobalVar.GroupMates[HealTarget].hp / GlobalVar.GroupMates[HealTarget].maxhp) then HealTarget = StatTable.CharName
-    elseif (StatTable.current_health / StatTable.max_health) < 0.1 then HealTarget = StatTable.CharName end   
+  if GlobalVar.AutoHealLowest and GlobalVar.AutoHealLowestTarget then
+    HealTarget = GlobalVar.AutoHealLowestTarget
   end
   
   -- If heal target doesn't exist or isn't a group mate, return
