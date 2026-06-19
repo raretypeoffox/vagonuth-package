@@ -201,6 +201,12 @@ function Battle.AutoCast()
   local autocast_spell = GlobalVar.AutoCaster
   local nextaction = ""
   local spelllag = (5 * Battle.GetSpellLagMod()) -- assumes in class, ie 5 second, casting
+
+  if string.lower(autocast_spell or "") == "call lightning" and StatTable.Class ~= "Stormlord" then
+    if type(IsThunderhead) ~= "function" or not IsThunderhead() then
+      return nil, ACT_WAIT_TIME_SECONDS
+    end
+  end
   
   if GlobalVar.AutoCaster == "acid rain" or GlobalVar.AutoCaster == "meteor swarm" or GlobalVar.AutoCaster == "banshee wail" or GlobalVar.AutoCaster == "storm of vengeance" then
     spelllag = (6 * Battle.GetSpellLagMod())  

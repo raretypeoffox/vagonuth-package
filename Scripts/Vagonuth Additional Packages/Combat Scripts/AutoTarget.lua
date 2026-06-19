@@ -116,6 +116,12 @@ local function AutoTargetShouldStormlordThunderhead()
   return true
 end
 
+local function AutoTargetCanCastCallLightning()
+  if string.lower(GlobalVar.AutoCaster or "") ~= "call lightning" then return true end
+  if StatTable.Class == "Stormlord" then return true end
+  return type(IsThunderhead) == "function" and IsThunderhead()
+end
+
 function AutoTarget()
   if not GlobalVar.AutoTarget or Battle.Combat or SafeArea() then return end
   if StatTable.current_health / StatTable.max_health < AutoTargetMinHPPct then return end
@@ -142,6 +148,7 @@ function AutoTarget()
       -- We're now ready to autotarget the mob. This first bit is for casters.
       if (GlobalVar.AutoCast and (GlobalVar.KillStyle == "kill" or not GlobalVar.AutoKill)) then
         if tonumber(gmcp.Char.Vitals.lag) > 0 then return end
+        if not AutoTargetCanCastCallLightning() then return end
         
         local cast_action = "cast '" .. GlobalVar.AutoCaster .. "' " .. mob.name
         local surge_level = GetSurgeLevel(GlobalVar.AutoCaster)
@@ -150,7 +157,7 @@ function AutoTarget()
           cast_action = "surge " .. surge_level .. getCommandSeparator() .. cast_action .. getCommandSeparator() .. "surge off"
         end
         -- delay cast by AutoTargetCastDelay seconds to give tanks/stabbers a chance first
-        tempTimer(AutoTargetCastDelay,function() if not Battle.Combat then TryCast(cast_action,5); end; end)
+        tempTimer(AutoTargetCastDelay,function() if not Battle.Combat and AutoTargetCanCastCallLightning() then TryCast(cast_action,5); end; end)
         break
       else
         send(GlobalVar.KillStyle .. " " .. mob.name)
