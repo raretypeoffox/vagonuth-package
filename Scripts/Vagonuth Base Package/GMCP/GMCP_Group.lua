@@ -6,6 +6,10 @@
 -- Script Code:
 local IncludeNecMobName = false -- set to true to show the Nec Mob's name
 
+local function PlayerCanReceiveDirectHeals(Player)
+  return Player and Player.class ~= "Nec"
+end
+
 local function AddGroupGUIPlayer(guiPlayers, index, Player)
   if not guiPlayers or index > StaticVars.MaxGroupLabels then return end
 
@@ -81,7 +85,7 @@ function GMCP_Group()
       end
 
       -- Code to count how many injured and wounded (defined at the top) are in the group
-      if(Player.position ~= "Sleep" and Player.position ~= "Rest") then --we don't want to capture groupings regening
+      if(Player.position ~= "Sleep" and Player.position ~= "Rest" and PlayerCanReceiveDirectHeals(Player)) then --we don't want to capture groupies regening or Necs we cannot directly heal
         
         local player_hppct = tonumber(Player.hp) / tonumber(Player.maxhp)
           
@@ -93,7 +97,7 @@ function GMCP_Group()
         end
         
         -- For all groupies that are not us, check who has the lowest % of HP and set them as our monitor
-        if (Player.name ~= StatTable.CharName and (Player.position ~= "Sleep" or Player.position ~= "Rest")) then
+        if (Player.name ~= StatTable.CharName) then
           if (player_hppct < smallest_hppct) and not GlobalVar.AutoHealExclusionList[Player.name] then
             smallest_hppct = player_hppct
             GlobalVar.VizMonitor = Player.name
