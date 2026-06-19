@@ -383,6 +383,11 @@ function Battle.StormlordThunderheadPending()
   return Battle.StormlordThunderheadPendingUntil and os.clock() < Battle.StormlordThunderheadPendingUntil
 end
 
+function Battle.StormlordMarkThunderheadPending()
+  Battle.StormlordLastSpell = "thunderhead"
+  Battle.StormlordThunderheadPendingUntil = os.clock() + STORMLORD_THUNDERHEAD_RETRY_WAIT
+end
+
 function Battle.StormlordSpellLag()
   local spelllag = (5 * Battle.GetSpellLagMod())
 
@@ -397,7 +402,7 @@ function Battle.StormlordCast(spell, allowSurge)
   Battle.StormlordLastSpell = spell
 
   if spell == "thunderhead" then
-    Battle.StormlordThunderheadPendingUntil = os.clock() + STORMLORD_THUNDERHEAD_RETRY_WAIT
+    Battle.StormlordMarkThunderheadPending()
   end
 
   if allowSurge then

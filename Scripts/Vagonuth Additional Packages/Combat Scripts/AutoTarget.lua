@@ -105,6 +105,17 @@ local TargetExclusions = {
 AutoTargetCastDelay = AutoTargetCastDelay or 1
 AutoTargetMinHPPct = AutoTargetMinHPPct or 0.5
 
+local function AutoTargetShouldStormlordThunderhead()
+  if not GlobalVar.AutoCast or GlobalVar.AutoCaster ~= "call lightning" then return false end
+  if StatTable.Class ~= "Stormlord" or StatTable.Level ~= 125 then return false end
+  if type(IsThunderhead) ~= "function" or IsThunderhead() then return false end
+  if StatTable.ThunderheadExhaust then return false end
+  if (tonumber(StatTable.current_mana) or 0) < 1000 then return false end
+  if type(Battle.StormlordThunderheadPending) == "function" and Battle.StormlordThunderheadPending() then return false end
+
+  return true
+end
+
 function AutoTarget()
   if not GlobalVar.AutoTarget or Battle.Combat or SafeArea() then return end
   if StatTable.current_health / StatTable.max_health < AutoTargetMinHPPct then return end
@@ -114,6 +125,19 @@ function AutoTarget()
     if(tonumber(mob.name) ~= nil and not mob.fullname:find("%(CHARMED%)") and ArrayHasSubstring(TargetExclusions, mob.fullname) == false and ArrayHasSubstring(ImmoMobList, mob.fullname) == false) then
       
       --if GroupLeader() then send("emote is killing " .. mob.name) end
+
+      if AutoTargetShouldStormlordThunderhead() then
+        if tonumber(gmcp.Char.Vitals.lag) > 0 then return end
+
+        local thunderhead_action = "cast 'thunderhead' " .. mob.name
+        tempTimer(AutoTargetCastDelay,function()
+          if not Battle.Combat and TryCast(thunderhead_action, 5) and type(Battle.StormlordMarkThunderheadPending) == "function" then
+            Battle.StormlordMarkThunderheadPending()
+          end
+        end)
+
+        break
+      end
       
       -- We're now ready to autotarget the mob. This first bit is for casters.
       if (GlobalVar.AutoCast and (GlobalVar.KillStyle == "kill" or not GlobalVar.AutoKill)) then
