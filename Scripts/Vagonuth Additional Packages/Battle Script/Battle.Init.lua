@@ -22,8 +22,8 @@ Battle.StormlordLastSpell = Battle.StormlordLastSpell or nil
 Battle.StormlordThunderheadPendingUntil = Battle.StormlordThunderheadPendingUntil or nil
 
 local ACT_WAIT_TIME_SECONDS = 0.5 -- constant, amount of time to wait before calling another loop of Battle.Act
-local STORMLORD_LOW_MANA = 5000
 local STORMLORD_SUSTAINED_MIN_MANA = 1000
+local STORMLORD_THUNDERHEAD_LAG = 2
 local STORMLORD_THUNDERHEAD_RETRY_WAIT = 10
 
 -- Adds compatability for people not running the inventory package
@@ -429,38 +429,18 @@ function Battle.AutoCastStormlord()
   local spelllag = Battle.StormlordSpellLag()
   local status = gmcp and gmcp.Char and gmcp.Char.Status or {}
   local mana = tonumber(status.mana) or tonumber(StatTable.current_mana) or 0
-  local mobCount = Battle.StormlordMobCount()
 
   if not Battle.StormlordThunderheadUp() then
     if Battle.StormlordThunderheadPending() then return nil, ACT_WAIT_TIME_SECONDS end
     if mana < STORMLORD_SUSTAINED_MIN_MANA then return nil, ACT_WAIT_TIME_SECONDS end
-    return Battle.StormlordCast("thunderhead", false), ACT_WAIT_TIME_SECONDS
+    return Battle.StormlordCast("thunderhead", false), STORMLORD_THUNDERHEAD_LAG
   end
 
   if not Battle.StormlordRoomAllowsAOE() then
     if not Battle.StormlordThunderheadUp() then
       if Battle.StormlordThunderheadPending() then return nil, ACT_WAIT_TIME_SECONDS end
       if mana < STORMLORD_SUSTAINED_MIN_MANA then return nil, ACT_WAIT_TIME_SECONDS end
-      return Battle.StormlordCast("thunderhead", false), ACT_WAIT_TIME_SECONDS
-    end
-
-    return nil, ACT_WAIT_TIME_SECONDS
-  end
-
-  if mana < STORMLORD_LOW_MANA then
-    if mobCount >= 3 then
-      if not StatTable.Blizzard then
-        if mana < STORMLORD_SUSTAINED_MIN_MANA then return nil, ACT_WAIT_TIME_SECONDS end
-        return Battle.StormlordCast("blizzard", false), spelllag
-      end
-
-      return nil, ACT_WAIT_TIME_SECONDS
-    end
-
-    if not Battle.StormlordThunderheadUp() then
-      if Battle.StormlordThunderheadPending() then return nil, ACT_WAIT_TIME_SECONDS end
-      if mana < STORMLORD_SUSTAINED_MIN_MANA then return nil, ACT_WAIT_TIME_SECONDS end
-      return Battle.StormlordCast("thunderhead", false), ACT_WAIT_TIME_SECONDS
+      return Battle.StormlordCast("thunderhead", false), STORMLORD_THUNDERHEAD_LAG
     end
 
     return nil, ACT_WAIT_TIME_SECONDS

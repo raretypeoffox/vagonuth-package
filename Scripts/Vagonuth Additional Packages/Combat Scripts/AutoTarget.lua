@@ -104,11 +104,11 @@ local TargetExclusions = {
 
 AutoTargetCastDelay = AutoTargetCastDelay or 1
 AutoTargetMinHPPct = AutoTargetMinHPPct or 0.5
+local STORMLORD_THUNDERHEAD_LAG = 2
 
 local function AutoTargetShouldStormlordThunderhead()
   if not GlobalVar.AutoCast or GlobalVar.AutoCaster ~= "call lightning" then return false end
   if StatTable.Class ~= "Stormlord" or StatTable.Level ~= 125 then return false end
-  if type(IsThunderhead) ~= "function" or IsThunderhead() then return false end
   if StatTable.ThunderheadExhaust then return false end
   if (tonumber(StatTable.current_mana) or 0) < 1000 then return false end
   if type(Battle.StormlordThunderheadPending) == "function" and Battle.StormlordThunderheadPending() then return false end
@@ -118,7 +118,7 @@ end
 
 local function AutoTargetCanCastCallLightning()
   if string.lower(GlobalVar.AutoCaster or "") ~= "call lightning" then return true end
-  if StatTable.Class == "Stormlord" then return true end
+  if StatTable.Class == "Stormlord" then return false end
   return type(IsThunderhead) == "function" and IsThunderhead()
 end
 
@@ -137,7 +137,7 @@ function AutoTarget()
 
         local thunderhead_action = "cast 'thunderhead' " .. mob.name
         tempTimer(AutoTargetCastDelay,function()
-          if not Battle.Combat and TryCast(thunderhead_action, 5) and type(Battle.StormlordMarkThunderheadPending) == "function" then
+          if not Battle.Combat and TryCast(thunderhead_action, STORMLORD_THUNDERHEAD_LAG) and type(Battle.StormlordMarkThunderheadPending) == "function" then
             Battle.StormlordMarkThunderheadPending()
           end
         end)
