@@ -106,6 +106,27 @@ AutoTargetCastDelay = AutoTargetCastDelay or 1
 AutoTargetMinHPPct = AutoTargetMinHPPct or 0.5
 local STORMLORD_THUNDERHEAD_LAG = 2
 
+function AutoTargetMobAllowed(mob)
+  if type(mob) ~= "table" or tonumber(mob.name) == nil then return false end
+
+  local fullname = mob.fullname or ""
+  if fullname:find("%(CHARMED%)") then return false end
+  if ArrayHasSubstring(TargetExclusions, fullname) then return false end
+  if type(ImmoMobList) == "table" and ArrayHasSubstring(ImmoMobList, fullname) then return false end
+
+  return true
+end
+
+function AutoTargetFindMob()
+  local players = gmcp and gmcp.Room and gmcp.Room.Players or {}
+
+  for _, mob in pairs(players) do
+    if AutoTargetMobAllowed(mob) then return mob end
+  end
+
+  return nil
+end
+
 local function AutoTargetShouldStormlordThunderhead()
   if not GlobalVar.AutoCast or GlobalVar.AutoCaster ~= "call lightning" then return false end
   if StatTable.Class ~= "Stormlord" or StatTable.Level ~= 125 then return false end
@@ -128,7 +149,7 @@ function AutoTarget()
   
   for _,mob in pairs(gmcp.Room.Players) do
 
-    if(tonumber(mob.name) ~= nil and not mob.fullname:find("%(CHARMED%)") and ArrayHasSubstring(TargetExclusions, mob.fullname) == false and ArrayHasSubstring(ImmoMobList, mob.fullname) == false) then
+    if AutoTargetMobAllowed(mob) then
       
       --if GroupLeader() then send("emote is killing " .. mob.name) end
 

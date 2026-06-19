@@ -371,6 +371,16 @@ function Battle.StormlordRoomAllowsAOE()
   return true
 end
 
+function Battle.PlayerInCombat()
+  local enemy = StatTable and StatTable.Enemy or nil
+  if enemy and enemy ~= "" then return true end
+
+  local status = gmcp and gmcp.Char and gmcp.Char.Status or {}
+  local opponent_name = status.opponent_name
+
+  return opponent_name ~= nil and opponent_name ~= ""
+end
+
 function Battle.StormlordThunderheadUp()
   if type(IsThunderhead) ~= "function" then return false end
 
@@ -429,6 +439,17 @@ function Battle.AutoCastStormlord()
   local spelllag = Battle.StormlordSpellLag()
   local status = gmcp and gmcp.Char and gmcp.Char.Status or {}
   local mana = tonumber(status.mana) or tonumber(StatTable.current_mana) or 0
+
+  if StatTable.Solitude and Battle.Combat and not Battle.PlayerInCombat() then
+    if Battle.StormlordThunderheadPending() then return nil, ACT_WAIT_TIME_SECONDS end
+    if mana < STORMLORD_SUSTAINED_MIN_MANA then return nil, ACT_WAIT_TIME_SECONDS end
+
+    local mob = type(AutoTargetFindMob) == "function" and AutoTargetFindMob() or nil
+    if not mob then return nil, ACT_WAIT_TIME_SECONDS end
+
+    Battle.StormlordMarkThunderheadPending()
+    return "cast 'thunderhead' " .. mob.name, STORMLORD_THUNDERHEAD_LAG
+  end
 
   if not Battle.StormlordThunderheadUp() then
     if Battle.StormlordThunderheadPending() then return nil, ACT_WAIT_TIME_SECONDS end
