@@ -27,19 +27,15 @@ local DoNotArea_MobList = {
 
 local AutoCastOnMobDeathEventHandler = AutoCastOnMobDeathEventHandler or nil
 
-local function AutoCastIsSorcerer()
-  return StatTable and StatTable.Class == "Sorcerer"
-end
-
 local function AutoCastSorcererCanCallLightning()
-  return AutoCastIsSorcerer()
+  return IsClass({"Sorcerer"})
     and StatTable.Level == 125
     and type(Grouped) == "function" and Grouped()
     and type(IsThunderhead) == "function" and IsThunderhead()
 end
 
 local function AutoCastSorcererDefaultSpell()
-  if not AutoCastIsSorcerer() then return nil end
+  if not IsClass({"Sorcerer"}) then return nil end
 
   if StatTable.Level == 125 then
     return StatTable.BrimstoneExhaust and "maelstrom" or "brimstone"
@@ -69,14 +65,17 @@ end
 -- AutoCastSpellSwap()
 -- Called whenever gmcp.Room.Players is updated (eg, on look, on move to new room)
 function AutoCastSpellSwap()
-  local is_sorcerer = AutoCastIsSorcerer()
 
-  if (StatTable.Class ~= "Wizard" and StatTable.Class ~= "Mage" and StatTable.Level ~= 250 and not is_sorcerer) then
+  if (IsNotClass({"Mage", "Wizard", "Sorcerer"}) and StatTable.Level ~= 250) then
     return 
   end
   
-  if not is_sorcerer and StatTable.Level < 125 then
-    if not (gmcp.Room.Info.zone == "{*HERO*} Ctibor  Sem Vida" or gmcp.Room.Info.zone == "{*HERO*} Ibn     Aculeata Jatha-La") or StatTable.SubLevel < 101 then
+  if StatTable.Level < 125 then
+    if StatTable.SubLevel < 101 or
+    not (gmcp.Room.Info.zone == "{*HERO*} Ctibor  Sem Vida" or 
+            gmcp.Room.Info.zone == "{*HERO*} Ibn     Aculeata Jatha-La" or
+            gmcp.Room.Info.zone == "{*HERO*} Dev     Abishai's Pass" or
+            gmcp.Room.Info.zone == "{*HERO*} Scevine The Forge") then
       return
     end
   end
@@ -127,7 +126,7 @@ end
 -- The function called to swap spells
 function UpdateAutoCastSpell()
 
-  if AutoCastIsSorcerer() then
+  if IsClass({"Sorcerer"}) then
     local sorcerer_default_spell = AutoCastSorcererDefaultSpell()
 
     if not AutoCastRoomAllowsAOE() or GlobalVar.MobCount < 3 or not AutoCastSorcererCanCallLightning() then
@@ -170,8 +169,8 @@ end
 
 -- Called whenever a mob is killed
 function AutoCastOnMobDeath()
-  if (GlobalVar.AutoCaster == GlobalVar.AutoCasterAOE and (StatTable.Class == "Mage" or StatTable.Class == "Wizard" or StatTable.Level == 250))
-    or (AutoCastIsSorcerer() and string.lower(GlobalVar.AutoCaster or "") == "call lightning") then
+  if (GlobalVar.AutoCaster == GlobalVar.AutoCasterAOE and (IsClass({"Mage", "Wizard"}) or StatTable.Level == 250))
+    or (IsClass({"Sorcerer"}) and string.lower(GlobalVar.AutoCaster or "") == "call lightning") then
     GlobalVar.MobCount = GlobalVar.MobCount - 1
     UpdateAutoCastSpell()
   end
