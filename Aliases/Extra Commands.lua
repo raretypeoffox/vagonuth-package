@@ -1,9 +1,3 @@
--- Alias: Extra Commands
--- Attribute: isActive
-
--- Pattern: ^cmds extra?$
-
--- Script Code:
 cmd_name = "Summary of Extra Commands/Features Available\nAdvanced commands for power users"
 
 local syntax_tbl = {

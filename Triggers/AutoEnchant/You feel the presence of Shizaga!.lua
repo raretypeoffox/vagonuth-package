@@ -1,11 +1,3 @@
--- Trigger: You feel the presence of Shizaga! 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (substring): You feel the presence of Shizaga!
-
--- Script Code:
 -- DEBUG / TODO: needs fixing
 
 coroutine.wrap(function()

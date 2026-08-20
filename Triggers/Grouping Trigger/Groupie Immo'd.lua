@@ -1,11 +1,3 @@
--- Trigger: Groupie Immo'd 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (regex): ^.* summons black imps to kill (\w+)!!!$
-
--- Script Code:
 local DeadPlayer = matches[2]
 
 -- Not our groupmate, return

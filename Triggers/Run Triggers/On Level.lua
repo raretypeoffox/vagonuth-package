@@ -1,11 +1,3 @@
--- Trigger: On Level 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (start of line): Your powers increase!!!
-
--- Script Code:
 if (GlobalVar.LevelGear) then 
   send("unlevel")
   tempTimer(10,[[GlobalVar.LevelReady = false]])

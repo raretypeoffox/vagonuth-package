@@ -1,11 +1,3 @@
--- Trigger: fade 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (regex): ^(.*) glows brightly, then fades...oops.$
-
--- Script Code:
 coroutine.wrap(function()
 
   if (AutoEnchantTable.ItemName ~= string.lower(matches[2])) then

@@ -1,7 +1,3 @@
--- Script: OnJunk
--- Attribute: isActive
-
--- Script Code:
 OnDropJunk = OnDropJunk or {}
 OnDropJunk.isOpen = OnDropJunk.isOpen or false
 OnDropJunk.len = OnDropJunk.len or 0

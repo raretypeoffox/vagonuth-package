@@ -1,7 +1,3 @@
--- Script: Psi Weapon Triggers
--- Attribute: isActive
-
--- Script Code:
 PSITrigger = PSITrigger or {}
 PSITrigger.TriedLookUp = PSITrigger.TriedLookUp or {}
 PSITrigger.OnlinePath = "https://raw.githubusercontent.com/raretypeoffox/vagonuth-package/main"
@@ -33,6 +29,8 @@ local PSIWeaponLookup = {
   ["Hohner"] = {w1name = "Flaying the Mind one slash at a time!", w1keyword = "hohner"},
   ["Parrot"] = {w1name = "a moldy cracker!", w1keyword = "hootwield", w2name = "a dead rat!", w2keyword = "hootoffhand"},
   ["Draconixs"] = {w1name = "Loki", w1keyword = "loki", w2name = "Thor", w2keyword = "thor"},
+  ["Sumfyr"] = {w1name = "an ant chakram", w1keyword ="ant chakram", w2name = "an ant chakram", w2keyword ="ant chakram"},
+  --["Infernox"]
   }
   
   
@@ -56,9 +54,9 @@ function PSITrigger.Create(charname, weaponname, weaponkeyword)
     safeTempTrigger(TriggerID .. "F", "gives you " .. weaponname .. ".", function() send("wear '" .. weaponkeyword .. "'") end, "substring")
     
   else
-    safeTempTrigger(TriggerID .. "A", weaponname .. " clatters to the ground!", function() send("get '" .. weaponkeyword .. "'"); send("give '" .. weaponkeyword .. "'" .. " " .. charname) end, "begin")
-    safeTempTrigger(TriggerID .. "B", "You get " .. weaponname .. " from corpse of ", function() send("give '" .. weaponkeyword .. "'" .. " " .. charname) end, "begin")
-    safeTempTrigger(TriggerID .. "C", weaponname .. " falls to the ground, lifeless.", function() send("get '" .. weaponkeyword .. "'"); send("give '" .. weaponkeyword .. "'" .. " " .. charname) end, "begin")
+    safeTempTrigger(TriggerID .. "A", weaponname .. " clatters to the ground!", function() if StatTable.Class == "Stormlord" then return end; send("get '" .. weaponkeyword .. "'"); send("give '" .. weaponkeyword .. "'" .. " " .. charname) end, "begin")
+    safeTempTrigger(TriggerID .. "B", "You get " .. weaponname .. " from corpse of ", function() if StatTable.Class == "Stormlord" then return end; send("give '" .. weaponkeyword .. "'" .. " " .. charname) end, "begin")
+    safeTempTrigger(TriggerID .. "C", weaponname .. " falls to the ground, lifeless.", function() if StatTable.Class == "Stormlord" then return end; send("get '" .. weaponkeyword .. "'"); send("give '" .. weaponkeyword .. "'" .. " " .. charname) end, "begin")
   end
 
 end
@@ -73,7 +71,7 @@ function PSITrigger.Update()
 
       -- Record that we've looked up this Psi already
       PSITrigger.TriedLookUp[char] = true
-
+      
       if PSITrigger.PsiTriggers[char] then -- If we have weapon details for this Psi, create a trigger
         local w1name, w1keyword = PSITrigger.PsiTriggers[char].w1name or nil, PSITrigger.PsiTriggers[char].w1keyword or nil
         local w2name, w2keyword = PSITrigger.PsiTriggers[char].w2name or nil, PSITrigger.PsiTriggers[char].w2keyword or nil

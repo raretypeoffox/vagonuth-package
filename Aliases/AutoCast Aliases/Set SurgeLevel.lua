@@ -1,9 +1,3 @@
--- Alias: Set SurgeLevel
--- Attribute: isActive
-
--- Pattern: ^(?i)s?(1|2|3|4|5)$
-
--- Script Code:
 local requested_surge_level = tonumber(matches[2])
 local max_surge_level = Surge and Surge.GetMaxLevel() or 5
 

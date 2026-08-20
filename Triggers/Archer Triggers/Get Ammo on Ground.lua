@@ -1,12 +1,3 @@
--- Trigger: Get Ammo on Ground 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (regex): ^     A brace of (piercing|splinter|explosive|poison|Sableroix|green) (.*) are lying on the ground.$
--- 1 (regex): (piercing|splinter|explosive|poison|Sableroix|green) (.*) just now!
-
--- Script Code:
 local ammotype = nil
 if (StatTable.Class == "Fusilier") then
   ammotype = "sling stones"

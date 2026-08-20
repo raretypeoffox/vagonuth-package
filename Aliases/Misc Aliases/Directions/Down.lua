@@ -1,9 +1,3 @@
--- Alias: Down
--- Attribute: isActive
-
--- Pattern: ^(d|down)$
-
--- Script Code:
 local dir = string.lower(matches[2])
 
 AddDir(dir)

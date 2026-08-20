@@ -1,7 +1,3 @@
--- Script: Battle.Init
--- Attribute: isActive
-
--- Script Code:
 Battle = Battle or {}
 Battle.Combat = Battle.Combat or false
 Battle.NextAction = Battle.NextAction or nil
@@ -18,8 +14,13 @@ Battle.EndCombatEventHandler = Battle.EndCombatEventHandler or nil
 Battle.ActEventHandler = Battle.ActEventHandler or nil
 
 Battle.LagAdjustSeq = Battle.LagAdjustSeq or 0
+Battle.StormlordLastSpell = Battle.StormlordLastSpell or nil
+Battle.StormlordThunderheadPendingUntil = Battle.StormlordThunderheadPendingUntil or nil
 
 local ACT_WAIT_TIME_SECONDS = 0.5 -- constant, amount of time to wait before calling another loop of Battle.Act
+local STORMLORD_SUSTAINED_MIN_MANA = 1000
+local STORMLORD_THUNDERHEAD_LAG = 2
+local STORMLORD_THUNDERHEAD_RETRY_WAIT = 10
 
 -- Adds compatability for people not running the inventory package
 function Battle.GetSpellLagMod()
@@ -87,7 +88,7 @@ function Battle.Act()
   
   -- If we do not have a NextAction set then check if we have AutoCast / AutoHeal / AutoSkill
   if not (Battle.NextAction or Battle.NextActionTime) then
-    if GlobalVar.AutoCast and GlobalVar.AutoCaster ~= "" then
+    if GlobalVar.AutoCast and (GlobalVar.AutoCaster ~= "" or StatTable.Class == "Necromancer") then
        Battle.NextAction, Battle.NextActionTime = Battle.AutoCast()
     elseif GlobalVar.AutoHeal then
        Battle.NextAction, Battle.NextActionTime = Battle.AutoHeal()
@@ -118,9 +119,13 @@ end
 
 function Battle.OnLagReduce()
   if not Battle.LagStartTime or not Battle.LastSpellLag then return end
+  if Battle.StormlordLastSpell == "thunderhead" then return end
+
   local elapsed   = os.clock() - Battle.LagStartTime
-  local actualLag = tonumber(gmcp.Char.Vitals.lag) or (Battle.LastSpellLag * 0.4)
-  local remaining = math.max(0, actualLag - elapsed)
+  local gmcpLag = tonumber(gmcp.Char.Vitals.lag)
+  local procLag = Battle.LastSpellLag * 0.4
+  local adjustedLag = gmcpLag and math.min(gmcpLag, procLag) or procLag
+  local remaining = math.max(0, adjustedLag - elapsed)
 
   if Battle.NextActionTimerID then killTimer(Battle.NextActionTimerID) end
 
@@ -147,9 +152,6 @@ function Battle.OnCombat()
   Battle.Recent = true
   GameLoop()
   
-  if StatTable.Class == "Stormlord" and StatTable.Level == 125 then Battle.StormlordCombat() end
-  
-  
   local current_lag = tonumber(gmcp.Char.Vitals.lag)
   if (current_lag > 0) then
     Battle.NextActionTimerID = scheduleActTimer(current_lag)
@@ -157,7 +159,9 @@ function Battle.OnCombat()
     Battle.Act()
   end
   
-  TryLook()
+  if StatTable.Class ~= "Stormlord" then
+    TryLook()
+  end
   
 end
 
@@ -165,6 +169,8 @@ function Battle.EndCombat()
   --pdebug("Called Battle.EndCombat()")
   Battle.Combat = false
   Battle.Stomper = false
+  Battle.StormlordLastSpell = nil
+  Battle.StormlordThunderheadPendingUntil = nil
   safeTempTimer("Battle.Recent.EndofCombat", 30, function() Battle.Recent = false; end)
   safeEventHandler("Battle.Recent.SetFalseOnMyDeath", "OnMyDeath", function() Battle.Recent = false; end, false)
   safeEventHandler("Battle.Recent.SetFalseOnPlane", "OnPlane", function() Battle.Recent = false; end, false)
@@ -183,10 +189,30 @@ function Battle.KillEventHandlers()
 end
 
 function Battle.AutoCast()
+  if StatTable.Class == "Stormlord" and StatTable.Level == 125 and GlobalVar.AutoCaster == "call lightning" then
+    return Battle.AutoCastStormlord()
+  end
+
+  if StatTable.Class == "Necromancer" and type(NecromancerGameLoop) == "table" and
+      type(NecromancerGameLoop.NextBloodCurse) == "function" then
+    local action, lag = NecromancerGameLoop.NextBloodCurse()
+    if action then return action, lag end
+  end
+
   local autocast_minmana = 0
   local autocast_spell = GlobalVar.AutoCaster
   local nextaction = ""
   local spelllag = (5 * Battle.GetSpellLagMod()) -- assumes in class, ie 5 second, casting
+
+  if type(AutoCastCanUseSpell) == "function" and not AutoCastCanUseSpell(autocast_spell) then
+    return nil, ACT_WAIT_TIME_SECONDS
+  end
+
+  if string.lower(autocast_spell or "") == "call lightning" and StatTable.Class ~= "Stormlord" then
+    if type(IsThunderhead) ~= "function" or not IsThunderhead() then
+      return nil, ACT_WAIT_TIME_SECONDS
+    end
+  end
   
   if GlobalVar.AutoCaster == "acid rain" or GlobalVar.AutoCaster == "meteor swarm" or GlobalVar.AutoCaster == "banshee wail" or GlobalVar.AutoCaster == "storm of vengeance" then
     spelllag = (6 * Battle.GetSpellLagMod())  
@@ -201,7 +227,7 @@ function Battle.AutoCast()
   if (StatTable.Level == 125) then
     autocast_minmana = 500
   elseif (StatTable.Level == 51) then
-    autocast_minmana = 100
+    autocast_minmana = 200
   elseif (StatTable.Level < 51) then
     autocast_minmana = 50
   end
@@ -245,8 +271,7 @@ function Battle.AutoHeal()
   local MonitorHPPct = (StatTable.Level == 125) and 0.875 or 0.725 -- at what % (expressed in decimal) should we auto heal at
   MonitorHPPct = math.floor((MonitorHPPct + (math.random() * 0.05)) * 1000 + 0.5) / 1000 -- adds a random number between 0 and 5% so that when multiple people use the package, they don't all start healing at the exact same amonut
   
-  local MinManaPct = (StatTable.Level == 125) and 0.1 or 0.25 -- at what mana level should we stop auto healing at
-  local MinMana = (MinManaPct * StatTable.max_mana) or 0
+ 
   -- At Lord, save enough mana for create shrine + planeshift
   local MinMana = (StatTable.Level == 125) and (2500 * Battle.GetSpellCostMod("divine") + 500 * Battle.GetSpellCostMod("arcane")) or 300
   
@@ -270,10 +295,8 @@ function Battle.AutoHeal()
   end
   
   -- Auto Heal Lowest HP % - set our heal target to the lowest HP groupie if lowest hp % mode activated
-  if GlobalVar.AutoHealLowest and GlobalVar.VizMonitor ~= "" then 
-    HealTarget = GlobalVar.VizMonitor -- GlobalVizMonitor holds the name of the lowest hp groupmate (excluding us!), check below to see if our hp is lower
-    if (StatTable.current_health / StatTable.max_health) < (GlobalVar.GroupMates[HealTarget].hp / GlobalVar.GroupMates[HealTarget].maxhp) then HealTarget = StatTable.CharName
-    elseif (StatTable.current_health / StatTable.max_health) < 0.1 then HealTarget = StatTable.CharName end   
+  if GlobalVar.AutoHealLowest and GlobalVar.AutoHealLowestTarget then
+    HealTarget = GlobalVar.AutoHealLowestTarget
   end
   
   -- If heal target doesn't exist or isn't a group mate, return
@@ -327,25 +350,134 @@ function Battle.DoAfterCombat(action)
   end
 end
 
-function Battle.StormlordCombat()
-    
-  local Players = gmcp.Room.Players
+function Battle.StormlordMobCount()
+  if type(AutoCastCountMobs) == "function" then
+    return AutoCastCountMobs()
+  end
+
+  local Players = gmcp and gmcp.Room and gmcp.Room.Players or {}
   local MobCount = 0
 
-  -- Sort all Players into enemies and friendlies
-  for PlayerName,_ in pairs(Players) do
+  for _, mob in pairs(Players) do
     -- Mobs have numbered "names" vs PCs who have real names, can eliminate PCs by removing non-numbered names
-    if tonumber(Players[PlayerName].name and not Players[PlayerName].fullname:find("%(CHARMED%)")) then
+    local fullname = mob.fullname or ""
+    if tonumber(mob.name) and not fullname:find("%(CHARMED%)") then
       MobCount = MobCount + 1
     end
   end
-  
-  if MobCount > 2 then
-    if StatTable.Blizzard then return end
-    send("cast blizzard")
-  else
-    send("cast thunderhead")
+
+  return MobCount
+end
+
+function Battle.StormlordRoomAllowsAOE()
+  if GlobalVar and GlobalVar.AutoAOE == false then
+    return false
   end
+
+  if type(AutoCastRoomAllowsAOE) == "function" then
+    return AutoCastRoomAllowsAOE()
+  end
+
+  return true
+end
+
+function Battle.PlayerInCombat()
+  local enemy = StatTable and StatTable.Enemy or nil
+  if enemy and enemy ~= "" then return true end
+
+  local status = gmcp and gmcp.Char and gmcp.Char.Status or {}
+  local opponent_name = status.opponent_name
+
+  return opponent_name ~= nil and opponent_name ~= ""
+end
+
+function Battle.StormlordThunderheadUp()
+  if type(IsThunderhead) ~= "function" then return false end
+
+  if IsThunderhead() then
+    Battle.StormlordThunderheadPendingUntil = nil
+    return true
+  end
+
+  return false
+end
+
+function Battle.StormlordThunderheadPending()
+  return Battle.StormlordThunderheadPendingUntil and os.clock() < Battle.StormlordThunderheadPendingUntil
+end
+
+function Battle.StormlordMarkThunderheadPending()
+  Battle.StormlordLastSpell = "thunderhead"
+  Battle.StormlordThunderheadPendingUntil = os.clock() + STORMLORD_THUNDERHEAD_RETRY_WAIT
+end
+
+function Battle.StormlordSpellLag()
+  local spelllag = (5 * Battle.GetSpellLagMod())
+
+  if GlobalVar.QuickenStatus then
+    spelllag = spelllag * (1 - (StatTable.Quicken / 18))
+  end
+
+  return spelllag
+end
+
+function Battle.StormlordCast(spell, allowSurge)
+  Battle.StormlordLastSpell = spell
+
+  if spell == "thunderhead" then
+    Battle.StormlordMarkThunderheadPending()
+  end
+
+  if allowSurge then
+    local surge_level = GetSurgeLevel(spell)
+
+    if surge_level > 1 then
+      return "surge " .. surge_level .. getCommandSeparator() .. "cast '" .. spell .. "'" .. getCommandSeparator() .. "surge off"
+    end
+  end
+
+  return "cast '" .. spell .. "'"
+end
+
+function Battle.AutoCastStormlord()
+  if not GlobalVar.AutoCast then
+    Battle.StormlordLastSpell = nil
+    Battle.StormlordThunderheadPendingUntil = nil
+    return nil, ACT_WAIT_TIME_SECONDS
+  end
+
+  local spelllag = Battle.StormlordSpellLag()
+  local status = gmcp and gmcp.Char and gmcp.Char.Status or {}
+  local mana = tonumber(status.mana) or tonumber(StatTable.current_mana) or 0
+
+  if StatTable.Solitude and Battle.Combat and not Battle.PlayerInCombat() then
+    if Battle.StormlordThunderheadPending() then return nil, ACT_WAIT_TIME_SECONDS end
+    if mana < STORMLORD_SUSTAINED_MIN_MANA then return nil, ACT_WAIT_TIME_SECONDS end
+
+    local mob = type(AutoTargetFindMob) == "function" and AutoTargetFindMob() or nil
+    if not mob then return nil, ACT_WAIT_TIME_SECONDS end
+
+    Battle.StormlordMarkThunderheadPending()
+    return "cast 'thunderhead' " .. mob.name, STORMLORD_THUNDERHEAD_LAG
+  end
+
+  if not Battle.StormlordThunderheadUp() then
+    if Battle.StormlordThunderheadPending() then return nil, ACT_WAIT_TIME_SECONDS end
+    if mana < STORMLORD_SUSTAINED_MIN_MANA then return nil, ACT_WAIT_TIME_SECONDS end
+    return Battle.StormlordCast("thunderhead", false), STORMLORD_THUNDERHEAD_LAG
+  end
+
+  if not Battle.StormlordRoomAllowsAOE() then
+    if not Battle.StormlordThunderheadUp() then
+      if Battle.StormlordThunderheadPending() then return nil, ACT_WAIT_TIME_SECONDS end
+      if mana < STORMLORD_SUSTAINED_MIN_MANA then return nil, ACT_WAIT_TIME_SECONDS end
+      return Battle.StormlordCast("thunderhead", false), STORMLORD_THUNDERHEAD_LAG
+    end
+
+    return nil, ACT_WAIT_TIME_SECONDS
+  end
+
+  return Battle.StormlordCast("call lightning", true), spelllag
 end
 
 
@@ -353,6 +485,12 @@ end
 Battle.KillEventHandlers()
 Battle.OnCombatEventHandler = registerAnonymousEventHandler("OnCombat", "Battle.OnCombat", false)
 Battle.EndCombatEventHandler = registerAnonymousEventHandler("EndCombat", "Battle.EndCombat", false)
+safeKillEventHandler("StormlordOnNewRoomEvent")
+safeKillTrigger("StormlordCallLightningNoThunderhead")
+safeKillTrigger("StormlordCallLightningBoosted")
+safeKillTrigger("StormlordCallLightningLanded")
+safeKillTrigger("StormlordThunderheadReady")
+safeKillTrigger("StormlordThunderheadFailed")
 --Battle.ActEventHandler = registerAnonymousEventHandler("ActCombat", "Battle.Act", false)
 
 

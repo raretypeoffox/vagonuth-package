@@ -1,11 +1,3 @@
--- Trigger: Profile reset 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (regex): ^Casting (brimstone|torment|maelstrom|disintegrate|comfort) requires knowledge, and you will NEVER learn it!$
-
--- Script Code:
 ProfileResetWait = ProfileResetWait or false
 
 if ProfileResetWait then return end

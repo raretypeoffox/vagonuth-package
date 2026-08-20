@@ -1,9 +1,3 @@
--- Alias: RegenStats
--- Attribute: isActive
-
--- Pattern: ^regenstats$
-
--- Script Code:
 coroutine.wrap(function()
 
   printGameMessage("Regen", "Tracking regen rates [current health/mana: " .. StatTable.current_health .. " / " ..StatTable.current_mana .. "]")

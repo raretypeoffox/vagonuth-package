@@ -1,7 +1,3 @@
--- Script: AutoCast
--- Attribute: isActive
-
--- Script Code:
 function AutoCastON()
   GlobalVar.AutoCast = true
   AutoCastStatus()

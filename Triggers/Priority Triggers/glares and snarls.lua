@@ -1,11 +1,3 @@
--- Trigger: glares and snarls 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (regex): (.*) GLARES at \w+ and SNARLS!
-
--- Script Code:
 local function getWord(str)
     local firstWord, secondWord = string.match(str, "(%S+)%s*(%S*)")
     

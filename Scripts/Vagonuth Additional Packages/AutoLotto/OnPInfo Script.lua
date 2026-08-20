@@ -1,7 +1,3 @@
--- Script: OnPInfo Script
--- Attribute: isActive
-
--- Script Code:
 OnPInfo = OnPInfo or {}
 OnPInfo.isOpen = OnPInfo.isOpen or false
 OnPInfo.len = OnPInfo.len or 0

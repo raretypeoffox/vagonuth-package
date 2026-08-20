@@ -1,7 +1,3 @@
--- Script: GameLoop - BLD
--- Attribute: isActive
-
--- Script Code:
 --------------------------------------------------------------------------------
 -- Dance Pattern Definitions (MODIFIABLE BY USER)
 --------------------------------------------------------------------------------

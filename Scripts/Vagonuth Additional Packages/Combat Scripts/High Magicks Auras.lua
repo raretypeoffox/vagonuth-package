@@ -1,7 +1,3 @@
--- Script: High Magicks Auras
--- Attribute: isActive
-
--- Script Code:
 local HighMagick = {
   "Attenuation",
   "PlanarModulation",

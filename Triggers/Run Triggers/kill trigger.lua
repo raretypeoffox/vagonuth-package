@@ -1,11 +1,3 @@
--- Trigger: kill trigger 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (regex): ^(?<attacker>\w+) is killing (?<victim>.+?)(?:\.)?$
-
--- Script Code:
 -- Autokill is off or autotargetting, ignore
 if not GlobalVar.AutoKill or GlobalVar.AutoTarget then
   return

@@ -1,11 +1,3 @@
--- Trigger: Xp Runes 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (regex): the fae rune for '(Blood|Misfortune|Silence|Apathy|Ice|Vengeance|Entropy|Charm|Wrath|Power|Regeneration|Fatigue|Chaos|Obfuscation|Influence|Corruption|Darkness|Drought|Fear)'
-
--- Script Code:
 local xpvalue = 300
 
 if matches[2] == "Chaos" or matches[2] == "Obfuscation" then

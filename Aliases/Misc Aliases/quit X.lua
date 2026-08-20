@@ -1,9 +1,3 @@
--- Alias: quit X
--- Attribute: isActive
-
--- Pattern: ^quit (\d+)$
-
--- Script Code:
 -- Command to exit mudlet in X minutes
 -- Handy for when you want to idle for a bit before logging off
 -- Profile is saved before exiting

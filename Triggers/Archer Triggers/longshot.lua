@@ -1,11 +1,3 @@
--- Trigger: longshot 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (regex): \* tells the group 'ls (.*)'
-
--- Script Code:
 local MinLongshotHP = 1200
 local MyClass = StatTable.Class or ""
 

@@ -1,14 +1,3 @@
--- Trigger: Sanc down 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (start of line): The protective aura fades from around your body.
--- 1 (start of line): Your Iron Monk style fades.
-
--- Script Code:
--- Rewrite 28 Aug 2023
-
 if  gmcp.Room.Info.name == "A strange formation" or 
     gmcp.Room.Info.name == "The Tears of Kra" 
     then return end
@@ -29,6 +18,10 @@ end
 
 -- Function that waits till you're not fighting to cast sanctuary (will cast immediately if out of combat)
 local function CastAfterCombat(spell)
+  -- The fade message is authoritative and can arrive before GMCP removes the affect.
+  -- Clear the stale value so BuffManager does not reject the recast as already active.
+  StatTable.Sanctuary = nil
+
   if not Battle.Combat and tonumber(gmcp.Char.Vitals.lag) == 0 and StatTable.Position ~= "Sleep" then
     send("cast " .. spell)
   else
@@ -63,7 +56,7 @@ local function PreachSancOnRun()
 end
 
 if SafeArea() then return end
-if not StatTable.Fortitude and StatTable.Level < 125 then return end
+if not StatTable.Fortitude then return end
 if StatTable.Level == 250 then CastAfterCombat("sanctuary"); return end
 
 if not GlobalVar.Silent then send("emote is no longer in |BW|Sanctuary|N|.",false) end

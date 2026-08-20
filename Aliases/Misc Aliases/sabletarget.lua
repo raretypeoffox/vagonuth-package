@@ -1,9 +1,3 @@
--- Alias: sabletarget
--- Attribute: isActive
-
--- Pattern: ^(?i)sabletarget(?: (.*))?$
-
--- Script Code:
 local args = (matches[2] or ""):lower()
 
 if args == "" then

@@ -1,9 +1,3 @@
--- Alias: High Magick Alias
--- Attribute: isActive
-
--- Pattern: ^(?i)(highmagick|hm)(?: (.*))?$
-
--- Script Code:
 local args = (matches[3] or ""):lower()
 
 if args == "" then

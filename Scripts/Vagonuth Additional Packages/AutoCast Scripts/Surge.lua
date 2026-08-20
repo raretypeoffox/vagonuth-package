@@ -1,7 +1,3 @@
--- Script: Surge
--- Attribute: isActive
-
--- Script Code:
 Surge = Surge or {}
 
 local SURGE_MAX_BY_CLASS = {
@@ -24,6 +20,7 @@ local SURGE_MAX_BY_CLASS = {
   Bladedancer = 3,
   ["Black Circle Initiate"] = 3,
   Shadowfist = 3,
+  Stormlord = 3,
 
   Psionicist = 4,
   Fury = 4,
@@ -58,8 +55,10 @@ end
 function Surge.GetAutoCastStopSurge(spell_name)
   if not StatTable or StatTable.Level ~= 125 then return 3500 end
 
-  if StatTable.Class == "Mage" or StatTable.Class == "Stormlord" then
+  if StatTable.Class == "Mage" then
     return 9000 * surgeSpellCostMod("arcane")
+  elseif StatTable.Class == "Stormlord" then
+    return 10000 * surgeSpellCostMod("arcane")
   elseif StatTable.Class == "Wizard" then
     return 10000 * surgeSpellCostMod("arcane")
   elseif StatTable.Class == "Sorcerer" then

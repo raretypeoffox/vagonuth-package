@@ -1,13 +1,3 @@
--- Script: Init GlobalVars
--- Attribute: isActive
-
--- Script Code:
--- Initialization Script
--- Sets up all the Global Vars we'll be using throughout the various modules
--- Upon loading up Mudlet / this Profile, scripts are first run from top to bottom.
--- As such, this script should always be the first (ie top) script in Mudlet
-
-
 StatTable = StatTable or {}
 AltList = AltList or {}
 AltList.Chars = AltList.Chars or {}
@@ -58,6 +48,7 @@ function Init.GlobalVars()
 
   -- Caster Variables
   GlobalVar.AutoCast = false
+  GlobalVar.AutoAOE = true
   GlobalVar.SurgeLevel = 2
   if GlobalVar.AutoSurgeLevel == nil then GlobalVar.AutoSurgeLevel = true end
   GlobalVar.AutoCaster = ""
@@ -68,13 +59,13 @@ function Init.GlobalVars()
   GlobalVar.AutoSkill = false
   GlobalVar.SkillStyle = ""
   
-  GlobalVar.AutoFrenzy = true
   if GlobalVar.AutoBuff == nil then GlobalVar.AutoBuff = true end
   
   -- Cleric / Druid Variables
   GlobalVar.AutoHeal = false
   GlobalVar.AutoHealTarget = nil
   GlobalVar.AutoHealLowest =  true
+  GlobalVar.AutoHealLowestTarget = nil
   GlobalVar.InterventionTarget = nil
   GlobalVar.AutoHealExclusionList = GlobalVar.AutoHealExclusionList or {}
 
@@ -101,6 +92,9 @@ function Init.GlobalVars()
   
   --Psi Triggers
   GlobalVar.Mindtricks = 0
+  
+  -- Fury
+  GlobalVar.FuryRescue = true
 
   -- Variables to reset on reconnect (won't run on initial Init)
   if AR then AR.Status = false; AR.MonitorRescue = false end
@@ -173,6 +167,27 @@ function Init.Profile(timeout)
 end
 
 function Init.Char(MyClass, MyRace, MyLevel, MySubLevel)
+    -- AutoFrenzy is character-session state. Profiles can play multiple
+    -- characters, so reset it to the current character's default on login.
+    local frenzyClass = false
+    for _, className in ipairs(StaticVars.FrenzyClasses or {}) do
+      if className == MyClass then
+        frenzyClass = true
+        break
+      end
+    end
+
+    if MyRace == "High Elf" or MyLevel == 250 then
+      GlobalVar.AutoFrenzy = false
+    else
+      GlobalVar.AutoFrenzy = frenzyClass
+    end
+
+    if not GlobalVar.AutoFrenzy and type(BuffManager) == 'table' and
+       type(BuffManager.RemoveAction) == 'function' then
+      BuffManager.RemoveAction('cast frenzy')
+    end
+
     -- Caster Variables
     GlobalVar.AutoCast = false
     GlobalVar.SurgeLevel = (MyLevel == 125 and 2 or 1)
@@ -181,6 +196,11 @@ function Init.Char(MyClass, MyRace, MyLevel, MySubLevel)
     GlobalVar.AutoCasterSingle = ""
     GlobalVar.AutoCasterAOE = ""
     GlobalVar.QuickenStatus = false
+    if MyClass == 'Necromancer' and MyLevel == 51 then
+      GlobalVar.AutoCast = true
+      GlobalVar.AutoCaster = 'life drain'
+      GlobalVar.AutoCasterSingle = 'life drain'
+    end
     
     -- Skill Variables
     GlobalVar.AutoSkill = false
@@ -231,9 +251,10 @@ function Init.Char(MyClass, MyRace, MyLevel, MySubLevel)
     elseif MyClass == "Stormlord" then
       if MyLevel == 125 then
         GlobalVar.AutoKill = false
-        GlobalVar.AutoCast = false
-        GlobalVar.AutoCaster = ""
-        GlobalVar.AutoCasterAOE = ""
+        GlobalVar.AutoCast = true
+        GlobalVar.AutoCaster = "call lightning"
+        GlobalVar.AutoCasterSingle = "thunderhead"
+        GlobalVar.AutoCasterAOE = "call lightning"
       elseif MyLevel == 51 then
         GlobalVar.AutoCast = true
         GlobalVar.AutoCaster = "disintegrate"
@@ -410,7 +431,6 @@ local PROFILE_VARIABLES = {
   {"FontSize", nil},
   {"Debug", false},
   {"Verbose", false},
-  {"AutoFrenzy", true},
   {"AutoBuff", true},
   {"AutoSurgeLevel", true},
   {"PaladinRescue", true},

@@ -1,8 +1,3 @@
--- Alias: AutoGurney
-
--- Pattern: ^autogurney\s*(\w*)
-
--- Script Code:
 if (matches[2] == "") then
   showCmdSyntax("AutoGurney\n\tSyntax: autogurney (target)", 
   {

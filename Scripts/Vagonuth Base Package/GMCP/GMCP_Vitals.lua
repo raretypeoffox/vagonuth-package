@@ -1,10 +1,3 @@
--- Script: GMCP_Vitals
--- Attribute: isActive
--- GMCP_Vitals() called on the following events:
--- gmcp.Char.Vitals
--- gmcp.Char.Status
-
--- Script Code:
 -------------------------------------------------
 --         GMCP Update for Status and Vitals   --
 -------------------------------------------------
@@ -16,6 +9,42 @@
 
 StatTable = StatTable or {}
 StatTable.BladetranceLevel = StatTable.BladetranceLevel or 0
+
+local function NecromancerOptionalValue(value, empty_value)
+  if value == nil or value == empty_value then return nil end
+  return value
+end
+
+local function NormalizeNecromancerState(vitals)
+  local payload = vitals and vitals.necromancer
+  if type(payload) ~= "table" then return nil end
+
+  local abominations = {}
+  for _, abomination in ipairs(payload.abominations or {}) do
+    table.insert(abominations, {
+      SerialNumber = tostring(abomination.serial_number or ""),
+      Type = abomination.type,
+      Name = abomination.name,
+      Weapon = tostring(abomination.weapon or "") == "1",
+      TTL = tonumber(abomination.ttl) or 0,
+      Level = tonumber(abomination.level) or 0,
+      CurrentHealth = tonumber(abomination.hp) or 0,
+      MaxHealth = tonumber(abomination.hp_max) or 0,
+    })
+  end
+
+  return {
+    AbominationWeight = tonumber(payload.abom_weight) or 0,
+    MaxAbominationWeight = tonumber(payload.max_abom_weight) or 0,
+    Abominations = abominations,
+    BloodSacrifice = NecromancerOptionalValue(payload.blood_sacrifice, "None"),
+    Glow = NecromancerOptionalValue(payload.glow, "None"),
+    GlowStrength = tonumber(payload.glow_strength) or 0,
+    MaxHealthModifier = tonumber(payload.max_health_mod) or 0,
+    PossessTarget = NecromancerOptionalValue(payload.possess_target, "No-one"),
+    UnmodifiedHealth = tonumber(payload.unmodified_hp) or 0,
+  }
+end
 
 local AffectDurationDescriptions = {
   ["seems to be wavering"] = "Wavering",
@@ -52,6 +81,7 @@ local AffectsLookup = {
   ["Spell: detect magic"] = "DetectMagic",
   ["Spell: water breathing"] = "WaterBreathing",
   ["Spell: fly"] = "Fly",
+  ["Spell: racial fly"] = "Fly",
   ["Spell: sanctuary"] = "Sanctuary",
   ["Spell: iron monk"] = "Sanctuary",
   ["Spell: fortitudes"] = "Fortitude",
@@ -116,8 +146,19 @@ local AffectsLookup = {
   
   -- stm
   ["Spell: spring rain"] = "SpringRain",
+  ["Spell: thunderhead"] = "Thunderhead",
   ["Spell: blizzard"] = "Blizzard",
-  ["Spell: gale stratum"] = "GaleStratum",
+  ["Exhausted Spell: thunderhead"] = "ThunderheadExhaust",
+  ["Exhausted Spell: blizzard"] = "BlizzardExhaust",
+  ["Exhausted Spell: call lightning"] = "CallLightningExhaust",
+  ["Spell: gale stratum"] = "StratumGale",
+  ["Spell: sleet stratum"] = "StratumSleet",
+  ["Spell: spring rain stratum"] = "StratumSpringRain",
+  ["Spell: cloudburst stratum"] = "StratumCloudburst",
+  ["Spell: hail storm stratum"] = "StratumHailStorm",
+  ["Spell: thunderhead stratum"] = "StratumThunderhead",
+  ["Spell: blizzard stratum"] = "StratumBlizzard",
+  ["Exhausted Spell: stratum"] = "StratumExhaust",
   
   -- exhausts
   ["Exhausted Spell: water breathing"] = "WaterBreathingExhaust",
@@ -186,10 +227,12 @@ local AffectsLookup = {
   ["Spell: summon necrit"] = "SummonNecrit",
   ["Spell: immolation"] = "Immolation",
   ["Spell: astral prison"] = "AstralPrison",
+  ["Spell: bhyss blind eye"] = "BhyssBlindEye",
   ["Exhausted Spell: tainted genius"] = "TaintedExhaust",
   ["Exhausted Spell: unholy bargain"] = "UnholyBargainExhaust",
   ["Exhausted Spell: brimstone"] = "BrimstoneExhaust",
   ["Exhausted Spell: emotive drain"] = "EmotiveDrainExhaust",
+  ["Exhausted Spell: bhyss blind eye"] = "BhyssBlindEyeExhaust",
   
   ["Spell: regeneration"]  = "Regeneration",
   ["Spell: protective stance"] = "StanceProtective",
@@ -278,7 +321,10 @@ local AffectsLookup = {
   ["Spell: psychotic fury"] = "PsychoticFury",
   ["Spell: scathing fury"] = "ScathingFury",
   ["Spell: vengeful fury"] = "VengefulFury",
+  ["Spell: seethe"] = "Seethe",
   
+  -- nec
+ 
   
   
   
@@ -289,11 +335,32 @@ local AffectsLookup = {
   ["Exhausted Spell: cure light"] = "CureLightExhaust",
   
   -- racials
+  -- pae
+  ["Spell: racial pain aura"] = "RacialPainAura",
+  ["Racial pain aura fatigue"] = "RacialPainAuraFatigue",
+  ["Racial align fatigue"] = "RacialAlignFatigue",
+  ["Spell: racial alignment to fire"] = "RacialAlignmentFire",
+  ["Spell: racial alignment to air"] = "RacialAlignmentAir",
+  ["Spell: racial alignment to water"] = "RacialAlignmentWater",
+  ["Spell: racial alignment to earth"] = "RacialAlignmentEarth",
+  ["Racial firering fatigue"] = "RacialFireringFatigue",
+  ["Racial evaporate fatigue"] = "RacialEvaporateFatigue",
+  ["Racial suffocate fatigue"] = "RacialSuffocateFatigue",
+  ["Spell: racial liquify"] = "RacialLiquify",
+  ["Racial liquify fatigue"] = "RacialLiquifyFatigue",
+  ["Racial sweep fatigue"] = "RacialSweepFatigue",
+  ["Racial airdome fatigue"] = "RacialAirdomeFatigue",
+  ["Spell: racial lithify"] = "RacialLithify",
+  ["Racial lithify fatigue"] = "RacialLithifyFatigue",
+  ["Racial shelter fatigue"] = "RacialShelterFatigue",
+  ["Racial earthtremor fatigue"] = "RacialEarthtremorFatigue",
   ["Spell: racial revival"] = "RacialRevival",
   ["Racial revival fatigue"] = "RacialRevivalFatigue",
   ["Spell: racial fire aura"] = "RacialFireaura",
   ["Racial fireaura fatigue"] = "RacialFireauraFatigue",
   ["Racial innervate fatigue"] = "RacialInnervateFatigue",
+  ["Spell: racial pyroclastic flow"] = "RacialPyroclasticFlow",
+  ["Racial pyroclastic flow fatigue"] = "RacialPyroclasticFlowFatigue",
   ["Spell: racial galvanize"] = "RacialGalvanize",
   ["Racial galvanize fatigue"] = "RacialGalvanizeFatigue",
   ["Spell: racial frenzy"] = "RacialFrenzy",
@@ -347,6 +414,7 @@ local AffectsLookup = {
   ["Spell: dark embrace"] = "DarkEmbrace",
   ["Spell: commune"] = "Commune",
 
+
   
   
   
@@ -378,6 +446,23 @@ local AffectsLookup = {
   
 }
 
+AffectsLookup["Spell: tombstone"] = "Tombstone"
+AffectsLookup["Exhausted Spell: tombstone"] = "TombstoneExhaust"
+
+function GMCP_HandleDoomToxin()
+    if not StatTable.DoomToxin then return end
+
+    if type(IsMDAY) == "function" and IsMDAY() then
+      TryAction("gtell |BR|doom toxin!|N|", 60)
+      TryAction("gtell panacea", 60)
+    elseif not Grouped() then
+      TryFunction("DoomToxinBeep", beep, nil, 60)
+      TryFunction("DoomToxinMsg", printGameMessage, {"Beep!", "Doom toxin!!", "red", "white"}, 60)
+    else
+      TryAction("emote is afflicted with |BR|DOOM TOXIN|N|!", 60)
+    end
+end
+
 function GMCP_Vitals()    
     StatTable.CharName = GMCP_name(gmcp.Char.Status.character_name)
     StatTable.Race, StatTable.Class = gmcp.Char.Status.race, gmcp.Char.Status.class
@@ -405,6 +490,7 @@ function GMCP_Vitals()
     
     StatTable.InnerQi = tonumber(gmcp.Char.Vitals.innerqi) or 0
     StatTable.OuterQi = tonumber(gmcp.Char.Vitals.outerqi) or 0
+    StatTable.Necromancer = NormalizeNecromancerState(gmcp.Char.Vitals)
      
     for _, affect in pairs(AffectsLookup) do
       StatTable[affect] = nil
@@ -414,6 +500,7 @@ function GMCP_Vitals()
     StatTable.Tainted = nil
     StatTable.Oath = nil
     StatTable.Renown = nil
+    StatTable.BlackGlow = nil
     StatTable.EtherCrash = nil
     StatTable.EtherCrashDuration = nil
     StatTable.EtherCrashExhaust = nil
@@ -421,7 +508,7 @@ function GMCP_Vitals()
     StatTable.RacialInnervateRegen = nil
     
     -- Iterate over gmcp.Char.Status.affects and set StatTable variables using the lookup table
-    if StatTable.Level >= 25 and not (gmcp.Char.Status.affects == "" or gmcp.Char.Status.affects == nil) then  
+      if StatTable.Level >= 25 and type(gmcp.Char.Status.affects) == "table" then  
         for k,v in pairs(gmcp.Char.Status.affects) do
         
             -- Check if the affect name exists in the lookup table
@@ -434,6 +521,7 @@ function GMCP_Vitals()
             elseif(k == "Spell: tainted genius") then StatTable.Tainted = 1
             elseif(k == "Spell: oath") then StatTable.Oath = splitstring(v, " ")[2]
             elseif(k == "Spell: renown") then StatTable.Renown = splitstring(v, " ")[2]
+            elseif(k == "Spell: black glow") then StatTable.BlackGlow = 1
             elseif(k == "Spell: ether crash") then
               -- In the affects time, Ether Crash is set to 1 if it's turned on and 2 if its been exhausted
               StatTable.EtherCrash = tonumber(string.match(v, 'by%s*(%d+)'))
@@ -461,7 +549,15 @@ function GMCP_Vitals()
       n = 5,
     })
 
-    if(GlobalVar.GUI) then UpdateGUI() end 
+    GMCP_HandleDoomToxin()
+
+    if(GlobalVar.GUI) then
+      if type(ScheduleUpdateGUI) == "function" then
+        ScheduleUpdateGUI()
+      else
+        UpdateGUI()
+      end
+    end
 
 end
     

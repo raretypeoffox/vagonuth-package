@@ -1,11 +1,3 @@
--- Trigger: Force Field 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (regex): ^(.*) summons a force field to protect (it|him|her) from harm!$
-
--- Script Code:
 local shatter_enemy = matches[2]
 
 if IsGroupMate(shatter_enemy) then return end

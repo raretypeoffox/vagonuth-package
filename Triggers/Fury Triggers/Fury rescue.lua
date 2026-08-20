@@ -5,6 +5,7 @@
 -- Trigger Patterns:
 -- 0 (substring): looks pretty hurt.
 -- 1 (substring): is in awful condition.
+-- 2 (substring): has some big nasty wounds and scratches.
 
 -- Script Code:
 -- Provides for an alternative method of rescue healing
@@ -12,9 +13,9 @@
 --          is only attacking one groupmate and if so, to rescue the groupmate when the mob is low
 -- Con:     works less reliably when using skills with lag as it goes off of the look command
 
-GlobalVar.FuryRescue = GlobalVar.FuryRescue or true -- for now
+--has some big nasty wounds and scratches.
 
-if not GlobalVar.FuryRescue  then return end
+if not GlobalVar.FuryRescue then return end
 if not StatTable.Wildmind then return end
 
 -- set rescue hp % levels for rescueing with sanc vs without
@@ -26,16 +27,17 @@ end
 
 target = string.lower(gmcp.Char.Status.opponent_name)
 
-
 local count = 0
 local index = nil
 for i, j in pairs(Battle.EnemiesAttacking) do
-  if j[1] == target then 
+  if string.lower(j[1]) == target then 
     count = count + 1     
     index = i
+    
   end
 end
 
+  
 -- Only one mob of this name so we can accurately determine who its attacking
 if (count == 1 and StatTable.Level <= 51) then
   rescuetarget = Battle.EnemiesAttacking[index][2]
@@ -45,9 +47,15 @@ if (count == 1 and StatTable.Level <= 51) then
     if (tonumber(gmcp.Char.Vitals.lag) <= 2 and (StatTable.current_health / StatTable.max_health) > 0.50 and 
     (Battle.GroupiesUnderAttack[StatTable.CharName] == nil or (Battle.GroupiesUnderAttack[StatTable.CharName] ~= nil and tonumber(Battle.GroupiesUnderAttack[StatTable.CharName]) == 0))) then
       
-      if (GlobalVar.GroupMates[rescuetarget].class ~= "Pal" and GlobalVar.GroupMates[rescuetarget].class ~= "Fyr") then 
+      local groupmate = GlobalVar.GroupMates[rescuetarget]
+      local groupmate_hp = tonumber(groupmate.hp)
+      local groupmate_maxhp = tonumber(groupmate.maxhp)
+      local berserker_ready = groupmate.class ~= "Bzk" or
+        (groupmate_hp and groupmate_maxhp and groupmate_maxhp > 0 and groupmate_hp / groupmate_maxhp >= 0.95)
+
+      if (groupmate.class ~= "Pal" and groupmate.class ~= "Fyr" and berserker_ready) then
         TryAction("r " .. rescuetarget,2) 
-        TryFunction("printFuryRescue", printGameMessage, {"Fury Rescue!", "Trying to rescue " .. rescuetarget}, 2)
+        TryFunction("printFuryRescue", printMessage, {"Fury Rescue!", "Trying to rescue " .. rescuetarget}, 2)
         end
     
     

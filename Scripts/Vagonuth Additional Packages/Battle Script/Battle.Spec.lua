@@ -1,7 +1,3 @@
--- Script: Battle.Spec
--- Attribute: isActive
-
--- Script Code:
 Battle = Battle or {}
 
 -- Called by Battle.OnLook when a known spec is called

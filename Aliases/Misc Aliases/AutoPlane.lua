@@ -1,9 +1,3 @@
--- Alias: AutoPlane
--- Attribute: isActive
-
--- Pattern: ^(?i)autoplane ?(on|off)?
-
--- Script Code:
 local args = matches[2] or nil
 
 if not args or args == "" then

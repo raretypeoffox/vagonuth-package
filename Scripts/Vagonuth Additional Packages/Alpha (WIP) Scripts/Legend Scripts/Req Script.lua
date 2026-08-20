@@ -1,7 +1,3 @@
--- Script: Req Script
--- Attribute: isActive
-
--- Script Code:
 -- Global tables to hold the req queue and cooldown timestamps.
 reqQueue = reqQueue or {}       -- Holds all pending req requests.
 reqCooldown = reqCooldown or {} -- Tracks last req time for each target.

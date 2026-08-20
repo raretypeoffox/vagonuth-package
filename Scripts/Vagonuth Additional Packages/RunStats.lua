@@ -1,7 +1,3 @@
--- Script: RunStats
--- Attribute: isActive
-
--- Script Code:
 -- rewrite 24 Nov 23
 
 RunStats = RunStats or {}

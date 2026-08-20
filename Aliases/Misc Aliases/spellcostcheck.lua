@@ -1,9 +1,3 @@
--- Alias: spellcostcheck
--- Attribute: isActive
-
--- Pattern: ^spellcostcheck$
-
--- Script Code:
 print("Spell Cost Reductions for your character")
 print("----------------------------------------")
 

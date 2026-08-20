@@ -1,11 +1,3 @@
--- Trigger: Sleep 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (exact): sleep
-
--- Script Code:
 if (SafeArea() and (StatTable.Sneak or StatTable.MoveHidden)) then
   send("visible",false)
 end

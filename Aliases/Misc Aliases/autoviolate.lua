@@ -1,9 +1,3 @@
--- Alias: autoviolate
--- Attribute: isActive
-
--- Pattern: ^(?i)(autoviolate)(?: (.*))?$
-
--- Script Code:
 
 args = matches[3] or ""
 args = string.lower(args)

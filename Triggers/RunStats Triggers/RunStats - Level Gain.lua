@@ -1,13 +1,3 @@
--- Trigger: RunStats - Level Gain 
--- Attribute: isActive
--- Attribute: isSoundTrigger
-
-
--- Trigger Patterns:
--- 0 (regex): ^Your gain is: (\d+)\/(\d+) hp, (\d+)\/(\d+) m, (\d+)\/(\d+) mv (\d+)\/(\d+) prac.
--- 1 (regex): ^You raise a level!!  Your gain is: (\d+)\/(\d+) hp, (\d+)\/(\d+) m, (\d+)\/(\d+) mv (\d+)\/(\d+) prac.
-
--- Script Code:
 RunStats.RunLevels = (RunStats.RunLevels + 1)
 RunStats.RunHP = (RunStats.RunHP + matches[2])
 RunStats.RunMP = (RunStats.RunMP + matches[4])

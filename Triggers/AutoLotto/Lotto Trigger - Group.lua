@@ -1,13 +1,3 @@
--- Trigger: Lotto Trigger - Group 
--- Attribute: isActive
--- Attribute: isMultiline
-
-
--- Trigger Patterns:
--- 0 (regex): ^\w+ prepares? to lotto among \w+ group of \d+
--- 1 (start of line): The winners of the Lotto are:
-
--- Script Code:
 LottoCapture = {}
 BlankLineCount = 0
 

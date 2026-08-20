@@ -1,7 +1,3 @@
--- Script: Table and Array Functions
--- Attribute: isActive
-
--- Script Code:
  -- print out an array, for debugging
  -- Only works for an array (i.e. numerically indexed table)
  function ArrayShow(t)

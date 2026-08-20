@@ -1,9 +1,3 @@
--- Script: OnInventoryUpdate
--- Attribute: isActive
--- OnInventoryUpdate() called on the following events:
--- gmcp.Char.Items.List
-
--- Script Code:
 
 function OnInventoryUpdate()
   if gmcp.Char.Items.List.location ~= "inv" or StatTable.Position == "Sleep" then

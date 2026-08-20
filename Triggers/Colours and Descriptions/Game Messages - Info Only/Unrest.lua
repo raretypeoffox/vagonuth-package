@@ -1,11 +1,3 @@
--- Trigger: Unrest 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (start of line): There is no rest for the cursed!
-
--- Script Code:
 if SafeArea() then
   for _, player in ipairs(StaticVars.PrsBots) do
     if gmcp.Room.Players[player] then

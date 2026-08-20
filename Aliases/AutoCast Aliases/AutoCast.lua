@@ -1,9 +1,3 @@
--- Alias: AutoCast
--- Attribute: isActive
-
--- Pattern: ^(?i)(autocast|ac)(?: (.*))?$
-
--- Script Code:
 args = matches[3] or ""
 args = string.lower(args)
 
@@ -11,11 +5,7 @@ if (args == "on") then
   AutoCastON()  
 elseif (args == "off") then
   AutoCastOFF()
-  if GlobalVar.AutoTarget then
-    GlobalVar.AutoTarget = false
-    printGameMessage("AutoTarget", "AutoTarget turned off with AutoCast")
-  end
-  
+
   if StatTable.Level == 125 and GlobalVar.SurgeLevel > 1 then
     send("surge " .. (Surge and Surge.ClampLevel(GlobalVar.SurgeLevel, Surge.GetMaxLevel()) or GlobalVar.SurgeLevel))
   end  

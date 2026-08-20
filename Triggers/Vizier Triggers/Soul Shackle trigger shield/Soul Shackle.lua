@@ -1,13 +1,3 @@
--- Trigger: Soul Shackle 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (substring): has some big nasty wounds and scratches.
--- 1 (substring): looks pretty hurt.
--- 2 (substring): is in awful condition.
-
--- Script Code:
 if StatTable.StanceSoulExhaust then return end
 if not GlobalVar.VizFinalRites then return end
 

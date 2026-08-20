@@ -1,9 +1,3 @@
--- Script: GMCP_Room
--- Attribute: isActive
--- GMCP_Room() called on the following events:
--- gmcp.Room.Info
-
--- Script Code:
 function GMCP_Room() 
   GlobalVar.PlaneName = GetPlaneName()
   if(GlobalVar.GUI) then

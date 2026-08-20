@@ -1,13 +1,3 @@
--- Trigger: Drop junk item on rc 
--- Attribute: isActive
--- Attribute: isMultiline
-
-
--- Trigger Patterns:
--- 0 (regex): ^Your (.*) glows blue\.$
--- 1 (start of line): You feel an unclean aura lift from you.
-
--- Script Code:
 if StatTable.Level ~= 125 then return end
 
 local item_name = RemoveArticle(multimatches[1][2])

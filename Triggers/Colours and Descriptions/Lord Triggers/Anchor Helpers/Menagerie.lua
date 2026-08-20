@@ -1,0 +1,1 @@
+cecho (string.rep (" ",40-tonumber(string.len(line))) .. "<yellow> [Menagerie - ice hounds]")

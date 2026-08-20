@@ -1,14 +1,3 @@
--- Trigger: Natural Fletch Kit 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (regex): ^(\w+) tells you 'fletch kit'
--- 1 (regex): ^You dream of (\w+) telling you 'fletch kit'
--- 2 (regex): ^(\w+) tells you 'fletch kit (\d+)'
--- 3 (regex): ^You dream of (\w+) telling you 'fletch kit (\d+)'
-
--- Script Code:
 if(matches[2] == "someone") then
   send("wake")
   send("c 'holy sight")

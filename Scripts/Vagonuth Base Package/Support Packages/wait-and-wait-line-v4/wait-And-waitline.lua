@@ -1,7 +1,3 @@
--- Script: wait-And-waitline
--- Attribute: isActive
-
--- Script Code:
 local threads = {}
 function wait(seconds)
     local name = "wait_"..tostring(math.random(1000, 999999))

@@ -1,9 +1,3 @@
--- Alias: brandish
--- Attribute: isActive
-
--- Pattern: ^(?i)bra(?: (\w+)? ?(\w+)?)?$
-
--- Script Code:
 GlobalVar = GlobalVar or {}
 
 -- old pattern

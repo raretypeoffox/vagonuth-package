@@ -1,11 +1,3 @@
--- Trigger: Connecting to AVATAR 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (start of line): Existing Character.
-
--- Script Code:
 local function set_save_spell(wait)
   local wait = wait or 8
   if not gmcp.Char or gmcp.Char.Status or not gmcp.Char.Status.level then return end

@@ -6,12 +6,68 @@
 -- Script Code:
 local IncludeNecMobName = false -- set to true to show the Nec Mob's name
 
+local function PlayerCanReceiveDirectHeals(Player)
+  return Player and Player.class ~= "Nec"
+end
+
+local function IsAutoHealExcluded(name)
+  return name and GlobalVar.AutoHealExclusionList and GlobalVar.AutoHealExclusionList[GMCP_name(name)]
+end
+
+local function PlayerCountsForAutoHeal(Player)
+  return Player
+    and Player.position ~= "Sleep"
+    and Player.position ~= "Rest"
+    and PlayerCanReceiveDirectHeals(Player)
+    and not IsAutoHealExcluded(Player.name)
+end
+
+local function AddGroupGUIPlayer(guiPlayers, index, Player)
+  if not guiPlayers or index > StaticVars.MaxGroupLabels then return end
+
+  table.insert(guiPlayers, {
+    name = Player.name,
+    class = Player.class,
+    race = Player.race,
+    position = Player.position,
+    hp = Player.hp,
+    maxhp = Player.maxhp,
+    mp = Player.mp,
+    maxmp = Player.maxmp,
+    leader = Player.leader,
+  })
+end
+
+local function GetCurrentNecromancerMobs()
+  if not StatTable or StatTable.Class ~= "Necromancer" then return nil end
+  if type(StatTable.Necromancer) ~= "table" then return nil end
+
+  local necMobs = {}
+  for _, abomination in ipairs(StatTable.Necromancer.Abominations or {}) do
+    table.insert(necMobs, {
+      name = firstToUpper((abomination.Type or "NecMob"):gsub("%s+", "")),
+      class = "Mob",
+      race = "Undead",
+      position = "Stand",
+      hp = abomination.CurrentHealth,
+      maxhp = abomination.MaxHealth,
+      mp = 0,
+      maxmp = 0,
+      leader = false,
+      serial_number = abomination.SerialNumber,
+    })
+  end
+
+  return necMobs
+end
+
 function GMCP_Group()
     local GroupieTableIndex = 0
     StatTable.InjuredCount = 0
     StatTable.CriticalInjured = 0
     GlobalVar.VizMonitor = ""
-    LastGroupUpdate = deepcopy(GlobalVar.GroupMates) or {}
+    GlobalVar.AutoHealLowestTarget = nil
+    LastGroupUpdate = GlobalVar.GroupMates or {}
     GlobalVar.GroupMates = {}
     GlobalVar.NecMobList = {}
     GlobalVar.PsiInGroup = false
@@ -20,8 +76,10 @@ function GMCP_Group()
     local CriticalPercent = StaticVars.CriticalPercent
     
     local smallest_hppct = InjuredPercent -- swap monitors to groupie with lowest hp% < 85%
+    local lowest_autoheal_hppct = nil
     local GroupList = gmcp.Char.Group.List or nil
     local PlayersInRoom = gmcp.Room.Players or nil
+    local guiPlayers = GlobalVar.GUI and {} or nil
     
     
     if not GroupList then return end
@@ -34,10 +92,10 @@ function GMCP_Group()
         table.remove(GroupList, i)
       end
     end
-    
-    -- Hide all the group labels
-    for index = 1, StaticVars.MaxGroupLabels do
-      GroupieTable[index]:hide()
+
+    local currentNecromancerMobs = GetCurrentNecromancerMobs()
+    if currentNecromancerMobs then
+      GlobalVar.NecMobList = currentNecromancerMobs
     end
 
     for _, Player in ipairs(GroupList) do
@@ -55,9 +113,7 @@ function GMCP_Group()
       UpdateGroupMateVitals(Player)
      
       -- Update GUI Groupmate table
-      if GlobalVar.GUI and GroupieTableIndex <= StaticVars.MaxGroupLabels then
-          UpdateGroupGUI(GroupieTableIndex, Player)
-      end
+      AddGroupGUIPlayer(guiPlayers, GroupieTableIndex, Player)
     
       -- Save who the GroupLeader is for use in other functions
       if Player.leader then 
@@ -71,7 +127,7 @@ function GMCP_Group()
       end
 
       -- Code to count how many injured and wounded (defined at the top) are in the group
-      if(Player.position ~= "Sleep" and Player.position ~= "Rest") then --we don't want to capture groupings regening
+      if(PlayerCountsForAutoHeal(Player)) then --we don't want to capture groupies regening, Necs we cannot directly heal, or excluded targets
         
         local player_hppct = tonumber(Player.hp) / tonumber(Player.maxhp)
           
@@ -81,10 +137,15 @@ function GMCP_Group()
             StatTable.CriticalInjured = StatTable.CriticalInjured +1
           end
         end
+
+        if (not lowest_autoheal_hppct or player_hppct < lowest_autoheal_hppct) then
+          lowest_autoheal_hppct = player_hppct
+          GlobalVar.AutoHealLowestTarget = Player.name
+        end
         
         -- For all groupies that are not us, check who has the lowest % of HP and set them as our monitor
-        if (Player.name ~= StatTable.CharName and (Player.position ~= "Sleep" or Player.position ~= "Rest")) then
-          if (player_hppct < smallest_hppct) and not GlobalVar.AutoHealExclusionList[Player.name] then
+        if (Player.name ~= StatTable.CharName) then
+          if (player_hppct < smallest_hppct) then
             smallest_hppct = player_hppct
             GlobalVar.VizMonitor = Player.name
           end
@@ -98,7 +159,7 @@ function GMCP_Group()
     end -- end of player for loop
     
     
-    if GlobalVar.ShowNecMobs or StatTable.Class == "Nec" then -- NecMobFlag
+    if GlobalVar.ShowNecMobs or StatTable.Class == "Necromancer" then -- NecMobFlag
       for _, NecMob in ipairs(GlobalVar.NecMobList) do
         GroupieTableIndex = GroupieTableIndex + 1 
         
@@ -120,11 +181,19 @@ function GMCP_Group()
         NecMob.name = "<left><span style='color: rgb(211,211,211)'>" .. NecMob.name .. "</span>"
         
         if GlobalVar.GUI and GroupieTableIndex <= StaticVars.MaxGroupLabels then
-          UpdateGroupGUI(GroupieTableIndex, NecMob)
+          AddGroupGUIPlayer(guiPlayers, GroupieTableIndex, NecMob)
         end
         
       end
     end -- end of NecMob for loop
+
+    if guiPlayers then
+      if type(ScheduleGroupGUIUpdate) == "function" then
+        ScheduleGroupGUIUpdate(guiPlayers)
+      elseif type(RenderGroupGUI) == "function" then
+        RenderGroupGUI(guiPlayers)
+      end
+    end
 end
 
 function UpdateGroupMatesFindSomeone(Player, LastGroupUpdate)

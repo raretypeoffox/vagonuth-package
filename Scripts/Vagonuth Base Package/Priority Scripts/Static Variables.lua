@@ -1,7 +1,3 @@
--- Script: Static Variables
--- Attribute: isActive
-
--- Script Code:
 StaticVars = StaticVars or {}
 
 -- NOTE
@@ -20,6 +16,9 @@ StaticVars.PrsBots = {"Martyr", "Gobo", "Eiri", "Arby", "Textual", "Logic"}
 -- Some defualts
 StaticVars.DarkRaces = {"Drow", "Duergar", "Gargoyle", "Kobold", "Deep Gnome", "Demonseed", "Troll"}
 StaticVars.FrenzyClasses = {"Berserker", "Archer", "Assassin", "Fusilier", "Soldier", "Psionicist", "Rogue", "Black Circle Initiate", "Druid", "Fury"}
+StaticVars.EvilClasses = {"Sorcerer", "Shadowfist"}
+StaticVars.EvilRaces = {"Demonseed", "Illithid", "Tokoloshe", "Tanarukk"}
+StaticVars.GameMsgsChatOutput = "GameChat"
 StaticVars.GameMsgsChatOutput = "GameChat"
 
 -- Priest Config: for soul cleanse trigger, set your characters bag name (eg loot) and default held (eg lodestone) for the trigger to work properly
@@ -280,6 +279,29 @@ StaticVars.Junk = {
 ["suit of reptilian battle armor"] = "reptilian battle armor suit",
 ["long, glinting knife"] = "long glinting knife blade",
 ["volcano-glass whip"] = "whip glass lordgear",
+["mantellus sanquine"] = "bloody robe mantellus sanquine",
+["hooked chain"] = "hooked barbed chain",
+["scourge"] = "scourge whip 5-tailed",
+["garb of the Pits"] = "bundle leather armor garb pits",
+["stone chestplate"] = "stone chestplate",
+["magic air armor"] = "air armor",
+["magic air hammer"] = "air hammer",
+["magic air shield"] = "air shield",
+["red lightning"] = "red lightning",
+["blue-hilted slim dagger"] = "dagger blue-hilt",
+["energy hammer"] = "energy hammer",
+["spirit armor"] = "spirit armor",
+["bloody sickle"] = "bloody sickle",
+["living carapace"] = "living carapace",
+["well-used hoe"] = "well used hoe",
+["bloody hair"] = "clump of hair",
+["master robes of wizardry"] = "black red master robes wizardry lordgear",
+["ancient dragon claw"] = "claw dragon",
+["head on a stick"] = "head stick",
+["steel Trident"] = "steel Trident lordweapon",
+["twilight-blue dagger"] = "twilight-blue dagger",
+["skin of a pyrolisk"] = "skin pyrolisk",
+
 
 ["ghostly ring"] = "ghost ring",
 ["heavy granite sword"] = "sword heavy granite",
@@ -288,8 +310,13 @@ StaticVars.Junk = {
 ["glittering white pearl"] = "white pearl",
 ["deep green emerald"] = "green emerald",
 ["cultist long sword"] = "cultist sword",
+["amulet of imagery"] = "amulet imagery",
+["reinforced gloves"] = "reinforced gloves",
+["apprentice imager's robe"] = "apprentice imager robe lordabout",
+["monastic robes"] = "monastic robes",
 
-
+["seemingly nothing"] = "invisible shield nothing",
+["Golden Helmet of Mambrino"] = "golden helmet of mambrino shaving basin",
 
 
 -- junk ammo
@@ -309,6 +336,12 @@ StaticVars.Junk = {
 ["gleam of fading hope"] = "gleam ember flicker fading hope",
 ["ring of the Burning River"] = "ring burning river lordgear",
 ["nightsky cuirass"] = "nightsky cuirass chest-plate armored",
+["demong fang"] = "demon fang trophy",
+["jozarill's belt"] = "jozarill's black belt gold silver threads",
+["onzilorne's bracer"] = "fancy leather onzilorne's bracer",
+["mobius headdress"] = "mobius headdress",
+
+
 
 }
 
@@ -404,7 +437,7 @@ DamageVerbTable["***ERADICATING***"] = {7800, 8200, "blue"}
 DamageVerbTable[">***ERADICATING***<"] = {8200, 8500, "blue"}
 DamageVerbTable[">>***ERADICATING***<<"] = {8500, 9000, "blue"}
 DamageVerbTable[">>>***ERADICATING***<<<"] = {9000, 9500, "blue"}
-DamageVerbTable[">>>>***ERADICATING***<<<<"] = {9500, 1000, "blue"}
+DamageVerbTable[">>>>***ERADICATING***<<<<"] = {9500, 10000, "blue"}
 DamageVerbTable["vaporizing"] = {10000, 11000, "blue"}
 DamageVerbTable["VAPORIZING"] = {11000, 12000, "blue"}
 DamageVerbTable["*VAPORIZING*"] = {12000, 13000, "blue"}

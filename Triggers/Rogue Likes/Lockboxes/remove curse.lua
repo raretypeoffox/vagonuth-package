@@ -1,11 +1,3 @@
--- Trigger: remove curse 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (start of line): Shizaga frowns at you...
-
--- Script Code:
 -- cursed
 if SafeArea() then
   local Players = gmcp.Room.Players

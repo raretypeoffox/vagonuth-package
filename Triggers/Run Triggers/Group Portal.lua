@@ -1,11 +1,3 @@
--- Trigger: Group Portal 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (regex): ^\*\w+\* tells the group 'pp (.*)'$
-
--- Script Code:
 
 if IsClass({"Mage", "Cleric", "Wizard", "Druid", "Stormlord"}) then
     -- Viz not in list due to often popping portals

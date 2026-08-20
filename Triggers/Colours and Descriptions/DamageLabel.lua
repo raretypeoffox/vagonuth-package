@@ -1,16 +1,3 @@
--- Trigger: DamageLabel 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (regex): ^.*'s .* strikes .* with (?<dmgdesc>.*) \w+[!.]
--- 1 (regex): ^.*'s attacks? strikes? .* \d+ times?, with (?<dmgdesc>.*) \w+[!.]
--- 2 (regex): ^Your attacks? strikes? .* \d+ times?, with (?<dmgdesc>.*) \w+[!.]
--- 3 (regex): ^Your shot hits .* with (?<dmgdesc>.*) \w+[!.]
--- 4 (regex): ^You \w+ .* with (?<dmgdesc>.*) \w+[!.]
--- 5 (regex): ^.*'s .* hits .* with (?<dmgdesc>.*) \w+[!.]
-
--- Script Code:
 if matches.dmgdesc == "terminal" or matches.dmgdesc == "your" then return end
 if matches[0] == "You wield sharp folder with a bunch of arcane scrolls." then return end
 

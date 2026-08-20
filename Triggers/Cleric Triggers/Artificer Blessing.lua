@@ -1,11 +1,3 @@
--- Trigger: Artificer Blessing 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (start of line): Your artificer blessing is no more.
-
--- Script Code:
 if GlobalVar.PantheonSpell ~= "artificer blessing" then return end
 
 local ArtBlessCounter = ArtBlessCounter or 0

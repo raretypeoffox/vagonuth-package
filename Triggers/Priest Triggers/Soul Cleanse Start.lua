@@ -1,11 +1,3 @@
--- Trigger: Soul Cleanse Start 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (regex): ^\*\w+\* tells the group 'soul cleanse (\w+)
-
--- Script Code:
 --'ritual purification wand crystal'
 local CleanseTarget = matches[2]
 local BagName

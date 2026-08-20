@@ -1,12 +1,3 @@
--- Trigger: AutoPanacea 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (regex): ^(\w+) shivers and suffers.$
--- 1 (regex): ^(\w+) clutches at his heart in pain!$
-
--- Script Code:
 if not IsGroupMate(matches[2]) then return; end
 
 -- If we're a super hero, just cast panacea not preach

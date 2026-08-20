@@ -1,9 +1,3 @@
--- Timer: GroupUpdate
--- Attribute: isActive
-
--- Time: 00:00:01.000
-
--- Script Code:
 if IsMDAY() and not GroupLeader() then
   GroupUpdateTicks = GroupUpdateTicks or 0
   if GroupUpdateTicks >= 5 then

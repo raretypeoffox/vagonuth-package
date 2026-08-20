@@ -1,9 +1,3 @@
--- Alias: Queue alias
--- Attribute: isActive
-
--- Pattern: ^(?i)queue(?: (show|clear)? ?(.*?))?$
-
--- Script Code:
 cmd = matches[2] or ""
 args = matches[3] or ""
 

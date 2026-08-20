@@ -1,7 +1,3 @@
--- Script: Avatar Layout
--- Attribute: isActive
-
--- Script Code:
 -------------------------------------------------
 -- Main AVATAR GUI Layout File    
 -- Creates all the consoles / gauges / labels                      
@@ -10,6 +6,7 @@
 Layout = Layout or {}
 Layout.Labels = Layout.Labels or {}
 Layout.DefaultFontSize = GlobalVar.FontSize or 8
+Layout.GroupRowHeight = math.max(12, Layout.DefaultFontSize + 4)
 Layout.AffectLabelHeight = 20
 Layout.BottomPanelHeight = 140
 
@@ -115,9 +112,10 @@ function ReportRun()
 end
 
 function ResetRun()
+  RunStats.Echo()
   RunStats.Reset()
   RunStats.EchoSession()
-  DamageCounter.ReportEcho()
+  DamageCounter.ReportEcho("<", 20)
   DamageCounter.Reset()
 end
 
@@ -234,6 +232,7 @@ function LoadLayout()
   local CentrePanelSize = CentrePanelWidth/20 --break the space in middle up into 20 spaces for loading stuff in 
   
   Layout.DefaultFontSize = GlobalVar.FontSize or 8
+  Layout.GroupRowHeight = math.max(12, Layout.DefaultFontSize + 4)
   if not RightContainerEnabled then GlobalVar.EchoToMainConsole = true end
   
   -- left hand panel - full height
@@ -267,18 +266,18 @@ function LoadLayout()
   --group is set to max StaticVars.MaxGroupLabels (default 32)
   for i=1, StaticVars.MaxGroupLabels do
   
-    GroupieTable[i] = Geyser.Container:new({name="groupy"..tostring(i),height="10",width="90%"},GroupContainerInner)
-    GroupieTable[i].NameLabel = createLabel("NameLabel"..tostring(i), "0", "0", "22%", "90%", "yellow", "<left> Name </left>", GroupieTable[i], 0, nil)
-    GroupieTable[i].InfoLabel = createLabel("InfoLabel"..tostring(i), "22%", "0", "13%", "90%", "yellow", "<left> Info </left>", GroupieTable[i], 0, nil)
-    GroupieTable[i].PositionLabel = createLabel("PositionLabel"..tostring(i), "36%", "0", "12%", "90%", "white", "<left> Pos </left>", GroupieTable[i], 0, nil)
+    GroupieTable[i] = Geyser.Container:new({name="groupy"..tostring(i),height=Layout.GroupRowHeight,width="90%"},GroupContainerInner)
+    GroupieTable[i].NameLabel = createLabel("NameLabel"..tostring(i), "0", "0", "22%", "100%", "yellow", "<left> Name </left>", GroupieTable[i], 0, nil)
+    GroupieTable[i].InfoLabel = createLabel("InfoLabel"..tostring(i), "22%", "0", "13%", "100%", "yellow", "<left> Info </left>", GroupieTable[i], 0, nil)
+    GroupieTable[i].PositionLabel = createLabel("PositionLabel"..tostring(i), "36%", "0", "12%", "100%", "white", "<left> Pos </left>", GroupieTable[i], 0, nil)
     GroupieTable[i].NameLabel:setStyleSheet([[ background-color: black; ]])
     GroupieTable[i].InfoLabel:setStyleSheet([[ background-color: black; ]])
     GroupieTable[i].PositionLabel:setStyleSheet([[ background-color: black; ]])
     
     GroupieTable[i].HPBar = Geyser.Gauge:new({
       name="HPBar"..tostring(i),
-      x="45%", y="3%",
-      width="25%", height="80%",
+      x="45%", y="5%",
+      width="25%", height="90%",
     },GroupieTable[i])
           
     GroupieTable[i].HPBar.front:setStyleSheet([[background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #f04141, stop: 0.1 #ef2929, stop: 0.49 #cc0000, stop: 0.5 #a40000, stop: 1 #cc0000);
@@ -286,22 +285,22 @@ function LoadLayout()
       border-left: 1px black solid;
       border-bottom: 1px black solid;
       border-radius: 2;
-      padding: 3px;]])
+      padding: 0px;]])
     GroupieTable[i].HPBar.back:setStyleSheet([[background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #FFFFFF, stop: 1 #FFFFFF);
       border-width: 1px;
       border-color: black;
       border-style: solid;
       border-radius: 2;
-      padding: 3px;]])
+      padding: 0px;]])
          
-    GroupieTable[i].HPMaskLabel = createLabel("HPMaskLabel"..tostring(i), "45%", "3%", "25%", "90%", "yellow", "", GroupieTable[i], 0, nil)
+    GroupieTable[i].HPMaskLabel = createLabel("HPMaskLabel"..tostring(i), "45%", "5%", "25%", "90%", "yellow", "", GroupieTable[i], 0, nil)
     GroupieTable[i].HPMaskLabel:setColor(0,0,0,0)
     GroupieTable[i].HPMaskLabel:setToolTip("Click the HP Bar to provide a divinity / comfort to target", 10)
     
     GroupieTable[i].ManaBar = Geyser.Gauge:new({
     name="ManaBar"..tostring(i),
-    x="72%", y="3%",
-    width="25%", height="80%",
+    x="72%", y="5%",
+    width="25%", height="90%",
     },GroupieTable[i])
               
     GroupieTable[i].ManaBar.front:setStyleSheet([[background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #000099, stop: 0.1 #000099, stop: 0.49 #3399ff, stop: 0.5 #0000ff, stop: 1 #0033cc);
@@ -309,13 +308,13 @@ function LoadLayout()
       border-left: 1px black solid;
       border-bottom: 1px black solid;
       border-radius: 2;
-      padding: 3px;]])
+      padding: 0px;]])
     GroupieTable[i].ManaBar.back:setStyleSheet([[background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #FFFFFF, stop: 1 #FFFFFF);
       border-width: 1px;
       border-color: black;
       border-style: solid;
       border-radius: 2;
-      padding: 3px;]])
+      padding: 0px;]])
       
       GroupieTable[i]:hide()
 
@@ -365,8 +364,8 @@ function LoadLayout()
 
   -- affect labels
   MoveSneakLabel = createSplitLabel("MoveSneak", "3%", rowStartY, "28%", affectLabelHeight, left_container_bottom)
-  DetectsLabel = createLabel("DetectsLabel", "34%", rowStartY, "28%", affectLabelHeight, "white", [[<left>Detects</left>]], left_container_bottom, nil, styleSheetOn)
-  InvisLabel = createLabel("InvisLabel", "65%", rowStartY, "28%", affectLabelHeight, "white", [[<left>Invis</left>]], left_container_bottom, nil, styleSheetOn)
+  InvisLabel = createLabel("InvisLabel", "34%", rowStartY, "28%", affectLabelHeight, "white", [[<left>Invis</left>]], left_container_bottom, nil, styleSheetOn)
+  DetectsLabel = createLabel("DetectsLabel", "65%", rowStartY, "28%", affectLabelHeight, "white", [[<left>Detects</left>]], left_container_bottom, nil, styleSheetOn)
   SancLabel = createLabel("SancLabel", "3%", rowStartY + rowSpacing, "28%", affectLabelHeight, "white", [[<left>Sanctuary</left>]], left_container_bottom, nil, styleSheetOn)
   FrenzyLabel = createLabel("FrenzyLabel", "34%", rowStartY + rowSpacing, "28%", affectLabelHeight, "white", [[<left>Frenzy</left>]], left_container_bottom, nil, styleSheetOn)
   WaterFlyLabel = createSplitLabel("WaterFly", "65%", rowStartY + rowSpacing, "28%", affectLabelHeight, left_container_bottom)

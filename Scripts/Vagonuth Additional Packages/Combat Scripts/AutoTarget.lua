@@ -1,9 +1,3 @@
--- Script: AutoTarget
--- Attribute: isActive
--- AutoTarget() called on the following events:
--- gmcp.Room.Players
-
--- Script Code:
 GlobalVar.AutoTarget = GlobalVar.AutoTarget or false
 GlobalVar.AutoTargetEmote = GlobalVar.AutoTargetEmote or false
 
@@ -33,11 +27,20 @@ local TargetExclusions = {
 "A fairy in a safari outfit is flitting around here.",
 "A fairy stands here, welcoming visitors.",
 
+-- wasps
+"Almost invisible amongst the junk, a ticking shape fossicks here",
+"An agitated wasp darts furiously around the room!",
+"An elven woman is here, in plain clothes",
+"A long, dark figure cracks his knuckles.",
+
 -- NPCS
 "Resting on the throne, Bestellen contemplates a white cube in his hand.",
 "This ent places a handful of gold coins on his weighing scale.",
 "The shadowy fog has formed a maelstrom of darkness.", -- shadowlands, dje
 "A tall sentry stands here blocking your entrance.", -- darker castle
+"A priest of Tul-Sith examines the shrine.", --brother t
+"A young acolyte shouts, \"Please, someone help me!\"",
+"A toothless imbecile cries out, \"Where's my food!?!?\"", --larry, forsaken asylum
 
 
 -- Special
@@ -104,6 +107,45 @@ local TargetExclusions = {
 
 AutoTargetCastDelay = AutoTargetCastDelay or 1
 AutoTargetMinHPPct = AutoTargetMinHPPct or 0.5
+local STORMLORD_THUNDERHEAD_LAG = 2
+
+function AutoTargetMobAllowed(mob)
+  if type(mob) ~= "table" or tonumber(mob.name) == nil then return false end
+
+  local fullname = mob.fullname or ""
+  if fullname:find("%(CHARMED%)") then return false end
+  if ArrayHasSubstring(TargetExclusions, fullname) then return false end
+  if type(ImmoMobList) == "table" and ArrayHasSubstring(ImmoMobList, fullname) then return false end
+
+  return true
+end
+
+function AutoTargetFindMob()
+  local players = gmcp and gmcp.Room and gmcp.Room.Players or {}
+
+  for _, mob in pairs(players) do
+    if AutoTargetMobAllowed(mob) then return mob end
+  end
+
+  return nil
+end
+
+local function AutoTargetShouldStormlordThunderhead()
+  if not GlobalVar.AutoCast or GlobalVar.AutoCaster ~= "call lightning" then return false end
+  if StatTable.Class ~= "Stormlord" or StatTable.Level ~= 125 then return false end
+  if StatTable.ThunderheadExhaust then return false end
+  if (tonumber(StatTable.current_mana) or 0) < 1000 then return false end
+  if type(Battle.StormlordThunderheadPending) == "function" and Battle.StormlordThunderheadPending() then return false end
+
+  return true
+end
+
+local function AutoTargetCanCastSpell(spell)
+  if type(AutoCastCanUseSpell) == "function" and not AutoCastCanUseSpell(spell) then return false end
+  if string.lower(spell or "") ~= "call lightning" then return true end
+  if StatTable.Class == "Stormlord" then return false end
+  return type(IsThunderhead) == "function" and IsThunderhead()
+end
 
 function AutoTarget()
   if not GlobalVar.AutoTarget or Battle.Combat or SafeArea() then return end
@@ -111,22 +153,41 @@ function AutoTarget()
   
   for _,mob in pairs(gmcp.Room.Players) do
 
-    if(tonumber(mob.name) ~= nil and not mob.fullname:find("%(CHARMED%)") and ArrayHasSubstring(TargetExclusions, mob.fullname) == false and ArrayHasSubstring(ImmoMobList, mob.fullname) == false) then
+    if AutoTargetMobAllowed(mob) then
       
       --if GroupLeader() then send("emote is killing " .. mob.name) end
+
+      if AutoTargetShouldStormlordThunderhead() then
+        if tonumber(gmcp.Char.Vitals.lag) > 0 then return end
+
+        local thunderhead_action = "cast 'thunderhead' " .. mob.name
+        tempTimer(AutoTargetCastDelay,function()
+          if GlobalVar.AutoTarget and GlobalVar.AutoCast and not Battle.Combat and TryCast(thunderhead_action, STORMLORD_THUNDERHEAD_LAG) and type(Battle.StormlordMarkThunderheadPending) == "function" then
+            Battle.StormlordMarkThunderheadPending()
+          end
+        end)
+
+        break
+      end
       
       -- We're now ready to autotarget the mob. This first bit is for casters.
       if (GlobalVar.AutoCast and (GlobalVar.KillStyle == "kill" or not GlobalVar.AutoKill)) then
         if tonumber(gmcp.Char.Vitals.lag) > 0 then return end
-        
-        local cast_action = "cast '" .. GlobalVar.AutoCaster .. "' " .. mob.name
-        local surge_level = GetSurgeLevel(GlobalVar.AutoCaster)
+        local cast_spell = GlobalVar.AutoCaster
+        if not AutoTargetCanCastSpell(cast_spell) then return end
+
+        local cast_action = "cast '" .. cast_spell .. "' " .. mob.name
+        local surge_level = GetSurgeLevel(cast_spell)
         
         if surge_level > 1 then
           cast_action = "surge " .. surge_level .. getCommandSeparator() .. cast_action .. getCommandSeparator() .. "surge off"
         end
         -- delay cast by AutoTargetCastDelay seconds to give tanks/stabbers a chance first
-        tempTimer(AutoTargetCastDelay,function() if not Battle.Combat then TryCast(cast_action,5); end; end)
+        tempTimer(AutoTargetCastDelay,function()
+          if GlobalVar.AutoTarget and GlobalVar.AutoCast and not Battle.Combat and AutoTargetCanCastSpell(cast_spell) then
+            TryCast(cast_action,5)
+          end
+        end)
         break
       else
         send(GlobalVar.KillStyle .. " " .. mob.name)

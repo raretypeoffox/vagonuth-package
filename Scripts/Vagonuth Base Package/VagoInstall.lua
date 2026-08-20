@@ -1,9 +1,5 @@
--- Script: VagoInstall
--- Attribute: isActive
-
--- Script Code:
 VagoPackage = VagoPackage or {}
-VagoPackage.Version = "v1.3.2"
+VagoPackage.Version = "v1.4.0"
 VagoPackage.OnlinePath = "https://github.com/raretypeoffox/vagonuth-package/releases/latest/download/"
 VagoPackage.OnlineVersionFile = "https://raw.githubusercontent.com/raretypeoffox/vagonuth-package/main/versions.lua"
 VagoPackage.ProfileName = getProfileName():lower()

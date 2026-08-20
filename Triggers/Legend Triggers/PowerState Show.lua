@@ -1,11 +1,3 @@
--- Trigger: PowerState Show 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (regex): ^\w+ Legend \w+\s*\( \d+\)    \w+    ?(.*)$
-
--- Script Code:
 local PowerStateLookup = {
     ["the Dagger of the Three Fates"] = "2x Random",
     ["the Shatterer of Hopes"] = "SP +10% / DR +20 / -3 wis",

@@ -1,11 +1,3 @@
--- Trigger: phlebotomize 
-
-
--- Trigger Patterns:
--- 0 (regex): ^(.*) looks pretty hurt.
--- 1 (regex): ^(.*) is in awful condition.
-
--- Script Code:
 if GlobalVar.NoPhleb then return end
 
 if (tonumber(gmcp.Char.Vitals.lag) <= 3) and (StatTable.Level < 125) then

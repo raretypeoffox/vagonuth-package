@@ -1,12 +1,3 @@
--- Trigger: Explode 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (regex): ^(.*) shivers violently and explodes!$
--- 1 (regex): ^(.*) flares blindingly... and evaporates!$
-
--- Script Code:
 coroutine.wrap(function()
   if (AutoEnchantTable.ItemName ~= string.lower(matches[2])) then
     AutoEnchantDebug("AutoEnchant: Other enchanter's explosion detected")
@@ -24,10 +15,18 @@ coroutine.wrap(function()
       print("max mana")
     end
     
-    if (AutoEnchantTable.Brills > 0) then
-      AutoEnchantPrint("Brill exploded!")
+    local base
+    
+    if (AutoEnchantTable.ItemType == "armor") then
+      base = " (b" .. AutoEnchantTable.ItemAC .. ")"
     else
-      AutoEnchantPrint("Item exploded")
+      base = " (m" .. AutoEnchantTable.ItemMaxDmg .. ")"
+    end
+    
+    if (AutoEnchantTable.Brills > 0) then
+      AutoEnchantPrint("Brill exploded!" .. base)
+    else
+      AutoEnchantPrint("Item exploded" .. base)
     end
     
     AutoEnchantDBAdd("explode")

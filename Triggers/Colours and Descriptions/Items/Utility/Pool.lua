@@ -1,11 +1,3 @@
--- Trigger: Pool 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (substring): (Magical) An eerie pool of blood has formed here!
-
--- Script Code:
 cecho (string.rep (" ",80-tonumber(string.len(line))) .."<blue> [Pool]")
 
 --if (StatTable.Class == "Vizier") then

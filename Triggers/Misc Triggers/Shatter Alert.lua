@@ -1,14 +1,3 @@
--- Trigger: Shatter Alert 
--- Attribute: isActive
--- Attribute: isColorizerTrigger
-
--- mFgColor: #ff0000
--- mBgColour: #ffff00
-
--- Trigger Patterns:
--- 0 (regex): ^Torrents of jagged ice cascade down upon (.*)'s enemies!
-
--- Script Code:
 local shatter_enemy = matches[2]
 
 if IsGroupMate(shatter_enemy) then return end

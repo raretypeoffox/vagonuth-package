@@ -1,12 +1,3 @@
--- Trigger: Soitude 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (regex): ^You dream of (\w+) telling you 'solitude'
--- 1 (regex): ^(\w+) tells you 'solitude'
-
--- Script Code:
 -- TODO: write a better solitude trigger
 
 if StatTable.Level == 125 then

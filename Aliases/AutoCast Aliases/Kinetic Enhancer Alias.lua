@@ -57,51 +57,46 @@ local function splitKineticEnhancerArgs(input)
     return nil, nil
   end
 
-  -- First, try treating the whole input as one enhancer.
-  local oneEnhancer = matchKineticEnhancer(input)
-
-  if oneEnhancer then
-    return oneEnhancer.spell, nil
-  end
-
-  -- Then try every possible split point.
   local words = {}
 
   for word in input:gmatch("%S+") do
     table.insert(words, word)
   end
 
-  for splitPoint = 1, #words - 1 do
-    local firstWords = {}
-    local secondWords = {}
-
-    for i = 1, splitPoint do
-      table.insert(firstWords, words[i])
+  local function parseFrom(firstWord, enhancers)
+    if firstWord > #words then
+      return enhancers
     end
 
-    for i = splitPoint + 1, #words do
-      table.insert(secondWords, words[i])
+    if #enhancers >= 3 then return nil end
+
+    for lastWord = #words, firstWord, -1 do
+      local candidate = table.concat(words, " ", firstWord, lastWord)
+      local enhancer = matchKineticEnhancer(candidate, true)
+
+      if enhancer then
+        table.insert(enhancers, enhancer)
+        local result = parseFrom(lastWord + 1, enhancers)
+        if result then return result end
+        table.remove(enhancers)
+      end
     end
 
-    local arg1 = table.concat(firstWords, " ")
-    local arg2 = table.concat(secondWords, " ")
-
-    local enhancerOne = matchKineticEnhancer(arg1)
-    local enhancerTwo = matchKineticEnhancer(arg2)
-
-    if enhancerOne and enhancerTwo then
-      return enhancerOne.spell, enhancerTwo.spell
-    end
+    return nil
   end
 
-  return nil, "Could not match one or two kinetic enhancer spells."
+  local enhancers = parseFrom(1, {})
+  if enhancers then return enhancers, nil end
+
+  return nil, "Could not match one, two, or three kinetic enhancer spells."
 end
 
 
 if args == "" then
-  showCmdSyntax("Kinetic Enhancers\n\tSyntax: kin <spell> <spell>", {
+  showCmdSyntax("Kinetic Enhancers\n\tSyntax: kin <spell> [spell] [spell]", {
     {"kin <spell>", "Sets one Psi kinetic enhancer spell to autocast"},
     {"kin <spell> <spell>", "Sets two Psi kinetic enhancer spells to autocast"},
+    {"kin <spell> <spell> <spell>", "Sets three spells at Lord 800+"},
     {"kin show", "Shows kinetic enhancer spells available to your level"},
     {"kin clear", "Clears the kinetic enhancer spells previously set"},
   })
@@ -124,6 +119,15 @@ if args == "" then
     printMessage("Kinetic Enhancer Two", "No spell currently set")
   end
 
+  if GlobalVar.KineticEnhancerThree then
+    printMessage(
+      "Kinetic Enhancer Three",
+      "Spell currently set to: <yellow>" .. GlobalVar.KineticEnhancerThree
+    )
+  else
+    printMessage("Kinetic Enhancer Three", "No spell currently set")
+  end
+
   return
 end
 
@@ -143,76 +147,60 @@ end
 if args == "clear" then
   GlobalVar.KineticEnhancerOne = nil
   GlobalVar.KineticEnhancerTwo = nil
+  GlobalVar.KineticEnhancerThree = nil
 
   printMessage("Kinetic Enhancers", "Spells cleared")
   return
 end
 
 
-local enhancerOneSpell, enhancerTwoSpellOrError = splitKineticEnhancerArgs(args)
+local enhancers, parseError = splitKineticEnhancerArgs(args)
 
-if not enhancerOneSpell then
+if not enhancers then
   printMessage(
     "Kinetic Enhancer error",
-    enhancerTwoSpellOrError or "Please specify one or two spells"
+    parseError or "Please specify one, two, or three spells"
   )
   return
 end
 
-local enhancerTwoSpell = enhancerTwoSpellOrError
+local selected = {}
 
-local enhancerOne = matchKineticEnhancer(enhancerOneSpell)
-local enhancerTwo = enhancerTwoSpell and matchKineticEnhancer(enhancerTwoSpell) or nil
+for _, enhancer in ipairs(enhancers) do
+  if not hasKineticEnhancerUnlocked(enhancer) then
+    printMessage(
+      "Kinetic Enhancer error",
+      "You have not unlocked: <yellow>" .. enhancer.spell
+    )
+    return
+  end
 
+  if selected[enhancer.key] then
+    printMessage(
+      "Kinetic Enhancer error",
+      "You selected the same spell more than once: <yellow>" .. enhancer.spell
+    )
+    return
+  end
 
-if not enhancerOne then
-  printMessage("Kinetic Enhancer error", "Invalid spell: <yellow>" .. enhancerOneSpell)
-  return
+  selected[enhancer.key] = true
 end
 
-if enhancerTwoSpell and not enhancerTwo then
-  printMessage("Kinetic Enhancer error", "Invalid spell: <yellow>" .. enhancerTwoSpell)
-  return
-end
-
-
-if not hasKineticEnhancerUnlocked(enhancerOne) then
-  printMessage(
-    "Kinetic Enhancer error",
-    "You have not unlocked: <yellow>" .. enhancerOne.spell
-  )
-  return
-end
-
-if enhancerTwo and not hasKineticEnhancerUnlocked(enhancerTwo) then
-  printMessage(
-    "Kinetic Enhancer error",
-    "You have not unlocked: <yellow>" .. enhancerTwo.spell
-  )
-  return
-end
-
-
-if enhancerTwo and enhancerOne.key == enhancerTwo.key then
-  printMessage(
-    "Kinetic Enhancer error",
-    "You selected the same spell twice: <yellow>" .. enhancerOne.spell
-  )
-  return
-end
-
-
-if StatTable.Level == 51 and enhancerTwo then
+local maxEnhancers = getMaxKineticEnhancers()
+if #enhancers > maxEnhancers then
   printMessage(
     "Kinetic Enhancer",
-    "Heroes can only use one kinetic enhancer. Second spell ignored."
+    "You can currently use " .. maxEnhancers .. " kinetic enhancer(s). Extra spells ignored."
   )
-  enhancerTwo = nil
+
+  while #enhancers > maxEnhancers do
+    table.remove(enhancers)
+  end
 end
 
-
-GlobalVar.KineticEnhancerOne = enhancerOne.spell
-GlobalVar.KineticEnhancerTwo = enhancerTwo and enhancerTwo.spell or nil
+GlobalVar.KineticEnhancerOne = enhancers[1] and enhancers[1].spell or nil
+GlobalVar.KineticEnhancerTwo = enhancers[2] and enhancers[2].spell or nil
+GlobalVar.KineticEnhancerThree = enhancers[3] and enhancers[3].spell or nil
 
 
 printMessage(
@@ -227,4 +215,14 @@ if GlobalVar.KineticEnhancerTwo then
   )
 else
   printMessage("Kinetic Enhancer Two", "Spell cleared")
+end
+
+
+if GlobalVar.KineticEnhancerThree then
+  printMessage(
+    "Kinetic Enhancer Three",
+    "Spell set to: <yellow>" .. GlobalVar.KineticEnhancerThree
+  )
+else
+  printMessage("Kinetic Enhancer Three", "Spell cleared")
 end

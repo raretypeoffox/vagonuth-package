@@ -1,7 +1,3 @@
--- Script: Direction Script
--- Attribute: isActive
-
--- Script Code:
 GlobalVar.LastDirs = GlobalVar.LastDirs or {}
 GlobalVar.LastPop = GlobalVar.LastPop or nil
 GlobalVar.DirCount = GlobalVar.DirCount or 0

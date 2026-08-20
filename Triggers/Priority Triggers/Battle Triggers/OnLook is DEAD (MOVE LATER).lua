@@ -1,11 +1,3 @@
--- Trigger: OnLook is DEAD (MOVE LATER) 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (regex): ^(.*) is DEAD!!$
-
--- Script Code:
 target = string.lower(matches[2])
 
 

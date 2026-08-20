@@ -1,9 +1,3 @@
--- Alias: AutoRescue
--- Attribute: isActive
-
--- Pattern: ^(?i)ar(?: (on|off|add|all|auto|echo|mon|small|remove|show|clear)? ?(.*?))?$
-
--- Script Code:
 cmd = (matches[2] and string.lower(matches[2]) or "")
 args = matches[3] or ""
 
@@ -46,7 +40,8 @@ elseif cmd == "small" then
   if matches[3] == "" then
     AR.Small(2000)
   else
-    local smallhp = tonumber(argS)
+    local smallhp = tonumber(args)
+    if not smallhp then smallhp = 0 end
     if smallhp == "" or smallhp <= 0 then
       printMessage("AutoRescue", "Error: Please choose a number > 0")
       return

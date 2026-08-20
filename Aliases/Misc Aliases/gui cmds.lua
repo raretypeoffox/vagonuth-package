@@ -1,9 +1,3 @@
--- Alias: gui cmds
--- Attribute: isActive
-
--- Pattern: ^(?i)gui(?: (.*))?$
-
--- Script Code:
 local args = matches[2] and matches[2]:lower() or nil
 
 if args == "echomain" then

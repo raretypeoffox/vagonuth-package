@@ -1,11 +1,3 @@
--- Trigger: crystal ball 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (substring): A clear ball of crystal stands here glowing softly.
-
--- Script Code:
 if SafeArea() then return end
 
 send("get crystal")

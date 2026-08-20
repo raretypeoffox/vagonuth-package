@@ -1,11 +1,3 @@
--- Trigger: beep 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (regex): ^.You are being BEEPED by (\w+)!.$
-
--- Script Code:
 
 TryFunction("BeepedAlert", alert, nil, 5)
 TryFunction("BeepedSound", beep, nil, 5)

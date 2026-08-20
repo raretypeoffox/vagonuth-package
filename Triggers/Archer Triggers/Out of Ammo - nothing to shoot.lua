@@ -1,19 +1,11 @@
--- Trigger: Out of Ammo - nothing to shoot 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (start of line): You have nothing to shoot!
-
--- Script Code:
 if (GlobalVar.ReloadType ~= nil) then
-  send("wear '" .. GlobalVar.ReloadType .. "'")
+  TryAction("wear '" .. GlobalVar.ReloadType .. "'", 30)
 else
   if (StatTable.Class == "Fusilier") then
-    send("wear stone")
+    TryAction("wear stone", 30)
   elseif (StatTable.Class == "Soldier") then
-    send("wear bolt")
+    TryAction("wear bolt", 30)
   else
-    send("wear arrow")
+    TryAction("wear arrow", 30)
   end
 end

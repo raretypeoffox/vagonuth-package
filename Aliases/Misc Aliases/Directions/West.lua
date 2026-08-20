@@ -1,9 +1,3 @@
--- Alias: West
--- Attribute: isActive
-
--- Pattern: ^(w|west)$
-
--- Script Code:
 local dir = string.lower(matches[2])
 
 AddDir(dir)

@@ -1,9 +1,3 @@
--- Alias: AutoEnchant
--- Attribute: isActive
-
--- Pattern: ^auto(weapon|armor|bow) (\w+)$
-
--- Script Code:
 if (matches[3] == "stop" or matches[3] == "off") then
   AutoEnchantTable.Status = false
 else

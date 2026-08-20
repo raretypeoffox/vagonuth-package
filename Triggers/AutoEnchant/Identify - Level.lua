@@ -1,11 +1,3 @@
--- Trigger: Identify - Level 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (regex): ^Weight (?<weight>\d+), value (?<value>\d+), level (?<level>\d+).$
-
--- Script Code:
 AutoEnchantTable.ItemBaseLevel = tonumber(matches.level)
 AutoEnchantTable.ItemLevel = tonumber(matches.level)
 

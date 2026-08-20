@@ -1,9 +1,3 @@
--- Alias: AutoSurge
--- Attribute: isActive
-
--- Pattern: ^(?i)(autosurge|asurge)(?: (on|off))?$
-
--- Script Code:
 local args = matches[3] and string.lower(matches[3]) or ""
 
 if args == "on" then

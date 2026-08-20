@@ -1,7 +1,3 @@
--- Script: AutoEquip Blindfold
--- Attribute: isActive
-
--- Script Code:
 -- if exporting, requires:
 -- + SafeMudlet Script
 -- + raiseEvent("CustomGameLoop") somewhere (timer for example, I use every 5 seconds)
@@ -18,6 +14,7 @@ local MindsEyeBagName = "loot"
 local MindsEyeAltGear = "crown pain wire shards glass"
 
 function AutoEquipBlindfold.Equip()
+  if StatTable.Class ~= "Psionicist" then return end -- only for Psi's by defualt
   local isAsleep = (StatTable.Position == "Sleep" and true or false)
   
   if isAsleep then send("rest") end
@@ -36,6 +33,7 @@ function AutoEquipBlindfold.Equip()
 end
 
 function AutoEquipBlindfold.Remove()
+  if StatTable.Class ~= "Psionicist" then return end -- only for Psi's by defualt
   local isAsleep = (StatTable.Position == "Sleep" and true or false)
   
   if isAsleep then send("rest") end

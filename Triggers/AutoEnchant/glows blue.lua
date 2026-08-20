@@ -1,12 +1,3 @@
--- Trigger: glows blue. 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (regex): ^(.*) glows blue.$
--- 1 (regex): ^(.*) shimmers with a gold aura.$
-
--- Script Code:
 -- set up multiline multiline trigger 
 
 

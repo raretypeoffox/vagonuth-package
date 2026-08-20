@@ -1,9 +1,3 @@
--- Alias: AutoBuff
--- Attribute: isActive
-
--- Pattern: ^(?i)autobuff ?(on|off)?
-
--- Script Code:
 local args = matches[2] or nil
 
 if not args or args == "" then

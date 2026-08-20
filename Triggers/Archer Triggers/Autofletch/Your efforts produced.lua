@@ -1,11 +1,3 @@
--- Trigger: Your efforts produced 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (regex): ^Your efforts produced (\d+) (.*)
-
--- Script Code:
 AutoFletch.ArrowsFletched = AutoFletch.ArrowsFletched or {}
 
 if not AutoFletch.ArrowsFletched[matches[3]] then

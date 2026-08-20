@@ -1,12 +1,3 @@
--- Trigger: Chat Capture - Buddy 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (regex): ^(You) buddychat '(.*)'$
--- 1 (regex): ^(\w+) buddychats '(.*)'$
-
--- Script Code:
 if GlobalVar.IgnoreCurrentLine then return end
 
 -- normal trigger logic here

@@ -1,11 +1,3 @@
--- Trigger: Homeshift 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (exact): home
-
--- Script Code:
 
 
 if not GlobalVar.AutoPlane then

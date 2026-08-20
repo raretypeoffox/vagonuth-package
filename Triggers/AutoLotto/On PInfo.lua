@@ -1,10 +1,3 @@
--- Trigger: On PInfo 
-
-
--- Trigger Patterns:
--- 0 (regex): ^Your playerinfo is:
-
--- Script Code:
 
 if not OnPInfo.isOpen then   -- this checks for the first line, and initializes your variables
    OnPInfo.len = 1

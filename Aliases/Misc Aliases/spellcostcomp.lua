@@ -1,9 +1,3 @@
--- Alias: spellcostcomp
--- Attribute: isActive
-
--- Pattern: ^spellcostcomp (.*)$
-
--- Script Code:
 local race = matches[2]
 
 local effectivemana = StatTable.max_mana

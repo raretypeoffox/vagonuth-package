@@ -1,11 +1,3 @@
--- Trigger: Cure Poison 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (regex): ^(\w+) shivers and suffers\.$
-
--- Script Code:
 -- Stay out of lag if rescueing
 if AR.Status then return; end
 if Battle.Combat then return; end

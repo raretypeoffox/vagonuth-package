@@ -1,7 +1,3 @@
--- Script: CheckMissing
--- Attribute: isActive
-
--- Script Code:
 function CheckMissingGtell()
   local MissingPlayers = CheckMissing()
 

@@ -1,11 +1,3 @@
--- Trigger: Item passed to you 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (regex): ^(?<mobname>.*) gives you (an|a|the)? ?(?<item>.*)\.$
-
--- Script Code:
 if IsGroupMate(matches.mobname) and not IsMDAY() then 
   printGameMessageVerbose("Item Given", matches[1])
   return

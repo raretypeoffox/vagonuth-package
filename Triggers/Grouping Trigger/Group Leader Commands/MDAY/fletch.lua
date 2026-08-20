@@ -1,10 +1,3 @@
--- Trigger: fletch 
-
-
--- Trigger Patterns:
--- 0 (regex): ^fletch (?<arrow>\w+) ?(?<type>\w+)?$
-
--- Script Code:
 
 
 arrow = matches.arrow

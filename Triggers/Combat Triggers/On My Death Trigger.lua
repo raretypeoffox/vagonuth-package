@@ -1,12 +1,3 @@
--- Trigger: On My Death Trigger 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (start of line): You have been KILLED!!
--- 1 (start of line): Black imps appear and kill you!
-
--- Script Code:
 -- TODO check the room name first
 
 OnMobDeathQueueClear()
@@ -20,7 +11,11 @@ local function cloud2sanc()
   send("west")
   AskBotsForHeals()
   send("sleep")
-  
+  --send("tell logic mid")
+  --temptimer(5, function() send("tell eiri full") end)
+  --temptimer(5, function() send("tell logic div4") end)
+  --temptimer(10, function() send("tell logic div4") end)
+  --temptimer(20, function() send("tell logic full") end)
   if (StatTable.Class == "Priest") then
     if (gmcp.Room.Players["Martyr"]~=nil) then send("tell martyr full")
     elseif (gmcp.Room.Players["Arby"]~=nil) then send("tell arby full")
