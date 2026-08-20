@@ -1,11 +1,3 @@
--- Trigger: Lore Capture 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (regex): ^You have (\d+) lore points\.$
-
--- Script Code:
 Legend = Legend or {}
 
 local function normalizeLoreName(name)

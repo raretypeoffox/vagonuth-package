@@ -1,9 +1,3 @@
--- Alias: buddychat-set
--- Attribute: isActive
-
--- Pattern: ^(?i)bud-set ?(\w+)? ?(\w+)?$
-
--- Script Code:
 if matches[2] == nil or matches[2] == "" or matches[3] == nil or matches[3] == "" then
   print("bud-set sets the character name and colour for your buddy chat messages")
   print("Usage: bud-set <main_char_name> <colour_letter>")

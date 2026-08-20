@@ -1,11 +1,3 @@
--- Trigger: Lord Spells Reset 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (exact): You become your true self again!
-
--- Script Code:
 if StatTable.Level ~= 125 then return end
 
 printGameMessage("Lord Returned", "Spells and skills reset to lord defaults", "yellow", "white")

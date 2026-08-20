@@ -1,9 +1,3 @@
--- Alias: Legend spellup
--- Attribute: isActive
-
--- Pattern: ^spellup$
-
--- Script Code:
 if StatTable.Level ~= 250 then return end
 
 Legend = Legend or {}

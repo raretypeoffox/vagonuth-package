@@ -1,7 +1,3 @@
--- Script: Game Functions
--- Attribute: isActive
-
--- Script Code:
 function beep()
   if GlobalVar.Silent then return end
   playSoundFile({name = getMudletHomeDir().. "/Vagonuth-Package/beep.wav"})
@@ -70,7 +66,7 @@ function SafeArea()
       gmcp.Room.Info.zone == "{ LORD } Dev     Rietta's Wonders" or 
       gmcp.Room.Info.zone == "{ LORD } Crom    Thorngate" or
       gmcp.Room.Info.zone == "{ LORD } Vorak   Lord Mud School" or
-      gmcp.Room.Info.zone == "{ LORD } Odin    Labyrinth of Bo'vul" or
+      --gmcp.Room.Info.zone == "{ LORD } Odin    Labyrinth of Bo'vul" or
       gmcp.Room.Info.zone == "{ LORD } Crom    The House of Bandu" or
       gmcp.Room.Info.zone == "{ ALL  } AVATAR  Locker Rental Agency") or
       gmcp.Room.Info.name == "The Flying Citadel of Zin" or

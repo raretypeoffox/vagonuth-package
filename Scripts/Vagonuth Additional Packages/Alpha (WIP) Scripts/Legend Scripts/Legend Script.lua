@@ -1,7 +1,3 @@
--- Script: Legend Script
--- Attribute: isActive
-
--- Script Code:
 Legend = Legend or {}
 Legend.Init = Legend.Init or {}
 

@@ -1,7 +1,3 @@
--- Script: Drider Script
--- Attribute: isActive
-
--- Script Code:
 function DriderPoisonOnCombat()
   if not (StatTable.Level == 125 and StatTable.Race == "Drider") then return end
   

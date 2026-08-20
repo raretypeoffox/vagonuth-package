@@ -1,12 +1,3 @@
--- Trigger: brilliant blue 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (regex): ^(.*) glows a brilliant blue!$
--- 1 (regex): ^(.*) glows a brilliant gold!$
-
--- Script Code:
 coroutine.wrap(function()
 
   

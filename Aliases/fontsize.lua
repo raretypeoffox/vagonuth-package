@@ -1,9 +1,3 @@
--- Alias: fontsize
--- Attribute: isActive
-
--- Pattern: ^fontsize (\d+)$
-
--- Script Code:
 
 local fontsize = tonumber(matches[2])
 

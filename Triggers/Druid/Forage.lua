@@ -1,11 +1,3 @@
--- Trigger: Forage 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (regex): ^You forage (.*).
-
--- Script Code:
 if (tonumber(StatTable.forage_kits) >= tonumber(StatTable.number_kits)) then
   if (gmcp.Char.Status.room_name == "West Side of Tree of Knowledge") then
     cecho("Step 5 Fired.")

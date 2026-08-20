@@ -1,11 +1,3 @@
--- Trigger: Portal Enter 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (regex): ^ent?e?r? (?<colour_code>\/\w+\/)?(?<portal_string>\w+)$
-
--- Script Code:
 if (gmcp.Char.Status.area_name == "{ ALL  } AVATAR  Sanctum" and StatTable.Position == "Sleep") then send("stand") end
 
 portal_action = matches.colour_code ~= "" and (string.gsub(matches.colour_code,"/", "|") .. matches.portal_string) or matches.portal_string

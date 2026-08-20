@@ -1,9 +1,3 @@
--- Alias: PaladinRescue
--- Attribute: isActive
-
--- Pattern: ^(?i)palrescue ?(on|off)?
-
--- Script Code:
 local args = (matches[2] or ""):lower()
 
 if args == "on" then

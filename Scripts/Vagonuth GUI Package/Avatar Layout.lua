@@ -1,7 +1,3 @@
--- Script: Avatar Layout
--- Attribute: isActive
-
--- Script Code:
 -------------------------------------------------
 -- Main AVATAR GUI Layout File    
 -- Creates all the consoles / gauges / labels                      
@@ -116,9 +112,10 @@ function ReportRun()
 end
 
 function ResetRun()
+  RunStats.Echo()
   RunStats.Reset()
   RunStats.EchoSession()
-  DamageCounter.ReportEcho()
+  DamageCounter.ReportEcho("<", 20)
   DamageCounter.Reset()
 end
 

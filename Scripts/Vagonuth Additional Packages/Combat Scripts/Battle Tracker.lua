@@ -1,7 +1,3 @@
--- Script: Battle Tracker
--- Attribute: isActive
-
--- Script Code:
 BattleTracker = BattleTracker or {}
 BattleTracker.MobHealth = BattleTracker.MobHealth or ""
 

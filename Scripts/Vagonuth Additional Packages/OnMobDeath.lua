@@ -1,11 +1,3 @@
--- Script: OnMobDeath
--- Attribute: isActive
--- OnMobDeath() called on the following events:
--- OnMobDeath
-
--- Script Code:
--- Dependencies: TryAction, pdebug(), splitstring
-
 MobDeath = MobDeath or {}
 MobDeath.Queue = MobDeath.Queue or {}
 MobDeath.LastCommand = MobDeath.LastCommand or ""
@@ -118,7 +110,6 @@ function MobDeath.UpdateCommandCheck()
     MobDeath.CommandCheck["cast prayer '" .. GlobalVar.PrayerName .. "'"] = StatTable.Prayer or 0
   end
   MobDeath.CommandCheck["cast fervor"] = StatTable.Fervor or 0
-  if (StatTable.Fervor == nil and StatTable.Frenzy ~= nil) then MobDeath.CommandCheck["cast fervor"] = StatTable.Frenzy end
   MobDeath.CommandCheck["cast 'holy zeal'"] = StatTable.HolyZeal or 0
   MobDeath.CommandCheck["cast 'joined boon'"] = StatTable.JoinedBoon or 0
   MobDeath.CommandCheck["cast 'shared boon'"] = StatTable.SharedBoon or 0
@@ -160,11 +151,6 @@ function BuffManager.IsActionActive(action)
   end
   
   local val = StatTable[statKey]
-  
-  -- Special case for fervor/frenzy fallback
-  if statKey == "Fervor" and val == nil and StatTable.Frenzy ~= nil then
-    val = StatTable.Frenzy
-  end
   
   if val == "continuous" or val == "yes" or val == true then
     return true
@@ -311,11 +297,13 @@ function BuffManager.ShowBlockedActions()
   printMessage("BuffManager", message)
 end
 
-function BuffManager.RemoveAction(action)
+function BuffManager.RemoveAction(action, includeCurrent)
   local normalized = BuffManager.NormalizeAction(action)
 
   for i = #BuffManager.Queue, 1, -1 do
-    if BuffManager.NormalizeAction(BuffManager.Queue[i].action) == normalized then
+    local isCurrent = BuffManager.CurrentCasting and BuffManager.Queue[i] == BuffManager.CurrentCasting
+    if BuffManager.NormalizeAction(BuffManager.Queue[i].action) == normalized and
+       (includeCurrent or not isCurrent) then
       table.remove(BuffManager.Queue, i)
     end
   end
@@ -328,7 +316,7 @@ function BuffManager.BlockAction(action, reason)
   if normalized == "" then return false end
 
   BuffManager.GetBlockedActionsForCurrentCharacter()[normalized] = reason or true
-  BuffManager.RemoveAction(action)
+  BuffManager.RemoveAction(action, true)
 
   if BuffManager.CurrentCasting and BuffManager.NormalizeAction(BuffManager.CurrentCasting.action) == normalized then
     BuffManager.CurrentCasting = nil

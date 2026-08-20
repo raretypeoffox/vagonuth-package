@@ -1,7 +1,3 @@
--- Script: Damage Counter
--- Attribute: isActive
-
--- Script Code:
 DamageCounter = DamageCounter or {}
 DamageCounter.Players = DamageCounter.Players or {}
 
@@ -67,6 +63,15 @@ function DamageCounter.AddBrandish(ch)
   DamageCounter.Players[ch].brandishes = DamageCounter.Players[ch].brandishes + 1
 end
 
+function DamageCounter.ExtractAbomination(attacker)
+  if not attacker or attacker == "" then return nil end
+  local abom_type, abom_name = attacker:match("^[Aa]n?%s+(.-)%s+named%s+(.+)$")
+  if abom_name and abom_name ~= "" then
+    return GMCP_name(abom_name), abom_type
+  end
+  return nil
+end
+
 function DamageCounter.Reset()
   DamageCounter.Players = {}
 end
@@ -118,7 +123,8 @@ end
 
 -- Helper: format a line for send (with color codes)
 local function format_send_line(rank, name, v)
-  local avg = math.floor((v.dmg - v.bashdmg) / (v.rounds - v.bashrounds) + .05)
+  local non_bash_rounds = v.rounds - v.bashrounds
+  local avg = non_bash_rounds > 0 and math.floor((v.dmg - v.bashdmg) / non_bash_rounds + .05) or math.floor(v.dmg / math.max(1, v.rounds) + .05)
   local dmg = format_int(math.floor(v.dmg + .05))
   local msg = string.format(
     "%d. |BW|%s|N|: %s (avg: |BY|%s|N| / max: |BY|%s|N|)",
@@ -133,7 +139,8 @@ end
 
 -- Helper: format a line for echo (plain text with tabs)
 local function format_echo_line(rank, name, v)
-  local avg = math.floor((v.dmg - v.bashdmg) / (v.rounds - v.bashrounds) + .05)
+  local non_bash_rounds = v.rounds - v.bashrounds
+  local avg = non_bash_rounds > 0 and math.floor((v.dmg - v.bashdmg) / non_bash_rounds + .05) or math.floor(v.dmg / math.max(1, v.rounds) + .05)
   local dmg = format_int(math.floor(v.dmg + .05))
   -- adjust tabs based on name length and two-digit ranks
   local name_thresh = (rank >= 10) and 3 or 4

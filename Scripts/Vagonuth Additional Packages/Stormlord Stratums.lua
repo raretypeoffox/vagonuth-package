@@ -1,7 +1,3 @@
--- Script: Stormlord Stratums
--- Attribute: isActive
-
--- Script Code:
 StormlordStratums = {
   {
     key = "StratumGale",
@@ -153,10 +149,7 @@ function getStratumLimit()
 end
 
 function getDefaultStratumOne()
-  if StatTable.Level == 125 then
-    return "gale"
-  end
-
+  -- Stratums are opt-in; do not silently cast one for an unconfigured character.
   return nil
 end
 

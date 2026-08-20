@@ -1,9 +1,3 @@
--- Alias: autolotto alias
--- Attribute: isActive
-
--- Pattern: ^(?i)autolotto(?: (init|start|bag|pinfo|clear|update|uselist)? ?(.*?))?$
-
--- Script Code:
 cmd = (matches[2] and string.lower(matches[2]) or "")
 args = matches[3] or ""
 

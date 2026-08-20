@@ -1,11 +1,3 @@
--- Trigger: tear 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (regex): ^(?<mobname>.*) is DEAD!!
-
--- Script Code:
 local TearExclusions = {
 "chimerical griffon",
 "gith lookout",

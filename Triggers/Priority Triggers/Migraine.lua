@@ -1,14 +1,3 @@
--- Trigger: Migraine 
--- Attribute: isActive
--- Attribute: isColorizerTrigger
-
--- mFgColor: #ff0000
--- mBgColour: #ffff00
-
--- Trigger Patterns:
--- 0 (start of line): You feel a slight headache growing stronger...
-
--- Script Code:
 
 if (StatTable.WaterBreathingExhaust == nil) then
   Battle.NextAct("cast 'water breathing'", 5)

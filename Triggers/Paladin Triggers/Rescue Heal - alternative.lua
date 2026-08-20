@@ -1,12 +1,3 @@
--- Trigger: Rescue Heal - alternative 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (substring): looks pretty hurt.
--- 1 (substring): is in awful condition.
-
--- Script Code:
 -- Provides for an alternative method of rescue healing
 -- Benefit: when multiple mobs are fighting group, this trigger is able to detect if the mob we specifically are fighting (ie gmcp.Char.Status.opponent_name)
 --          is only attacking one groupmate and if so, to rescue the groupmate when the mob is low
@@ -22,7 +13,7 @@ target = string.lower(gmcp.Char.Status.opponent_name)
 local count = 0
 local index = nil
 for i, j in pairs(Battle.EnemiesAttacking) do
-  if j[1] == target then 
+  if string.lower(j[1]) == target then 
     count = count + 1     
     index = i
   end

@@ -1,7 +1,3 @@
--- Script: Group Update
--- Attribute: isActive
-
--- Script Code:
 -------------------------------------------------
 -- Group GUI Update Script   
 -- Updates all the groupmate info in the group container
@@ -119,7 +115,7 @@ function UpdateGroupGUI(GroupieTableIndex, Player)
     guiSetGauge(groupRow.ManaBar, PlayerMana, PlayerMaxMana, groupGaugeText(Player.mp .. (SmallScreen and "" or "/" .. PlayerMaxMana)))
   end
 
-  if (Player.class == "Sor" or Player.class == "Mag" or Player.class == "Wzd" or Player.class == "Psi" or Player.class == "Mnd" or Player.class == "Stm" or Player.class == "Fyr" or Player.class == "Nec") then
+  if (Player.class == "Sor" or Player.class == "Mag" or Player.class == "Wzd" or Player.class == "Psi" or Player.class == "Mnd" or Player.class == "Stm" or Player.class == "Fyr") then
       guiSetStyle(groupRow.ManaBar.front, [[background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #000099, stop: 0.1 #000099, stop: 0.49 #3399ff, stop: 0.5 #0000ff, stop: 1 #0033cc);]])
   elseif (Player.class == "Prs" or Player.class == "Cle" or Player.class == "Dru" or Player.class == "Pal" or Player.class == "Viz") then
       guiSetStyle(groupRow.ManaBar.front, [[background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #ffff66, stop: 0.3 #ffff00, stop: 1 #ff9900);]])

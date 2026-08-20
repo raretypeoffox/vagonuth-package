@@ -1,9 +1,3 @@
--- Alias: ShowNecMobs
--- Attribute: isActive
-
--- Pattern: ^(?i)shownecmobs ?(on|off)?
-
--- Script Code:
 local args = (matches[2] or ""):lower()
 
 if args == "on" then

@@ -1,7 +1,3 @@
--- Script: Wizard Sig Spell Script
--- Attribute: isActive
-
--- Script Code:
 -- Example of insigs
 --    Signature Spell
 --     Signature spell target: area. Damage type: cold.

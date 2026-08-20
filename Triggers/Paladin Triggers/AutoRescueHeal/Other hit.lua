@@ -1,12 +1,3 @@
--- Trigger: Other hit 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (regex): ^(?<attacker>\w+)'?s? (.*) (?<victim>\w+) (\d+) times?, with (?<dmgdesc>.*) \w+(!|.)
--- 1 (regex): ^(?<attacker>\w+)'?s? (.*) haven't hurt (?<victim>\w+)!
-
--- Script Code:
 local Groupies = Groupies or {}
 if (#Groupies == 0) then
   for k,v in ipairs(gmcp.Char.Group.List) do

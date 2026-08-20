@@ -1,11 +1,3 @@
--- Trigger: BattleTracker - Rescue 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (regex): ^(\w+) rescues (\w+)!
-
--- Script Code:
 GroupiesUnderAttack = GroupiesUnderAttack or {}
 
 local rescuer = GMCP_name(matches[2])

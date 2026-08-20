@@ -1,9 +1,3 @@
--- Alias: AutoHeal
--- Attribute: isActive
-
--- Pattern: ^(?i)(autoheal|ah)(?: (.*))?$
-
--- Script Code:
 GlobalVar.AutoHealExclusionList = GlobalVar.AutoHealExclusionList or {}
 
 local function AutoHealExclusionCount()

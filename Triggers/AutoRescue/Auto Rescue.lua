@@ -1,11 +1,3 @@
--- Trigger: Auto Rescue 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (regex): ^.*'s (.*) (strike|strikes) (\w+)'?s? ?(\w+)?
-
--- Script Code:
 local AOE_attacks = {
   "blast of acid",
   "blast of flame",

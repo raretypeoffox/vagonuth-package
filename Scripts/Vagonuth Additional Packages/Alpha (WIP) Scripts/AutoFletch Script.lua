@@ -1,7 +1,3 @@
--- Script: AutoFletch Script
--- Attribute: isActive
-
--- Script Code:
 AutoFletch = AutoFletch or {}
 
 AutoFletch.Status = AutoFletch.Status or false

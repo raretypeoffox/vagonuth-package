@@ -1,7 +1,3 @@
--- Script: CHANGELOG
--- Attribute: isActive
-
--- Script Code:
 -- Vagonuth AVATAR Package Change Log
 
 -- v1.0.0
@@ -128,14 +124,38 @@
 -- bug fix: aoe casting had a bug introduced in the last version
 -- bug fix: if a psi slept after surge up, it wouldn't turn off quicken
 
-
 -- v1.4.0
--- TODO: add Nec stuff to labels etc.
+-- update: full rewrite of STM for lords (works best with autotarget on)
+-- added: other classes with autocast set to "call lightning" now wait for thunderhead to be up before casting
+-- added: "stratum" command to allow STM's to customize which stratums are up, no stratum by default
+-- added: aoe on/off, can turn off aoe mid-run
+-- added: pae racials to layout/vitals
+-- added: hero nec labels, nec's cast bhyss on preachup, cast tombstone when it falls if mana > 500
+-- added: nec "glow <colour>" command
+-- added: abom <type> <name> <weight> [optional: weapon] will auto create abominations
+-- added: nec abom's to damage counter
+-- added: nec's cast 'blood ritual' when below 75% hp
+-- update: significant performance optimization for mday, profiles that are not the "active" window update gui less frequently now
+-- minor update: added ign "pyroclastic flow" to vitals / layout
+-- update: autofrenzy is now saved per profile and more reliably maintains frenzy/fervor, including paladin oath handling
+-- added: repinsig vault reports Lord characters missing the Treasure Hunter insignia
+-- minor update: fury autorescue avoids rescuing low-health berserkers until they recover to at least 95% hp
+-- minor update: kinetic now allows a 3rd spell at psi lord 800+
+-- bug fix: buffmanager pauses spellcasting when a no-spell room rejects a cast
+-- bug fix: sanctuary recasts are no longer blocked by stale GMCP affect data
+-- bug fix: ar small <hp> now correctly parses the supplied hp threshold
+-- bug fix: autoenchant stops at the configured maximum item level instead of attempting one extra enchant
+-- bug fix: tanarukk characters are correctly treated as evil for alignment warnings
+-- bug fix: autocast off no longer disables autotarget; autotarget falls back to the configured killstyle
+
+-- v1.5.0
 -- TODO: fury lord stuff
+-- TODO: add heroic boon to paladin
+-- TODO: add: shining pennant (cleric) viz?
+-- TODO: add BCI: Lord 75+ (swap bwtn mindstrike & ass)
 
 
 -- Long-term Todo
--- BCI: Lord 75+ (swap bwtn mindstrike & ass)
 -- autoskill scatter doesn't work because its not 5 seconds of lag but rather the next round that it resets
 -- customizable variables
 -- keep custom variables outside of main package so not overwritten when updated

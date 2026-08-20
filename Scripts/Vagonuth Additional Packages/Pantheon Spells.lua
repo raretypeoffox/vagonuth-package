@@ -1,7 +1,3 @@
--- Script: Pantheon Spells
--- Attribute: isActive
-
--- Script Code:
 PantheonSpells = {
   { key = "GloriousConquest", spell = "glorious conquest", level = 51, sublevel = 100 },
   { key = "HallowedNimbus", auraKey = "HallowedNimbusAura", spell = "hallowed nimbus", level = 51, sublevel = 150 },

@@ -1,9 +1,3 @@
--- Alias: charstats
--- Attribute: isActive
-
--- Pattern: ^(?i)charstats (\w+)$
-
--- Script Code:
 -- todo
 
 local char_name = GMCP_name(matches[2])

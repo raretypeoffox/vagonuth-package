@@ -1,10 +1,3 @@
--- Trigger: surge level 
-
-
--- Trigger Patterns:
--- 0 (regex): ^(s|surge) (off|up|down|1|2|3|4|5)
-
--- Script Code:
 local SurgeUpMana = (30000 * Battle.GetSpellCostMod("arcane")) or 30000 
 local surgelevel = matches[3]
 

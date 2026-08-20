@@ -1,11 +1,3 @@
--- Trigger: 2s 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (substring): 2s
-
--- Script Code:
 Try2sLock = Try2sLock or nil
 
 if Try2sLock == true then return end

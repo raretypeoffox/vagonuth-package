@@ -1,7 +1,3 @@
--- Script: README
--- Attribute: isActive
-
--- Script Code:
 -- Vagonuth Package for AVATAR MUD (avatar.outland.org:3000)
 -- README FILE
 -- Installed with: lua installPackage("https://github.com/raretypeoffox/vagonuth-package/releases/latest/download/Vagonuth-Package.mpackage")

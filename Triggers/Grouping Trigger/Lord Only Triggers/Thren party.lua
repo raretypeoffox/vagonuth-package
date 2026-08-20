@@ -1,11 +1,3 @@
--- Trigger: Thren party 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (regex): ^\[LORD INFO\]: (\w+) initiates a Threnody dirge for corpse of (\w+) in (.*)\.$
-
--- Script Code:
 
 if GMCP_name(matches[2]) == StatTable.CharName then return end
 

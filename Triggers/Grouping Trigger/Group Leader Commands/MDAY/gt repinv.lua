@@ -1,11 +1,3 @@
--- Trigger: gt repinv 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (exact): repinv
-
--- Script Code:
 local freeItems = tonumber(string.sub(gmcp.Char.Vitals.string, -3)) - tonumber(gmcp.Char.Vitals.items)
 local freeWeight = tonumber(gmcp.Char.Vitals.maxwgt) - tonumber(gmcp.Char.Vitals.wgt)
 

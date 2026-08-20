@@ -1,11 +1,3 @@
--- Trigger: Pick 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (regex): ^\*\w+\* tells the group 'pick (\w+)'
-
--- Script Code:
 -- todo make better
 local PickBagName = "loot"
 

@@ -1,9 +1,3 @@
--- Alias: preachup alias
--- Attribute: isActive
-
--- Pattern: ^preachup$
-
--- Script Code:
 if StatTable.Class ~= "Priest" then
   printMessage("PreachUp", "Not a priest!")
 end

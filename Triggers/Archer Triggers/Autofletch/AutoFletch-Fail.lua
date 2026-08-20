@@ -1,11 +1,3 @@
--- Trigger: AutoFletch-Fail 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (exact): You fail to produce anything worth shooting.
-
--- Script Code:
 lag = tonumber(gmcp.Char.Vitals.lag)
 
 echo("\nAutoFletch Fail Detected\n")

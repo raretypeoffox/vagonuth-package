@@ -1,14 +1,3 @@
--- Trigger: You are blind!!! 
--- Attribute: isActive
--- Attribute: isColorizerTrigger
-
--- mFgColor: #ff0000
--- mBgColour: #ffff00
-
--- Trigger Patterns:
--- 0 (start of line): You are blind!!!
-
--- Script Code:
 printGameMessage("Battle", "You are blind!!!")
 
 if StatTable.Class == "Sorcerer" or StatTable.Class == "Berserker" or AR.Status then

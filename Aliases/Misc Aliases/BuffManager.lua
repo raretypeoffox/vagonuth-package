@@ -1,9 +1,3 @@
--- Alias: BuffManager
--- Attribute: isActive
-
--- Pattern: ^(?i)buffmanager(?:\s+(reset|blocked|blocklast))?$
-
--- Script Code:
 local cmd = matches[2] or ""
 
 if cmd == "reset" then

@@ -1,10 +1,3 @@
--- Trigger: drop_junk 
-
-
--- Trigger Patterns:
--- 0 (regex): ^You are carrying:
-
--- Script Code:
 if not OnDropJunk then
   OnDropJunk.len = 1
   OnDropJunk.isOpen = true

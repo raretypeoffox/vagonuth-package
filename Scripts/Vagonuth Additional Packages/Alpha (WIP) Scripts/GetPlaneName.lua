@@ -1,7 +1,3 @@
--- Script: GetPlaneName
--- Attribute: isActive
-
--- Script Code:
   local planeLookup = {
     ["{ LORD } Dev     The Sun Cabal"]               = "Nowhere",
     ["{ LORD } Vorak   Lord Mud School"]              = "Thorngate",

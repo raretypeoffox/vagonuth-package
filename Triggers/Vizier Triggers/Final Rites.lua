@@ -1,12 +1,3 @@
--- Trigger: Final Rites 
-
-
--- Trigger Patterns:
--- 0 (regex): ^Your attacks haven't hurt (.*)!
--- 1 (regex): ^Your attack strikes (.*)
--- 2 (regex): ^You start fighting (.*)
-
--- Script Code:
 if tonumber(gmcp.Char.Vitals.lag) > 0 then return end
 
 if(StatTable.SubLevel > 100 or StatTable.Level == 125) then

@@ -1,9 +1,3 @@
--- Script: AutoTarget
--- Attribute: isActive
--- AutoTarget() called on the following events:
--- gmcp.Room.Players
-
--- Script Code:
 GlobalVar.AutoTarget = GlobalVar.AutoTarget or false
 GlobalVar.AutoTargetEmote = GlobalVar.AutoTargetEmote or false
 
@@ -33,11 +27,20 @@ local TargetExclusions = {
 "A fairy in a safari outfit is flitting around here.",
 "A fairy stands here, welcoming visitors.",
 
+-- wasps
+"Almost invisible amongst the junk, a ticking shape fossicks here",
+"An agitated wasp darts furiously around the room!",
+"An elven woman is here, in plain clothes",
+"A long, dark figure cracks his knuckles.",
+
 -- NPCS
 "Resting on the throne, Bestellen contemplates a white cube in his hand.",
 "This ent places a handful of gold coins on his weighing scale.",
 "The shadowy fog has formed a maelstrom of darkness.", -- shadowlands, dje
 "A tall sentry stands here blocking your entrance.", -- darker castle
+"A priest of Tul-Sith examines the shrine.", --brother t
+"A young acolyte shouts, \"Please, someone help me!\"",
+"A toothless imbecile cries out, \"Where's my food!?!?\"", --larry, forsaken asylum
 
 
 -- Special
@@ -137,8 +140,9 @@ local function AutoTargetShouldStormlordThunderhead()
   return true
 end
 
-local function AutoTargetCanCastCallLightning()
-  if string.lower(GlobalVar.AutoCaster or "") ~= "call lightning" then return true end
+local function AutoTargetCanCastSpell(spell)
+  if type(AutoCastCanUseSpell) == "function" and not AutoCastCanUseSpell(spell) then return false end
+  if string.lower(spell or "") ~= "call lightning" then return true end
   if StatTable.Class == "Stormlord" then return false end
   return type(IsThunderhead) == "function" and IsThunderhead()
 end
@@ -158,7 +162,7 @@ function AutoTarget()
 
         local thunderhead_action = "cast 'thunderhead' " .. mob.name
         tempTimer(AutoTargetCastDelay,function()
-          if not Battle.Combat and TryCast(thunderhead_action, STORMLORD_THUNDERHEAD_LAG) and type(Battle.StormlordMarkThunderheadPending) == "function" then
+          if GlobalVar.AutoTarget and GlobalVar.AutoCast and not Battle.Combat and TryCast(thunderhead_action, STORMLORD_THUNDERHEAD_LAG) and type(Battle.StormlordMarkThunderheadPending) == "function" then
             Battle.StormlordMarkThunderheadPending()
           end
         end)
@@ -169,16 +173,21 @@ function AutoTarget()
       -- We're now ready to autotarget the mob. This first bit is for casters.
       if (GlobalVar.AutoCast and (GlobalVar.KillStyle == "kill" or not GlobalVar.AutoKill)) then
         if tonumber(gmcp.Char.Vitals.lag) > 0 then return end
-        if not AutoTargetCanCastCallLightning() then return end
-        
-        local cast_action = "cast '" .. GlobalVar.AutoCaster .. "' " .. mob.name
-        local surge_level = GetSurgeLevel(GlobalVar.AutoCaster)
+        local cast_spell = GlobalVar.AutoCaster
+        if not AutoTargetCanCastSpell(cast_spell) then return end
+
+        local cast_action = "cast '" .. cast_spell .. "' " .. mob.name
+        local surge_level = GetSurgeLevel(cast_spell)
         
         if surge_level > 1 then
           cast_action = "surge " .. surge_level .. getCommandSeparator() .. cast_action .. getCommandSeparator() .. "surge off"
         end
         -- delay cast by AutoTargetCastDelay seconds to give tanks/stabbers a chance first
-        tempTimer(AutoTargetCastDelay,function() if not Battle.Combat and AutoTargetCanCastCallLightning() then TryCast(cast_action,5); end; end)
+        tempTimer(AutoTargetCastDelay,function()
+          if GlobalVar.AutoTarget and GlobalVar.AutoCast and not Battle.Combat and AutoTargetCanCastSpell(cast_spell) then
+            TryCast(cast_action,5)
+          end
+        end)
         break
       else
         send(GlobalVar.KillStyle .. " " .. mob.name)

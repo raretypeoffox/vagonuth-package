@@ -1,7 +1,3 @@
--- Script: General Functions
--- Attribute: isActive
-
--- Script Code:
 cs = getCommandSeparator() -- shortcut for getCommandSeparator()
 
 -- format_int(number), where number is an integer, returns a formatted string

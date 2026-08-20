@@ -1,18 +1,3 @@
--- Trigger: AutoClarify 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (regex): ^(\w+) starts to panic!$
--- 1 (regex): ^(\w+) is surrounded by a pink outline.$
--- 2 (regex): ^The eyes of (\w+) dim and turn milky white.$
--- 3 (regex): ^(\w+)'s body withers before your eyes!$
--- 4 (regex): ^Bhyss has come for you, (w\+)$
--- 5 (regex): ^A smarmy grin crosses (\w+)'s face!$
--- 6 (regex): ^(\w+) pales as (he|she|it) (see|sees) (his|her|its) death before (him|her|it).$
--- 7 (regex): ^(\w+) is cursed with something...$
-
--- Script Code:
 -- ^(\w+) is cursed with something...$ -- mass unrest would cause this to trigger on every groupmate, does that break the trig?
 
 

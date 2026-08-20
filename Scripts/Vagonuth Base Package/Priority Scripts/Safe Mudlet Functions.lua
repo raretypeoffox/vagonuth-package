@@ -1,7 +1,3 @@
--- Script: Safe Mudlet Functions
--- Attribute: isActive
-
--- Script Code:
 -- MUDLET BUG
 -- killTriggers take approx 2 seconds to kill before taking affect. This can result in triggers being called multiple times
 -- if trigger is matched shortly after killTrigger

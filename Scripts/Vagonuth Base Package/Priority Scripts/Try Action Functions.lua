@@ -1,7 +1,3 @@
--- Script: Try Action Functions
--- Attribute: isActive
-
--- Script Code:
 TryActionSet = TryActionSet or {}
 TryFunctionSet = TryFunctionSet or {}
 TryLockSet = TryLockSet or {}

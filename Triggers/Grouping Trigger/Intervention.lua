@@ -1,11 +1,3 @@
--- Trigger: Intervention 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (start of line): You are no longer due divine intervention.
-
--- Script Code:
 
 if SafeArea() then return end
 

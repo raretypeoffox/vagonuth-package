@@ -1,9 +1,3 @@
--- Alias: veil max
--- Attribute: isActive
-
--- Pattern: ^veil max$
-
--- Script Code:
 local btmax = BladetranceMax()
 local btlevel = StatTable.BladetranceLevel
 

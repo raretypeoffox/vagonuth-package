@@ -1,11 +1,3 @@
--- Trigger: surge check 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (exact): surge check
-
--- Script Code:
 if not GlobalVar.AutoCast then return end
 if GlobalVar.Silent and not IsMDAY() then return end
 

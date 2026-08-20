@@ -1,11 +1,3 @@
--- Trigger: Nothing seemed to happen. 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (start of line): Nothing seemed to happen.
-
--- Script Code:
 coroutine.wrap(function()
   
   if (StatTable.current_mana < 200) then

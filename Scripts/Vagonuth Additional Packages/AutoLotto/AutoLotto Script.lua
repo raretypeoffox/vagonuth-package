@@ -1,7 +1,3 @@
--- Script: AutoLotto Script
--- Attribute: isActive
-
--- Script Code:
 -- Requires PInfo Script
 
 AutoLotto = AutoLotto or {}

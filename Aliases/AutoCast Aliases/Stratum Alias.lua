@@ -1,9 +1,3 @@
--- Alias: Stratum Alias
--- Attribute: isActive
-
--- Pattern: ^(?i)stratum(?:\s+(.+))?\s*$
-
--- Script Code:
 local args = (matches[2] or ""):lower()
 
 local function showAvailableStratums()

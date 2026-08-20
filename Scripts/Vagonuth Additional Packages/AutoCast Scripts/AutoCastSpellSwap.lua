@@ -1,11 +1,25 @@
--- Script: AutoCastSpellSwap
--- Attribute: isActive
--- AutoCastSpellSwap() called on the following events:
--- gmcp.Room.Players
-
--- Script Code:
 GlobalVar = GlobalVar or {}
 GlobalVar.MobCount = GlobalVar.MobCount or 0
+if GlobalVar.AutoAOE == nil then GlobalVar.AutoAOE = true end
+
+local AutoCastKnownAOESpells = {
+  ["acid blast"] = true,
+  ["acid rain"] = true,
+  ["banshee wail"] = true,
+  ["call lightning"] = true,
+  ["inferno"] = true,
+  ["meteor swarm"] = true,
+  ["storm of vengeance"] = true,
+}
+
+function AutoCastIsAOESpell(spell)
+  local spell_name = string.lower(spell or "")
+  if spell_name == "" then return false end
+  if AutoCastKnownAOESpells[spell_name] then return true end
+
+  local configured_aoe = string.lower(GlobalVar.AutoCasterAOE or "")
+  return configured_aoe ~= "" and spell_name == configured_aoe
+end
 
 local DoNotArea_RoomList = {
   "Spire of Knowledge", 
@@ -103,6 +117,7 @@ function AutoCastCountMobs()
 end
 
 function AutoCastRoomAllowsAOE()
+  if GlobalVar.AutoAOE == false then return false end
   if not gmcp or not gmcp.Room or not gmcp.Room.Info then return true end
 
   -- First check if we are in a room that we do not AOE in.
@@ -121,6 +136,10 @@ function AutoCastRoomAllowsAOE()
   end
 
   return true
+end
+
+function AutoCastCanUseSpell(spell)
+  return not AutoCastIsAOESpell(spell) or AutoCastRoomAllowsAOE()
 end
 
 -- The function called to swap spells

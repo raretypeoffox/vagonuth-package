@@ -1,9 +1,3 @@
--- Alias: South
--- Attribute: isActive
-
--- Pattern: ^(s|south)$
-
--- Script Code:
 local dir = string.lower(matches[2])
 
 AddDir(dir)

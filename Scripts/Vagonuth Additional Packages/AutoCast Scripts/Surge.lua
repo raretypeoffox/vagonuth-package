@@ -1,7 +1,3 @@
--- Script: Surge
--- Attribute: isActive
-
--- Script Code:
 Surge = Surge or {}
 
 local SURGE_MAX_BY_CLASS = {

@@ -54,8 +54,9 @@ KineticEnhancers = {
   },
 }
 
-GlobalVar.KineticEnhancerOne = GlobalVar.KineticEnhancerOne or nil
-GlobalVar.KineticEnhancerTwo = GlobalVar.KineticEnhancerTwo or nil
+GlobalVar.KineticEnhancerOne = GlobalVar.KineticEnhancerOne or "felling weapon"
+GlobalVar.KineticEnhancerTwo = GlobalVar.KineticEnhancerTwo or "conscious weapon"
+GlobalVar.KineticEnhancerThree = GlobalVar.KineticEnhancerThree or "intelligent weapon"
 
 local function normalizeKineticInput(input)
   if not input then return nil end
@@ -69,7 +70,7 @@ local function normalizeKineticInput(input)
 end
 
 
-function matchKineticEnhancer(input)
+function matchKineticEnhancer(input, silent)
   local normalizedInput = normalizeKineticInput(input)
 
   if not normalizedInput or normalizedInput == "" then
@@ -91,10 +92,12 @@ function matchKineticEnhancer(input)
   end
 
   if #matches > 1 then
-    printMessage("Kinetic Enhancer error", "Ambiguous spell: <yellow>" .. tostring(input))
+    if not silent then
+      printMessage("Kinetic Enhancer error", "Ambiguous spell: <yellow>" .. tostring(input))
 
-    for _, match in ipairs(matches) do
-      printMessage("Possible match", "<yellow>" .. match.spell)
+      for _, match in ipairs(matches) do
+        printMessage("Possible match", "<yellow>" .. match.spell)
+      end
     end
 
     return nil
@@ -105,8 +108,8 @@ end
 
 
 function hasKineticEnhancerUnlocked(enhancer)
-  local level = StatTable.Level or 0
-  local sublevel = StatTable.SubLevel or 0
+  local level = tonumber(StatTable.Level) or 0
+  local sublevel = tonumber(StatTable.SubLevel) or 0
 
   if level > enhancer.level then
     return true
@@ -120,6 +123,23 @@ function hasKineticEnhancerUnlocked(enhancer)
 end
 
 
+function getMaxKineticEnhancers()
+  local level = tonumber(StatTable.Level) or 0
+  local sublevel = tonumber(StatTable.SubLevel) or 0
+
+  if level == 51 then
+    return sublevel >= 500 and 1 or 0
+  end
+
+  if level == 125 then
+    return sublevel >= 800 and 3 or 2
+  end
+
+  -- Preserve the existing behavior for tiers above Lord.
+  return level > 125 and 2 or 0
+end
+
+
 function checkKineticEnhancers()
   local count = 0
 
@@ -127,9 +147,6 @@ function checkKineticEnhancers()
     if StatTable[enhancer.key] ~= nil then
       count = count + 1
 
-      if count >= 2 then
-        return 2
-      end
     end
   end
 
@@ -174,21 +191,14 @@ function castKineticEnhancers()
   if Battle.Combat then return end
   if StatTable.Class ~= "Psionicist" then return end
 
-  -- First kinetic enhancer unlocks at Hero 500.
-  if StatTable.Level < 51 then return end
-  if StatTable.Level == 51 and StatTable.SubLevel < 500 then return end
+  local maxEnhancers = getMaxKineticEnhancers()
+  if maxEnhancers == 0 then return end
 
-  if StatTable.current_mana < 5000 then return end
+  if (tonumber(StatTable.current_mana) or 0) < 5000 then return end
 
   local enhancersCount = checkKineticEnhancers()
 
-  -- Hero can only use one kinetic enhancer.
-  if StatTable.Level == 51 and enhancersCount >= 1 then
-    return
-  end
-
-  -- Lord+ can use two kinetic enhancers.
-  if enhancersCount >= 2 then
+  if enhancersCount >= maxEnhancers then
     return
   end
 
@@ -200,6 +210,12 @@ function castKineticEnhancers()
 
   if GlobalVar.KineticEnhancerTwo then
     if castKineticEnhancerIfNeeded(GlobalVar.KineticEnhancerTwo) then
+      return
+    end
+  end
+
+  if GlobalVar.KineticEnhancerThree then
+    if castKineticEnhancerIfNeeded(GlobalVar.KineticEnhancerThree) then
       return
     end
   end

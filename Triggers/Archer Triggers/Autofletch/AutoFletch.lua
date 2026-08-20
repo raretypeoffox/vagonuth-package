@@ -1,12 +1,3 @@
--- Trigger: AutoFletch 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (regex): ^Your efforts produced (\d+) (.*) (sling stone|arrow|bolt|dart)
--- 1 (regex): ^You make (\d+) (.*) (sling stones|arrows|bolts|darts), loaded with (\w+).
-
--- Script Code:
 local lag = tonumber(gmcp.Char.Vitals.lag)
 
 local fletch = "fletch '" .. matches[4] ..  "' '" .. matches[3] .. "'"

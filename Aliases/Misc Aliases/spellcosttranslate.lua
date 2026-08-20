@@ -1,9 +1,3 @@
--- Alias: spellcosttranslate
--- Attribute: isActive
-
--- Pattern: ^spellcosttrans (\d+) (.*)$
-
--- Script Code:
 local race = matches[3]
 local manacomp = tonumber(matches[2])
 

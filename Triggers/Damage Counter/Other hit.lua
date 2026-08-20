@@ -1,13 +1,3 @@
--- Trigger: Other hit 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (regex): ^(?<attacker>.*)'s attacks? strikes? (?<victim>.*) (\d+) times?, with (?<dmgdesc>.*) \w+(!|.)
--- 1 (regex): ^(?<attacker>.*)'s attacks haven't hurt (?<victim>\w+)!
--- 2 (regex): ^(?<attacker>.*)'s (?<spell>.*) strikes? (?<victim>.*) with (?<dmgdesc>.*) \w+(!|.)
-
--- Script Code:
 -- config setup:
 --[-battleother] You will see others' hits condensed to one line.
 --[-battleself ] You will see your hits condensed to one line.
@@ -49,13 +39,20 @@ if (GlobalVar.GroupMates[groupie_victim])
   end
 end
 
--- For the damge counter, if our group mate is the attacker, add their damage to the counter
+-- For the damage counter, if our group mate or abomination is the attacker, add their damage to the counter
+local abom_name = DamageCounter.ExtractAbomination and DamageCounter.ExtractAbomination(matches.attacker)
+local victim_is_groupie = (GlobalVar.GroupMates and GlobalVar.GroupMates[groupie_victim]) or (groupie_victim == GMCP_name(StatTable.CharName))
+
 if GlobalVar.GroupMates[groupie_attacker] and matches.dmgdesc then
   --print("DamageCounter.AddDmg("..matches.attacker..", "..matches.dmgdesc..")")
   local bash = false
   if matches.spell == "bash" then bash = true end
   DamageCounter.AddDmg(matches.attacker, matches.dmgdesc, bash)
   --print(matches.attacker, matches.dmgdesc)
+elseif abom_name and not victim_is_groupie and matches.dmgdesc then
+  local bash = false
+  if matches.spell == "bash" then bash = true end
+  DamageCounter.AddDmg(abom_name, matches.dmgdesc, bash)
 end
 
 --if not Battle.Combat and (GlobalVar.GroupMates[groupie_victim] or GlobalVar.GroupMates[groupie_attacker]) then 

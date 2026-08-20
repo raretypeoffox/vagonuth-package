@@ -1,9 +1,3 @@
--- Alias: Autotrack
--- Attribute: isActive
-
--- Pattern: ^(?i)autotrack\s*(\w*)
-
--- Script Code:
 local function syntax()
   print("Auotrack:  will automove or report to the group tracking results")
   print("syntax: autotrack [on|off|echo]")

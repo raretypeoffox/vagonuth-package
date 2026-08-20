@@ -1,7 +1,3 @@
--- Script: AutoRescue
--- Attribute: isActive
-
--- Script Code:
 AR = AR or {}
 AR.RescueList = AR.RescueList or {}
 AR.Status = AR.Status or false

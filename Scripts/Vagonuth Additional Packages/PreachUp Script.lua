@@ -1,13 +1,11 @@
--- Script: PreachUp Script
--- Attribute: isActive
-
--- Script Code:
 CustomPreachup = {
 ["Xanur"] = "cast 'minds eye'",
 --["Zephyra"] = "cast solitude",
 ["Qhax"] = "cast prayer soothe",
 }
 
+-- Retained for compatibility with personal extensions. AutoFrenzy now controls
+-- Frenzy acquisition for every character, so this list is no longer a gate.
 CustomFrenzyList = {
   --"Azarael",
   "Thistleshade",
@@ -22,7 +20,6 @@ function CustomMDAYPreachup()
   CustomPreachup["Vagouth"] =  "cast barkskin zapwick" .. cs .. "cast barkskin zapwizz" .. cs .. "cast barkskin zapwow" .. cs .. "cast barkskin aeryn"
   CustomPreachup["Aphroros"] = "cast barkskin zeno" .. cs .. "cast barkskin markath" .. cs .. "cast barkskin zephyra" .. cs .. "cast barkskin ayas"
   CustomPreachup["Forgeflare"] = "stance veil" .. cs .. "bt enter" .. cs .. "bt deepen" .. cs .. "bt deepen"
-  CustomPreachup["Xamur"] = "cast frenzy"
 end
 
 
@@ -149,9 +146,21 @@ function GetSpellsAtPreachup()
   local Players = gmcp.Room.Players
   local commands = {}
   local MyClass = StatTable.Class
-  local MyLevel = StatTable.Level
-  local MySubLevel = StatTable.SubLevel
+  local MyLevel = tonumber(StatTable.Level) or 0
+  local MySubLevel = tonumber(StatTable.SubLevel) or 0
   local isMDAY = IsMDAY()
+  local paladinOath = MyClass == "Paladin" and string.lower(tostring(StatTable.Oath or "")) or ""
+  local paladinCanFervor = MyClass == "Paladin" and MyLevel >= 51 and
+    paladinOath ~= "" and paladinOath ~= "creation" and paladinOath ~= "peace"
+
+  if MyClass == "Paladin" and type(BuffManager) == "table" and type(BuffManager.RemoveAction) == "function" then
+    if not paladinCanFervor then
+      BuffManager.RemoveAction("cast fervor")
+      BuffManager.RemoveAction("cast frenzy")
+    elseif StatTable.Race == "High Elf" or paladinOath ~= "destruction" or not GlobalVar.AutoFrenzy then
+      BuffManager.RemoveAction("cast frenzy")
+    end
+  end
   
   printGameMessageVerbose("PreachUp", "Getting spells from bots")
 
@@ -189,17 +198,24 @@ function GetSpellsAtPreachup()
     end
   end
   
-  if StatTable.Race ~= "High Elf" and GlobalVar.AutoFrenzy and StatTable.Level >= 51 and (IsClass(StaticVars.FrenzyClasses) or ArrayHasValue(CustomFrenzyList, StatTable.CharName)) then
-    if IsMDAY and IsNotClass({"Berserker","Priest"}) and (MyLevel == 125 or MySubLevel > 41) then
-      table.insert(commands, "cast frenzy")
-    else
-      AskBotForSpell(commands, Players, StaticVars.DruidBots, "frenzy")
+  if MyClass == "Paladin" then
+    if paladinCanFervor and not StatTable.Fervor then
+      table.insert(commands, "cast fervor")
     end
+    if paladinCanFervor and paladinOath == "destruction" and GlobalVar.AutoFrenzy and
+       StatTable.Race ~= "High Elf" and not StatTable.Frenzy then
+      table.insert(commands, "cast frenzy")
+    end
+  elseif GlobalVar.AutoFrenzy and MyLevel >= 51 and StatTable.Race ~= "High Elf" and not StatTable.Frenzy then
+      if isMDAY and IsNotClass({"Berserker", "Priest"}) and (MyLevel == 125 or MySubLevel > 41) then
+        table.insert(commands, "cast frenzy")
+      else
+        AskBotForSpell(commands, Players, StaticVars.DruidBots, "frenzy")
+      end
   end
   
   -- Paladins and Psionicists have their own cases
   if MyClass == "Paladin" then
-    if not StatTable.Fervor then table.insert(commands, "cast fervor") end
     if not StatTable.Prayer and GlobalVar.PrayerName ~= "" then table.insert(commands, "cast prayer '" .. GlobalVar.PrayerName .. "'") end
     if (MyLevel == 125 or MySubLevel > 101) and StatTable.Oath == "war" then table.insert(commands, "cast 'holy zeal'") end
     if (MyLevel == 125 or MySubLevel > 250) and StatTable.Oath == "evolution" and not StatTable.JoinedBoon and not StatTable.SharedBoon then
@@ -220,6 +236,9 @@ function GetSpellsAtPreachup()
     if MyLevel == 125 and matchKineticEnhancer(GlobalVar.KineticEnhancerTwo) and checkKineticEnhancers() < 2 then
         table.insert(commands, "cast '" .. GlobalVar.KineticEnhancerTwo .. "'")
     end
+    if MyLevel == 125 and MySubLevel >= 800 and matchKineticEnhancer(GlobalVar.KineticEnhancerThree) and checkKineticEnhancers() < 3 then
+        table.insert(commands, "cast '" .. GlobalVar.KineticEnhancerThree .. "'")
+    end
     
 
     if (MyLevel == 125 or MySubLevel > 101) and not StatTable.Savvy then table.insert(commands, "cast savvy") end
@@ -236,8 +255,8 @@ function GetSpellsAtPreachup()
     if not StatTable.IllusoryShield then table.insert(commands, "cast 'illusory shield'") end
     if not StatTable.HiveMind then table.insert(commands, "cast 'hive mind'") end
   elseif MyClass == "Fury" and MyLevel >= 51 then
-    if not StatTable.Wildmind then table.insert(commands, "cast 'wildmind'") end
-  
+    if not StatTable.Wildmind and MyLevel == 125 then table.insert(commands, "cast 'wildmind'") end -- will cause spells to tick at hero if leader doesn't leave sanc fast enough
+   
   
   elseif MyClass == "Mage" and MyLevel >= 51 then
     if (MyLevel == 125 or MySubLevel > 101) and not StatTable.Savvy then table.insert(commands, "cast savvy") end
@@ -262,6 +281,16 @@ function GetSpellsAtPreachup()
     if (MyLevel == 125 and MySubLevel >= 200) and not StatTable.VilePhilosophy then table.insert(commands, "cast 'vile philosophy'") end
     if not StatTable.DeathShroud then table.insert(commands, "cast 'death shroud'") end
     if MyLevel >= 51 and not StatTable.SummonNecrit then table.insert(commands, "cast 'summon necrit'") end
+
+  elseif MyClass == "Necromancer" and MyLevel >= 51 then
+    if StatTable.max_mana > 5000 and not StatTable.Mystical then
+      table.insert(commands, "cast mystical")
+    end
+    if MyLevel == 125 or (MyLevel == 51 and (tonumber(MySubLevel) or 0) >= 101) then
+      if not StatTable.BhyssBlindEye and not StatTable.BhyssBlindEyeExhaust then
+        table.insert(commands, "cast 'bhyss blind eye'")
+      end
+    end
     
   elseif MyClass == "Black Circle Initiate" and MyLevel >= 51 then
     if not StatTable.Nightcloak then table.insert(commands, "cast 'nightcloak'") end

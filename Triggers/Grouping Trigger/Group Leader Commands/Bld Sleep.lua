@@ -1,11 +1,3 @@
--- Trigger: Bld Sleep 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (exact): bld sleep
-
--- Script Code:
 if StatTable.Class ~= "Bladedancer" then return end
 
 if (SafeArea() and (StatTable.Sneak or StatTable.MoveHidden)) then

@@ -1,0 +1,1 @@
+TryAction("wear all",5)

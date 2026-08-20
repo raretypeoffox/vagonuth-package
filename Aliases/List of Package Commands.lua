@@ -1,12 +1,7 @@
--- Alias: List of Package Commands
--- Attribute: isActive
-
--- Pattern: ^cmds?$
-
--- Script Code:
 cmd_name = "Summary of Key Commands/Features Available\nMany of these commands provide more information if you type the command with no argument"
 
 local syntax_tbl = {
+
   {"<red>Combat Commands",nil},
   {"autokill (on|off)", "whether to attack with killstyle (see below) on leader emote"},
   {"killstyle <style>", "what autokill style to attack with (e.g. kill, bash, backstab)"},
@@ -18,6 +13,7 @@ local syntax_tbl = {
   {"palrescue (on|off)", "recast <prayer> when the spell falls", condition = (StatTable.Class == "Paladin")},
   {"nextstance <stance>", "overides autostance to manually change to the next bld dance"},
   {"dancepattern <pattern", "set your BLD's dance pattern, type dancepattern for details"},
+  {'abom (<type> <name> <max_weight> [weapon]|off)', 'maintains named Necromancer abominations and optionally equips them', condition = (StatTable.Class == 'Necromancer')},
   {"",nil},
   {"<blue>Caster Commands",nil},
   {"autocast (on|off|<spell>)", "autocasts <spell> during combat [on by default]"},
@@ -25,9 +21,10 @@ local syntax_tbl = {
   {"(1|2|3|4|5)", "set surge level (only surges when mana is high) [2 by default]"},
   {"auto(weapon|armor|bow) <item>", "autoenchants all items named <item> in your inventory"},
   {"autobrill <#>", "default # of brills for autoenchant to try for [2 by default]"},
-  {"kin (<spell1> <spell2>|clear)", "set kinetic enhancers spells to autocast (psi's only)", condition = (StatTable.Class == "Psionicist")},
+  {"kin (<spell1> <spell2> <spell3>|clear)", "set kinetic enhancer spells to autocast (psi's only)", condition = (StatTable.Class == "Psionicist")},
   {"hm (<spell>|clear)", "set high magick (mag's only)"},
   {"stratum (<spell1> <spell2>|clear)", "set Stormlord stratums to autocast", condition = (StatTable.Class == "Stormlord")},
+  {"glow (<colour>)", "shows or casts an available Necromancer glow", condition = (StatTable.Class == "Necromancer")},
   {"",nil},
   {"<yellow>Healer Commands",nil},
   {"autoheal (on|off|<options>)", "autoheal either <target> or <lowest> groupmate [default: lowest]"},

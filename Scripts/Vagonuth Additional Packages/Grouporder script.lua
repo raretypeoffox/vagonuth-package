@@ -1,7 +1,3 @@
--- Script: Grouporder script
--- Attribute: isActive
-
--- Script Code:
 -- Class priorities
 local priorityGroups = {
     { classes = { "War", "Bod", "Bzk", "Rip", "Mon", "Bld", "Shf" }, sortBy = "maxhp" },

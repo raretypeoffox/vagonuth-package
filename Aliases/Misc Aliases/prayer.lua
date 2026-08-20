@@ -1,9 +1,3 @@
--- Alias: prayer
--- Attribute: isActive
-
--- Pattern: ^prayer\s*(.*)
-
--- Script Code:
 if (matches[2] == "") then
   print("Syntax: prayer <name> - autocasts prayer (for paladins)")
 else

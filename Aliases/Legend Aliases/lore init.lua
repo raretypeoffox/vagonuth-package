@@ -1,9 +1,3 @@
--- Alias: lore init
--- Attribute: isActive
-
--- Pattern: ^init$
-
--- Script Code:
 if StatTable.Level ~= 250 then return end
 
 -- tweak as desired

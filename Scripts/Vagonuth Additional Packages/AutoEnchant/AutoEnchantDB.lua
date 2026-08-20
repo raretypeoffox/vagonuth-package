@@ -1,7 +1,3 @@
--- Script: AutoEnchantDB
--- Attribute: isActive
-
--- Script Code:
 local AutoEnchantDB = db:create("AutoEnchant Database",
   {
     Enchants = {

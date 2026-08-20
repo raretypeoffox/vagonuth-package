@@ -1,11 +1,3 @@
--- Script: Battle.OnLook
--- Attribute: isActive
--- Battle.OnLook() called on the following events:
--- gmcp.Room.Players
--- gmcp.Room.AddPlayer
--- gmcp.Room.RemovePlayer
-
--- Script Code:
 Battle = Battle or {}
 Battle.GroupiesUnderAttack = Battle.GroupiesUnderAttack or {}
 Battle.EnemiesAttacking   = Battle.EnemiesAttacking   or {}

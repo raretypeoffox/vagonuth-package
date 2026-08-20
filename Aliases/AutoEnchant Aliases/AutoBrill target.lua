@@ -1,9 +1,3 @@
--- Alias: AutoBrill target
--- Attribute: isActive
-
--- Pattern: ^autobrill\s*(\d*)
-
--- Script Code:
 local autobrilltarget = tonumber(matches[2])
 
 if (autobrilltarget == nil) then

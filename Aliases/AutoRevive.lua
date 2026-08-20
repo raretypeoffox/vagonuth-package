@@ -1,9 +1,3 @@
--- Alias: AutoRevive
--- Attribute: isActive
-
--- Pattern: ^autorevive ?(on|off|\d+)?
-
--- Script Code:
 if (matches[2] == "on") then 
   GlobalVar.AutoRevive = true
   print("AutoRevive ON: will auto revive at " .. math.floor(StatTable.max_health * GlobalVar.AutoReviveHPpct) .. "hp (" .. GlobalVar.AutoReviveHPpct .. "%)")

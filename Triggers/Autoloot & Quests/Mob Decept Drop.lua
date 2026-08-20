@@ -1,15 +1,3 @@
--- Trigger: Mob Decept Drop 
--- Attribute: isActive
--- Attribute: isColorizerTrigger
-
--- mFgColor: #ff0000
--- mBgColour: #ffff00
-
--- Trigger Patterns:
--- 0 (regex): ^(?<mobname>.*) is so disgusted with (an|a|the) (?<item>.*) it tries to drop it!$
--- 1 (regex): ^(?<mobname>.*) is so disgusted with (?<item>.*) it tries to drop it!$
-
--- Script Code:
 -- The Lord of the Earth Elementals is so disgusted with the earthen mace of might it tries to drop it!
 
 if StatTable.Level == 125  then

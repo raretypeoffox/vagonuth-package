@@ -1,7 +1,3 @@
--- Script: Tank Direction Trigger
--- Attribute: isActive
-
--- Script Code:
 function TankDirection()
   -- Make sure the request came from the GroupLeader (should always be the case)
   if matches.leader ~= GlobalVar.GroupLeader then 

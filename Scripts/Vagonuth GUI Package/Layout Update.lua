@@ -1,7 +1,3 @@
--- Script: Layout Update
--- Attribute: isActive
-
--- Script Code:
 -------------------------------------------------
 -- Character Panel /Affects Update Script   
 -- Updates all the gauges / labels in the bottom panel as well as the affects panel
@@ -241,6 +237,25 @@ if label then
 end
 end
 
+function setNextPainElementalAlignment(element, duration, fatigue)
+  local label = VagoGUI.NextDynamicLabel()
+  if not label then return end
+
+  if element then
+    VagoGUI.Echo(label, '<center>Align - ' .. element .. ' - ' .. duration .. '</center>')
+    applyLabelStyle(label, 'green', 'green')
+  elseif fatigue then
+    VagoGUI.Echo(label, '<center>Align - Off - ' .. fatigue .. '</center>')
+    applyLabelStyle(label, 'yellow', 'rgba(255, 255, 0, 0.5)')
+  else
+    VagoGUI.Echo(label, '<center>Align - Off</center>')
+    applyLabelStyle(label, 'yellow', 'rgba(255, 0, 0, 0.5)')
+  end
+
+  VagoGUI.SetClick(label, '')
+  VagoGUI.Show(label)
+end
+
 function setNextAvailableLabelDebuff(...)
 local label = VagoGUI.NextDynamicLabel()
 if label then
@@ -345,6 +360,11 @@ function UpdateGUI()
         applyLabelStyle(QiLabel, "yellow", "rgba(255, 0, 0, 0.5)")   
         VagoGUI.Echo(QiLabel, "<center>AH off</center>")
       end
+    elseif StatTable.Class == "Necromancer" then
+      VagoGUI.Show(QiLabel)
+      applyLabelStyle(QiLabel, "green", "green")
+      local necromancer = StatTable.Necromancer or {}
+      VagoGUI.Echo(QiLabel, "<center>Ab: " .. (necromancer.AbominationWeight or 0) .. "/" .. (necromancer.MaxAbominationWeight or 0) .. "</center>")
     else
       VagoGUI.Hide(QiLabel)
     end
@@ -459,6 +479,20 @@ function UpdateGUI()
       if StatTable.EmotiveDrainExhaust then setNextAvailableLabelExhaust(StatTable.EmotiveDrain, StatTable.EmotiveDrainExhaust, "Emotive", "Emotive", "cast 'emotive drain'") end
       if StatTable.BrimstoneExhaust then setNextAvailableLabelExhaust(nil, StatTable.BrimstoneExhaust, "Brimstone", "Brimstone", "") end
    
+    elseif MyClass == "Necromancer" then
+      local necromancer = StatTable.Necromancer or {}
+      local glow = necromancer.Glow
+      setNextAvailableLabel(StatTable.Mystical, "Mystical", "Mystical", "cast mystical")
+      setNextAvailableLabelExhaust(StatTable.Tombstone, StatTable.TombstoneExhaust, "Tombstone", "Tombstone", "cast 'tombstone'")
+      setNextAvailableLabelExhaust(StatTable.BhyssBlindEye, StatTable.BhyssBlindEyeExhaust, "Bhyss Eye", "Bhyss Blind Eye", "cast 'bhyss blind eye'")
+      local label = VagoGUI.NextDynamicLabel()
+      if label then
+        VagoGUI.Echo(label, "<center>Glow: " .. tostring(glow or "None") .. "</center>")
+        applyLabelStyle(label, glow and "green" or "yellow", glow and "green" or "rgba(255, 0, 0, 0.5)")
+        VagoGUI.SetClick(label, "")
+        VagoGUI.Show(label)
+      end
+
     elseif MyClass == "Rogue" then
       setNextAvailableLabel(StatTable.Alertness, "Alert", "Alertness", "alertness")
       
@@ -663,6 +697,39 @@ function UpdateGUI()
     if ArrayHasValue(StaticVars.DarkRaces, MyRace) then
       setNextAvailableLabel(StatTable.DarkEmbrace, "Dark Embrace", "Dark Embrace", "cast 'dark embrace'")
     end
+
+    if MyRace == 'Pain Elemental' then
+      local alignment, alignmentDuration
+      if StatTable.RacialAlignmentFire then
+        alignment, alignmentDuration = 'Fire', StatTable.RacialAlignmentFire
+      elseif StatTable.RacialAlignmentAir then
+        alignment, alignmentDuration = 'Air', StatTable.RacialAlignmentAir
+      elseif StatTable.RacialAlignmentWater then
+        alignment, alignmentDuration = 'Water', StatTable.RacialAlignmentWater
+      elseif StatTable.RacialAlignmentEarth then
+        alignment, alignmentDuration = 'Earth', StatTable.RacialAlignmentEarth
+      end
+
+      setNextPainElementalAlignment(alignment, alignmentDuration, StatTable.RacialAlignFatigue)
+
+      if not alignment then
+        setNextAvailableLabelExhaust(StatTable.RacialPainAura, StatTable.RacialPainAuraFatigue, 'Pain Aura', 'Pain Aura', 'racial painaura')
+      elseif alignment == 'Fire' then
+        setNextAvailableLabelExhaust(StatTable.RacialFireaura, StatTable.RacialFireauraFatigue, 'Fire Aura', 'Fire Aura', 'racial fireaura')
+        setNextAvailableLabelExhaust(nil, StatTable.RacialFireringFatigue, 'Firering', 'Firering', 'racial firering')
+      elseif alignment == 'Air' then
+        setNextAvailableLabelExhaust(nil, StatTable.RacialEvaporateFatigue, 'Evaporate', 'Evaporate', 'racial evaporate')
+        setNextAvailableLabelExhaust(nil, StatTable.RacialSuffocateFatigue, 'Suffocate', 'Suffocate', 'racial suffocate')
+      elseif alignment == 'Water' then
+        setNextAvailableLabelExhaust(StatTable.RacialLiquify, StatTable.RacialLiquifyFatigue, 'Liquify', 'Liquify', 'racial liquify')
+        setNextAvailableLabelExhaust(nil, StatTable.RacialSweepFatigue, 'Sweep', 'Sweep', 'racial sweep')
+        setNextAvailableLabelExhaust(nil, StatTable.RacialAirdomeFatigue, 'Airdome', 'Airdome', 'racial airdome')
+      elseif alignment == 'Earth' then
+        setNextAvailableLabelExhaust(StatTable.RacialLithify, StatTable.RacialLithifyFatigue, 'Lithify', 'Lithify', 'racial lithify')
+        setNextAvailableLabelExhaust(nil, StatTable.RacialShelterFatigue, 'Shelter', 'Shelter', 'racial shelter')
+        setNextAvailableLabelExhaust(nil, StatTable.RacialEarthtremorFatigue, 'Earthtremor', 'Earthtremor', 'racial earthtremor')
+      end
+    end
     
     
     if MyRace == "Troll" then
@@ -737,6 +804,7 @@ function UpdateGUI()
     setNextAvailableLabelIfActive(StatTable.Regeneration, "Regen", nil, nil)
     setNextAvailableLabelIfActive(StatTable.Endurance, "Endur.", nil, nil)
     setNextAvailableLabelIfActive(StatTable.BlackGlow, "Black Glow", nil, nil)
+    setNextAvailableLabelIfActive(StatTable.Seethe, "Seethe", nil, nil)
     
     if MyRace ~= "Griffon" then
       setNextAvailableLabelIfActive(StatTable.RacialHeraldry, "Heraldry", nil, nil)

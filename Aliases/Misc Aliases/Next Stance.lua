@@ -1,9 +1,3 @@
--- Alias: Next Stance
--- Attribute: isActive
-
--- Pattern: ^(?i)(nextdance|nextstance)(?: (\w+)? ?(\d+)?)?$
-
--- Script Code:
 -- Get the stance name and optional timer from the captured matches.
 local stanceName = matches[3]  -- required argument (e.g. "dervish")
 local manualStanceTimer = matches[4]  -- optional argument (a number between 0 and 20)

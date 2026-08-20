@@ -1,7 +1,3 @@
--- Script: GMCP_OnlinePlayers
--- Attribute: isActive
-
--- Script Code:
 GlobalVar = GlobalVar or {}
 GlobalVar.OnlinePlayers = GlobalVar.OnlinePlayers or nil
 

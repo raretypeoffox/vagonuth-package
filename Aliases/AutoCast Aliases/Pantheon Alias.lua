@@ -1,9 +1,3 @@
--- Alias: Pantheon Alias
--- Attribute: isActive
-
--- Pattern: ^(?i)(panth|pantheon)(?: (.*))?$
-
--- Script Code:
 local args = (matches[3] or ""):lower()
 
 local function showAvailablePantheonSpells()

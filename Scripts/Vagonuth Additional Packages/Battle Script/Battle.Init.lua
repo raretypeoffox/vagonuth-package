@@ -1,7 +1,3 @@
--- Script: Battle.Init
--- Attribute: isActive
-
--- Script Code:
 Battle = Battle or {}
 Battle.Combat = Battle.Combat or false
 Battle.NextAction = Battle.NextAction or nil
@@ -92,7 +88,7 @@ function Battle.Act()
   
   -- If we do not have a NextAction set then check if we have AutoCast / AutoHeal / AutoSkill
   if not (Battle.NextAction or Battle.NextActionTime) then
-    if GlobalVar.AutoCast and GlobalVar.AutoCaster ~= "" then
+    if GlobalVar.AutoCast and (GlobalVar.AutoCaster ~= "" or StatTable.Class == "Necromancer") then
        Battle.NextAction, Battle.NextActionTime = Battle.AutoCast()
     elseif GlobalVar.AutoHeal then
        Battle.NextAction, Battle.NextActionTime = Battle.AutoHeal()
@@ -197,10 +193,20 @@ function Battle.AutoCast()
     return Battle.AutoCastStormlord()
   end
 
+  if StatTable.Class == "Necromancer" and type(NecromancerGameLoop) == "table" and
+      type(NecromancerGameLoop.NextBloodCurse) == "function" then
+    local action, lag = NecromancerGameLoop.NextBloodCurse()
+    if action then return action, lag end
+  end
+
   local autocast_minmana = 0
   local autocast_spell = GlobalVar.AutoCaster
   local nextaction = ""
   local spelllag = (5 * Battle.GetSpellLagMod()) -- assumes in class, ie 5 second, casting
+
+  if type(AutoCastCanUseSpell) == "function" and not AutoCastCanUseSpell(autocast_spell) then
+    return nil, ACT_WAIT_TIME_SECONDS
+  end
 
   if string.lower(autocast_spell or "") == "call lightning" and StatTable.Class ~= "Stormlord" then
     if type(IsThunderhead) ~= "function" or not IsThunderhead() then
@@ -221,7 +227,7 @@ function Battle.AutoCast()
   if (StatTable.Level == 125) then
     autocast_minmana = 500
   elseif (StatTable.Level == 51) then
-    autocast_minmana = 100
+    autocast_minmana = 200
   elseif (StatTable.Level < 51) then
     autocast_minmana = 50
   end
@@ -364,6 +370,10 @@ function Battle.StormlordMobCount()
 end
 
 function Battle.StormlordRoomAllowsAOE()
+  if GlobalVar and GlobalVar.AutoAOE == false then
+    return false
+  end
+
   if type(AutoCastRoomAllowsAOE) == "function" then
     return AutoCastRoomAllowsAOE()
   end

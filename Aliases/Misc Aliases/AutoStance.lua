@@ -1,9 +1,3 @@
--- Alias: AutoStance
--- Attribute: isActive
-
--- Pattern: ^(?i)autostance ?(on|off)?
-
--- Script Code:
 local args = matches[2] or nil
 
 if not args or args == "" then

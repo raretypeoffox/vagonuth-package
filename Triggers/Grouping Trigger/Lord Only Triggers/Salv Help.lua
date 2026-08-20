@@ -1,11 +1,3 @@
--- Trigger: Salv Help 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (regex): ^\[LORD INFO\]: \w+ starts a Salvation rite for (?<target>\w+) in (?<room>.*)\.$
-
--- Script Code:
 SalvTarget = matches.target
 
 -- Only triggers if we're in the same room

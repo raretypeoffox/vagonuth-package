@@ -1,11 +1,3 @@
--- Trigger: send trigger 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (regex): ^\*\w+\* tells the group 'send (\w+) (\w+)'$
-
--- Script Code:
 if StatTable.Level < 125 or StatTable.current_mana < 1000 or StatTable.Class == "Berserker" then return end
 
 local wait = 0

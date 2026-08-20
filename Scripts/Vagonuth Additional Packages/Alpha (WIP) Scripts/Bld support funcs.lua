@@ -1,7 +1,3 @@
--- Script: Bld support funcs
--- Attribute: isActive
-
--- Script Code:
           
 function BldDanceCheck()
   if StatTable.Class ~= "Bladedancer" then return "NotBld", -1 end

@@ -1,7 +1,3 @@
--- Script: Psi Weapon Triggers
--- Attribute: isActive
-
--- Script Code:
 PSITrigger = PSITrigger or {}
 PSITrigger.TriedLookUp = PSITrigger.TriedLookUp or {}
 PSITrigger.OnlinePath = "https://raw.githubusercontent.com/raretypeoffox/vagonuth-package/main"
@@ -33,6 +29,7 @@ local PSIWeaponLookup = {
   ["Hohner"] = {w1name = "Flaying the Mind one slash at a time!", w1keyword = "hohner"},
   ["Parrot"] = {w1name = "a moldy cracker!", w1keyword = "hootwield", w2name = "a dead rat!", w2keyword = "hootoffhand"},
   ["Draconixs"] = {w1name = "Loki", w1keyword = "loki", w2name = "Thor", w2keyword = "thor"},
+  ["Sumfyr"] = {w1name = "an ant chakram", w1keyword ="ant chakram", w2name = "an ant chakram", w2keyword ="ant chakram"},
   --["Infernox"]
   }
   
@@ -125,3 +122,7 @@ end
 PSITrigger.Load()
 PSITrigger.downloadFileHandler = safeEventHandler("PSIFileDownloadFileHandler", 'sysDownloadDone', "PSITrigger.onFileDownloaded")
 safeTempTimer("PsiTriggerDownloadTimer", 2, [[PSITrigger.DownloadFile()]])
+
+
+
+

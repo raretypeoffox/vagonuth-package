@@ -1,11 +1,3 @@
--- Trigger: Summon Planar Anchor 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (regex): ^\w+ begins to summon the Planar Anchor!$
-
--- Script Code:
 if StatTable.Class == "Mage" or
   StatTable.Class == "Cleric" or
   StatTable.Class == "Paladin" or

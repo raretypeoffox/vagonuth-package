@@ -1,9 +1,3 @@
--- Alias: chaos-look
--- Attribute: isActive
-
--- Pattern: ^(lookdirs|ldirs)$
-
--- Script Code:
 local dirs = {}
 
 tmpDirTrigger = tempRegexTrigger("^(North|South|East|West|Up|Down)", function() 

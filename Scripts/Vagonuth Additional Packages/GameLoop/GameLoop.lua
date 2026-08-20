@@ -1,7 +1,3 @@
--- Script: GameLoop
--- Attribute: isActive
-
--- Script Code:
 local function TryGameLoopAction(action, wait)
   if type(BuffManager) == "table" and type(BuffManager.TryAction) == "function" then
     return BuffManager.TryAction(action, wait)
@@ -284,6 +280,7 @@ function GameLoopOutOfCombatBuffs(MyClass)
   if (tonumber(StatTable.Foci) or 0) <= 1 then return end
   if Battle.Combat then return end
   if StatTable.Position ~= "Stand" then return end
+  if not Grouped() then return end
 
   local mana_pct = ((StatTable.max_mana or 0) > 0) and (StatTable.current_mana / StatTable.max_mana) or 0
 
@@ -316,6 +313,11 @@ function GameLoopOutOfCombatBuffs(MyClass)
   elseif MyClass == "Necromancer" then
     if StatTable.max_mana > 5000 and not StatTable.Mystical then
       BuffManager.Add("cast mystical", 1)
+    end
+    if ((StatTable.Level >= 40 and StatTable.Level <= 51) or StatTable.Level == 125) and
+        (tonumber(StatTable.current_mana) or 0) >= 500 and
+        not StatTable.Tombstone and not StatTable.TombstoneExhaust then
+      BuffManager.Add("cast 'tombstone'", 1)
     end
 
   elseif MyClass == "Stormlord" then
@@ -398,6 +400,51 @@ function GameLoopOutOfCombatBuffs(MyClass)
   end
 end
 
+function GameLoopAutoFrenzy(MyClass, MyRace)
+  local levelEligible = StatTable.Fortitude and
+    (StatTable.Level > 51 or StatTable.SubLevel > 41)
+  local healerEligible = StatTable.Level >= 21 and
+    (MyClass == "Cleric" or MyClass == "Druid" or MyClass == "Vizier")
+
+  if MyClass == "Paladin" then
+    local oath = string.lower(tostring(StatTable.Oath or ""))
+    local canFervor = oath ~= "" and oath ~= "creation" and oath ~= "peace"
+    local canFrenzy = canFervor and oath == "destruction" and
+      GlobalVar.AutoFrenzy and MyRace ~= "High Elf"
+
+    if type(BuffManager) == "table" and type(BuffManager.RemoveAction) == "function" then
+      if not canFervor then
+        BuffManager.RemoveAction("cast fervor")
+        BuffManager.RemoveAction("cast frenzy")
+      elseif not canFrenzy then
+        BuffManager.RemoveAction("cast frenzy")
+      end
+    end
+
+    if not canFervor or SafeArea() then return end
+    if AR and AR.Status and TableSize(AR.RescueList) > 0 then return end
+    if not levelEligible then return end
+
+    if not StatTable.Fervor and TryLock("GameLoopAutoFervor", 30) then
+      Battle.DoAfterCombat("cast fervor")
+    end
+    if canFrenzy and not StatTable.Frenzy and TryLock("GameLoopAutoFrenzy", 30) then
+      Battle.DoAfterCombat("cast frenzy")
+    end
+    return
+  end
+
+  if not GlobalVar.AutoFrenzy or SafeArea() then return end
+  if MyClass == "Berserker" or MyRace == "High Elf" then return end
+  if AR and AR.Status and TableSize(AR.RescueList) > 0 then return end
+  if not (levelEligible or healerEligible) or StatTable.Frenzy then return end
+
+  if TryLock("GameLoopAutoFrenzy", 30) then
+    Battle.DoAfterCombat("cast frenzy")
+  end
+end
+
+
 
 function GameLoop()
   
@@ -409,7 +456,7 @@ function GameLoop()
   -- Misc Run Scripts
   if (StatTable.current_health >= StatTable.max_health and StatTable.current_mana >= StatTable.max_mana and StatTable.current_moves >= StatTable.max_moves and StatTable.Foci and StatTable.Position == "Sleep" and (not SafeArea() or Grouped())) then TryAction("stand",30) end
   
-  if MyClass ~= "Sorcerer" and MyClass ~= "Shadowfist" and MyRace ~= "Demonseed" and MyRace ~= "Illithid" and
+  if not IsClass(StaticVars.EvilClasses) and not IsRace(StaticVars.EvilRaces) and
      StatTable.Alignment < 750 and StatTable.Level >= 51 and
      (not AltList or not AltList.Chars[StatTable.CharName].Insig or not AltList.Chars[StatTable.CharName].Insig.AcolyteOfTheTemple) then
     
@@ -480,6 +527,12 @@ function GameLoop()
   end
   
   GameLoopOutOfCombatBuffs(MyClass)
+  GameLoopAutoFrenzy(MyClass, MyRace)
+
+  if MyClass == 'Necromancer' and type(NecromancerGameLoop) == 'table' and
+      type(NecromancerGameLoop.GameLoop) == 'function' then
+    NecromancerGameLoop.GameLoop()
+  end
   
   -- Call Class and Race specific GameLoops if we are in combat
   if not GlobalVar.AutoStance then return end

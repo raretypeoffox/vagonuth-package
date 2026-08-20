@@ -38,6 +38,29 @@ local function AddGroupGUIPlayer(guiPlayers, index, Player)
   })
 end
 
+local function GetCurrentNecromancerMobs()
+  if not StatTable or StatTable.Class ~= "Necromancer" then return nil end
+  if type(StatTable.Necromancer) ~= "table" then return nil end
+
+  local necMobs = {}
+  for _, abomination in ipairs(StatTable.Necromancer.Abominations or {}) do
+    table.insert(necMobs, {
+      name = firstToUpper((abomination.Type or "NecMob"):gsub("%s+", "")),
+      class = "Mob",
+      race = "Undead",
+      position = "Stand",
+      hp = abomination.CurrentHealth,
+      maxhp = abomination.MaxHealth,
+      mp = 0,
+      maxmp = 0,
+      leader = false,
+      serial_number = abomination.SerialNumber,
+    })
+  end
+
+  return necMobs
+end
+
 function GMCP_Group()
     local GroupieTableIndex = 0
     StatTable.InjuredCount = 0
@@ -68,6 +91,11 @@ function GMCP_Group()
         table.insert(GlobalVar.NecMobList, GroupList[i])
         table.remove(GroupList, i)
       end
+    end
+
+    local currentNecromancerMobs = GetCurrentNecromancerMobs()
+    if currentNecromancerMobs then
+      GlobalVar.NecMobList = currentNecromancerMobs
     end
 
     for _, Player in ipairs(GroupList) do
@@ -131,7 +159,7 @@ function GMCP_Group()
     end -- end of player for loop
     
     
-    if GlobalVar.ShowNecMobs or StatTable.Class == "Nec" then -- NecMobFlag
+    if GlobalVar.ShowNecMobs or StatTable.Class == "Necromancer" then -- NecMobFlag
       for _, NecMob in ipairs(GlobalVar.NecMobList) do
         GroupieTableIndex = GroupieTableIndex + 1 
         

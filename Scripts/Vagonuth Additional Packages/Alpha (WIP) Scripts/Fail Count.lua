@@ -1,7 +1,3 @@
--- Script: Fail Count
--- Attribute: isActive
-
--- Script Code:
 --=============================================================================
 -- FailCount module for any spell — configurable at the top
 --=============================================================================

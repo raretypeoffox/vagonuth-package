@@ -1,13 +1,3 @@
--- Trigger: Hellbreach Rewards 
--- Attribute: isActive
--- Attribute: isMultiline
-
-
--- Trigger Patterns:
--- 0 (regex): ^The amulet evaporates (.*)$
--- 1 (regex): ^You have received:? (.*)$
-
--- Script Code:
 
 --cecho("GroupChat","<yellow><b>" .. multimatches[2][1] .. "\n")
 

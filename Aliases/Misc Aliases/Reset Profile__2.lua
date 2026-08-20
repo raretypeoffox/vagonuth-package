@@ -1,0 +1,2 @@
+resetProfile()
+LoadLayout()

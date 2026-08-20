@@ -1,11 +1,3 @@
--- Trigger: Get Ammo from Cor 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (substring): is DEAD!!
-
--- Script Code:
 local ammotype
 
 if (StatTable.Class == "Fusilier") then
