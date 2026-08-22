@@ -20,7 +20,7 @@ Nec.RecentAbominations = {}
 Nec.PendingLoot = {}
 Nec.HandledLoot = {}
 Nec.RitualPendingIds = {}
-Nec.BloodCurseAttempts = {}
+Nec.BloodCurseAttempted = false
 Nec.WeaponAttempts = {}
 Nec.LootSerial = Nec.LootSerial or 0
 Nec.RoomListPending = false
@@ -87,7 +87,7 @@ function Nec.ResetSession()
   Nec.PendingLoot = {}
   Nec.HandledLoot = {}
   Nec.RitualPendingIds = {}
-  Nec.BloodCurseAttempts = {}
+  Nec.BloodCurseAttempted = false
   Nec.RoomListPending = false
 end
 
@@ -413,18 +413,15 @@ function Nec.OnAbominationDeath(abomType, name)
 end
 
 function Nec.NextBloodCurse()
-  if not isNecromancer() or not GlobalVar.AutoCast or not Battle.Combat then return end
+  if not isNecromancer() or not Battle.Combat or Nec.BloodCurseAttempted then return end
   local hp = tonumber(StatTable.current_health) or 0
   local maxhp = tonumber(StatTable.max_health) or 0
   if maxhp <= 0 or hp / maxhp >= 0.85 then return end
-  local status = gmcp and gmcp.Char and gmcp.Char.Status or {}
-  local opponent = trim(status.opponent_name)
-  if opponent == "" or Nec.BloodCurseAttempts[opponent] then return end
   local lag = 5 * (Battle.GetSpellLagMod and Battle.GetSpellLagMod() or 1)
   if GlobalVar.QuickenStatus and tonumber(StatTable.Quicken) then
     lag = lag * (1 - (tonumber(StatTable.Quicken) / 18))
   end
-  Nec.BloodCurseAttempts[opponent] = true
+  Nec.BloodCurseAttempted = true
   return "cast 'blood curse'", lag
 end
 
@@ -480,6 +477,7 @@ safeEventHandler("NecromancerGameLoop.ItemsRemove", "gmcp.Char.Items.Remove", Ne
 safeEventHandler("NecromancerGameLoop.ItemsList", "gmcp.Char.Items.List", Nec.OnItemList, false)
 safeEventHandler("NecromancerGameLoop.Vitals", "gmcp.Char.Vitals", Nec.SyncAbominations, false)
 safeEventHandler("NecromancerGameLoop.Room", "gmcp.Room.Info", Nec.OnRoomChange, false)
-safeEventHandler("NecromancerGameLoop.EndCombat", "EndCombat", function() Nec.BloodCurseAttempts = {} end, false)
+safeEventHandler("NecromancerGameLoop.OnMobDeath", "OnMobDeath", function() Nec.BloodCurseAttempted = false end, false)
+safeEventHandler("NecromancerGameLoop.EndCombat", "EndCombat", function() Nec.BloodCurseAttempted = false end, false)
 safeEventHandler("NecromancerGameLoop.Profile", "CustomProfileInit", Nec.ResetSession, false)
 safeEventHandler("NecromancerGameLoop.Disconnect", "sysDisconnectionEvent", Nec.ResetSession, false)
