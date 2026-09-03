@@ -10,6 +10,26 @@ VagoGUI.PendingDue = VagoGUI.PendingDue or {}
 VagoGUI.PendingFunc = VagoGUI.PendingFunc or {}
 VagoGUI.NextDynamicLabelIndex = VagoGUI.NextDynamicLabelIndex or nil
 
+local function verticallyCenteredStyle(style, alignment)
+  local alignmentRule = "qproperty-alignment: '" .. (alignment or "AlignVCenter") .. "';"
+
+  if style:find("qproperty%-alignment") then
+    style = style:gsub("qproperty%-alignment:%s*'[^']+';", alignmentRule)
+  else
+    style = style .. "\n" .. alignmentRule
+  end
+
+  if not style:find("padding%s*:") then style = style .. "\npadding: 0px;" end
+  return style
+end
+
+local function gaugeText(text, color)
+  local fontSize = math.max(6, Layout and Layout.DefaultFontSize or 8)
+  local colorStyle = color and (" color: " .. color .. ";") or ""
+  return ("<center><b><span style='font-size: %dpt;%s'>%s</span></b></center>")
+    :format(fontSize, colorStyle, text)
+end
+
 function VagoGUI.HasFocus()
   if type(hasFocus) ~= "function" then return true end
 
@@ -101,8 +121,9 @@ end
 
 function VagoGUI.SetStyle(label, style)
   if not label or not style then return end
+  style = verticallyCenteredStyle(style, label._vagoAlignment)
   if label._vagoStyle == style then return end
-
+  
   label._vagoStyle = style
   label:setStyleSheet(style)
 end
@@ -311,29 +332,27 @@ function UpdateGUI()
     VagoGUI.Echo(RunLevelsLabel, "<center>" .. RunStats.RunLevels .. " Levels</center>")
     VagoGUI.Echo(RunStatsLabel, "<center>" .. RunStats.RunHP .. "HP / " .. RunStats.RunMP .. "MA</center>" )
     
-    VagoGUI.SetGauge(MainHPBar, StatTable.current_health,StatTable.max_health,"<h3><b><center>".. StatTable.current_health .. "/" .. StatTable.max_health .. "  HP</b></center></h3>")
-    VagoGUI.SetGauge(MainMPBar, StatTable.current_mana,StatTable.max_mana,"<h3><b><center>".. StatTable.current_mana .. "/" .. StatTable.max_mana .. "  Mana</b></center></h3>")
-    VagoGUI.SetGauge(MoveBar, StatTable.current_moves,StatTable.max_moves,"<h3><b><center>".. StatTable.current_moves .. "/" .. StatTable.max_moves .. "  Moves</b></center></h3>")
-    VagoGUI.SetGauge(TNLBar, math.min(StatTable.current_tnl, StatTable.max_tnl), StatTable.max_tnl, "<h3><b><span style='color: black'><center>" .. StatTable.current_tnl .. "/" .. StatTable.max_tnl .. "  TNL</b></center></h3>")
-    
-    
-    
+    VagoGUI.SetGauge(MainHPBar, StatTable.current_health, StatTable.max_health, gaugeText(StatTable.current_health .. "/" .. StatTable.max_health .. "  HP"))
+    VagoGUI.SetGauge(MainMPBar, StatTable.current_mana, StatTable.max_mana, gaugeText(StatTable.current_mana .. "/" .. StatTable.max_mana .. "  Mana"))
+    VagoGUI.SetGauge(MoveBar, StatTable.current_moves, StatTable.max_moves, gaugeText(StatTable.current_moves .. "/" .. StatTable.max_moves .. "  Moves"))
+    VagoGUI.SetGauge(TNLBar, math.min(StatTable.current_tnl, StatTable.max_tnl), StatTable.max_tnl, gaugeText(StatTable.current_tnl .. "/" .. StatTable.max_tnl .. "  TNL", "black"))
+   
     if (StatTable.current_mon == nil or StatTable.current_mon == "" or StatTable.current_mon == null or StatTable.Monitor == nil) then
-        VagoGUI.SetGauge(MonitorBar, 1,1,"<h3><b><center> NO MONITOR</b></center></h2>")
+        VagoGUI.SetGauge(MonitorBar, 1, 1, gaugeText("NO MONITOR"))
     else
-        VagoGUI.SetGauge(MonitorBar, StatTable.current_mon,StatTable.max_mon,"<h3><b><center>".. RemoveColourCodes(StatTable.Monitor) .. ":" .. StatTable.current_mon .. "/" .. StatTable.max_mon .. "  HP</b></center></h3>")
+        VagoGUI.SetGauge(MonitorBar, StatTable.current_mon, StatTable.max_mon, gaugeText(RemoveColourCodes(StatTable.Monitor) .. ":" .. StatTable.current_mon .. "/" .. StatTable.max_mon .. "  HP"))
     end
     
     if not(StatTable.Enemy == nil or StatTable.Enemy == "") then 
-        VagoGUI.SetGauge(EnemyBar, StatTable.EnemyHP,StatTable.EnemyMaxHP,"<b><center>Fighting: " .. RemoveColourCodes(StatTable.Enemy) ..  " LV:" .. gmcp.Char.Status.opponent_level .. "</b></center>")
+        VagoGUI.SetGauge(EnemyBar, StatTable.EnemyHP, StatTable.EnemyMaxHP, gaugeText("Fighting: " .. RemoveColourCodes(StatTable.Enemy) .. " LV:" .. gmcp.Char.Status.opponent_level))
     else
-        VagoGUI.SetGauge(EnemyBar, 0,100,"<h3><b><center> NO TARGET</b></center></h3>")
+        VagoGUI.SetGauge(EnemyBar, 0, 100, gaugeText("NO TARGET"))
     end
     
     -- Item and Weight and Aligment
-    VagoGUI.SetGauge(WeightBar, math.min(StatTable.Weight, StatTable.MaxWeight), StatTable.MaxWeight, "<h3><b><center>" .. StatTable.Weight .. "/" .. StatTable.MaxWeight .. "  lbs</b></center></h3>")
-    VagoGUI.SetGauge(ItemsBar, StatTable.Items,StatTable.MaxItems,"<h3><b><center>".. StatTable.Items .. "/" .. StatTable.MaxItems .. "  items</b></center></h3>")
-    VagoGUI.SetGauge(AlignmentBar, (StatTable.Alignment + 1000),2000,"<h3><b><center> Align: " .. StatTable.Alignment .. "</b></center></h3>")
+    VagoGUI.SetGauge(WeightBar, math.min(StatTable.Weight, StatTable.MaxWeight), StatTable.MaxWeight, gaugeText(StatTable.Weight .. "/" .. StatTable.MaxWeight .. "  lbs"))
+    VagoGUI.SetGauge(ItemsBar, StatTable.Items, StatTable.MaxItems, gaugeText(StatTable.Items .. "/" .. StatTable.MaxItems .. "  items"))
+    VagoGUI.SetGauge(AlignmentBar, StatTable.Alignment + 1000, 2000, gaugeText("Align: " .. StatTable.Alignment))
     
     -- Lag / Qi / Savespell
     VagoGUI.Echo(LagLabel, "<center>lag: " .. tonumber(gmcp.Char.Vitals.lag) .. "</center>")
@@ -679,6 +698,9 @@ function UpdateGUI()
       setNextAvailableLabelExhaust(nil, StatTable.PsyphonExhaust, "Psyphon", "Psyphon", "cast psyphon")
     elseif StatTable.Class == "Fury" then
       setNextAvailableLabel(StatTable.Wildmind, "Wildmind", "Wildmind", "cast wildmind")
+      if StatTable.Level == 125 then 
+        setNextAvailableLabel(StatTable.Seethe, "Seethe", "Seethe", "cast seethe")
+      end
       setNextAvailableLabelIfActiveFury(StatTable.DaringFury,      "Daring Fury",      "Daring Fury",      nil)
       setNextAvailableLabelIfActiveFury(StatTable.DestructiveFury, "Destructive Fury", "Destructive Fury", nil)
       setNextAvailableLabelIfActiveFury(StatTable.ExplosiveFury,   "Explosive Fury",   "Explosive Fury",   nil)
@@ -804,7 +826,7 @@ function UpdateGUI()
     setNextAvailableLabelIfActive(StatTable.Regeneration, "Regen", nil, nil)
     setNextAvailableLabelIfActive(StatTable.Endurance, "Endur.", nil, nil)
     setNextAvailableLabelIfActive(StatTable.BlackGlow, "Black Glow", nil, nil)
-    setNextAvailableLabelIfActive(StatTable.Seethe, "Seethe", nil, nil)
+    
     
     if MyRace ~= "Griffon" then
       setNextAvailableLabelIfActive(StatTable.RacialHeraldry, "Heraldry", nil, nil)

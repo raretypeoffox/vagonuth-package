@@ -14,9 +14,24 @@ elseif args == "right" or args == "rightcontainer" or args == "right off" or arg
   RightContainerToggle()
   cecho(("Right container is now %s\n")
     :format(GlobalVar.RightContainer and "<green>ON<reset>" or "<red>OFF<reset>"))
+elseif args == "compact" or args == "compact off" or args == "compact on" then
+  if args == "compact on" then
+    GlobalVar.GUICompact = true
+  elseif args == "compact off" then
+    GlobalVar.GUICompact = false
+  else
+    GlobalVar.GUICompact = not GlobalVar.GUICompact
+  end
+
+  SaveProfileVars()
+  if GlobalVar.GUI then LoadLayout() end
+
+  cecho(("Compact GUI is now %s\n")
+    :format(GlobalVar.GUICompact and "<green>ON<reset>" or "<red>OFF<reset>"))
 else
   showCmdSyntax("GUI Commands\n\tSyntax: gui <option>", {
     {"gui echomain",  "Toggle echoing to the main console"},
     {"gui right [on|off]", "Toggle or set the right-side chat container"},
+    {"gui compact [on|off]", "Toggle or set compact GUI spacing"},
   })
 end

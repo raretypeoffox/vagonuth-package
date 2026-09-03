@@ -1,5 +1,8 @@
-if GroupLeader() or (StatTable.Class == "Berserker" or StatTable.Class == "Priest" or StatTable.Class == "Shadowfist" or StatTable.Class == "Sorcerer") or (StatTable.Level < 51 or StatTable.SubLevel < 41) or StatTable.Alignment < 300 then
-  return
+if GroupLeader() or 
+  IsClass({"Berserker", "Priest", "Shadowfist", "Sorcerer", "Necromancer"}) or 
+  (StatTable.Level < 51 or StatTable.SubLevel < 41) or 
+  StatTable.Alignment < 300 then
+    return
 end
 
 if Battle.Combat then

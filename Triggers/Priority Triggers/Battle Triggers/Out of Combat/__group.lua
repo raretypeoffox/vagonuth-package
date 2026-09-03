@@ -1,0 +1,1 @@
+-- Additionally, attacks picked up by the DamageCounter will also raise OnCombat

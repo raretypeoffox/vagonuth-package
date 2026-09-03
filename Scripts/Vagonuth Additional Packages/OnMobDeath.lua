@@ -22,12 +22,14 @@ BuffManager.NoSpellRoomName = BuffManager.NoSpellRoomName or nil
 -- Mapping dictionary of commands to StatTable keys
 local buffMap = {
   ["cast sanctuary"] = "Sanctuary",
-  ["cast 'iron monk'"] = "Sanctuary",
+  ["cast iron monk"] = "Sanctuary",
   ["cast frenzy"] = "Frenzy",
   ["cast mystical"] = "Mystical",
-  ["cast 'death shroud'"] = "DeathShroud",
-  ["cast 'vile philosophy'"] = "VilePhilosophy",
-  ["cast 'unholy bargain'"] = "UnholyBargainExhaust",
+  ["cast death shroud"] = "DeathShroud",
+  ["cast vile philosophy"] = "VilePhilosophy",
+  ["cast unholy bargain"] = "UnholyBargainExhaust",
+  ["cast tombstone"] = "Tombstone",
+  ["cast bhyss blind eye"] = "BhyssBlindEye",
   ["cast stratum gale"] = "StratumGale",
   ["cast stratum sleet"] = "StratumSleet",
   ["cast stratum spring rain"] = "StratumSpringRain",
@@ -35,37 +37,37 @@ local buffMap = {
   ["cast stratum hail storm"] = "StratumHailStorm",
   ["cast stratum thunderhead"] = "StratumThunderhead",
   ["cast stratum blizzard"] = "StratumBlizzard",
-  ["cast 'glorious conquest'"] = "GloriousConquest",
-  ["cast 'artificer blessing'"] = "ArtificerBlessing",
+  ["cast glorious conquest"] = "GloriousConquest",
+  ["cast artificer blessing"] = "ArtificerBlessing",
   ["cast discordia"] = "Discordia",
   ["sneak"] = "Sneak",
   ["move hidden"] = "MoveHidden",
   ["cast intervention"] = "Intervention",
-  ["cast 'ether link'"] = "EtherLink",
-  ["cast 'ether warp'"] = "EtherWarp",
-  ["cast 'dagger hand'"] = "DaggerHand",
-  ["cast 'stone fist'"] = "StoneFist",
-  ["cast 'gravitas'"] = "Gravitas",
-  ["cast 'hive mind'"] = "HiveMind",
-  ["cast 'illusory shield'"] = "IllusoryShield",
-  ["cast 'sense weakness'"] = "SenseWeakness",
-  ["cast 'kahbyss insight'"] = "KahbyssInsight",
+  ["cast ether link"] = "EtherLink",
+  ["cast ether warp"] = "EtherWarp",
+  ["cast dagger hand"] = "DaggerHand",
+  ["cast stone fist"] = "StoneFist",
+  ["cast gravitas"] = "Gravitas",
+  ["cast hive mind"] = "HiveMind",
+  ["cast illusory shield"] = "IllusoryShield",
+  ["cast sense weakness"] = "SenseWeakness",
+  ["cast kahbyss insight"] = "KahbyssInsight",
   ["cast fervor"] = "Fervor",
-  ["cast 'holy zeal'"] = "HolyZeal",
-  ["cast 'joined boon'"] = "JoinedBoon",
-  ["cast 'shared boon'"] = "SharedBoon",
-  ["cast 'kinetic chain'"] = "KineticChain",
-  ["cast 'stunning weapon'"] = "StunningWeapon",
+  ["cast holy zeal"] = "HolyZeal",
+  ["cast joined boon"] = "JoinedBoon",
+  ["cast shared boon"] = "SharedBoon",
+  ["cast kinetic chain"] = "KineticChain",
+  ["cast stunning weapon"] = "StunningWeapon",
   ["cast savvy"] = "Savvy",
-  ["cast 'wildmind'"] = "Wildmind",
+  ["cast wildmind"] = "Wildmind",
   ["alertness"] = "Alertness",
-  ["cast 'flow like water'"] = "FlowLikeWater",
-  ["cast 'burning fury'"] = "BurningFury",
+  ["cast flow like water"] = "FlowLikeWater",
+  ["cast burning fury"] = "BurningFury",
   ["stance echelon"] = "StanceEchelon",
   ["stance square"] = "StanceSquare",
   ["stance vampire fang"] = "VampireFang",
   ["stance spectral fang"] = "SpectralFang",
-  ["cast 'sidereal reflections'"] = "SiderealReflections",
+  ["cast sidereal reflections"] = "SiderealReflections",
 }
 
 -- Keep MobDeath.UpdateCommandCheck for full compatibility with legacy code and other files
@@ -126,19 +128,9 @@ function MobDeath.UpdateCommandCheck()
   MobDeath.CommandCheck["alertness"] = StatTable.Alertness or 0
 end
 
--- Returns the corresponding StatTable key for a given action string (handles targeted spells like "cast frenzy player")
+-- Returns the corresponding StatTable key for an exact, untargeted self-buff action.
 function BuffManager.GetStatKeyForAction(action)
-  if not action then return nil end
-  local clean_action = string.lower(action)
-  clean_action = string.gsub(clean_action, "%s+", " ")
-  
-  -- Check exact match or prefix match with space
-  for cmd, statKey in pairs(buffMap) do
-    if clean_action == cmd or string.sub(clean_action, 1, string.len(cmd) + 1) == cmd .. " " then
-      return statKey
-    end
-  end
-  return nil
+  return buffMap[BuffManager.NormalizeAction(action)]
 end
 
 -- Checks if the buff/effect for the action is currently active in StatTable
@@ -189,6 +181,17 @@ function BuffManager.NormalizeAction(action)
   action = string.lower(action)
   action = string.gsub(action, "%s+", " ")
   action = string.gsub(action, "^%s*(.-)%s*$", "%1")
+  action = string.gsub(action, "^c%s+", "cast ")
+
+  -- Quotes immediately after "cast" delimit the spell name. Remove only those
+  -- quotes so later quoted arguments (such as prayer names) keep their meaning.
+  local spell, remainder = string.match(action, "^cast%s+'([^']*)'(.*)$")
+  if spell and spell ~= "" then
+    remainder = string.gsub(remainder, "^%s*", "")
+    action = "cast " .. spell
+    if remainder ~= "" then action = action .. " " .. remainder end
+  end
+
   return action
 end
 
@@ -442,8 +445,9 @@ end
 
 -- Check if the queue already contains the specified action
 function BuffManager.QueueContains(action)
+  local normalized = BuffManager.NormalizeAction(action)
   for _, item in ipairs(BuffManager.Queue) do
-    if item.action == action then
+    if BuffManager.NormalizeAction(item.action) == normalized then
       return true
     end
   end
@@ -477,7 +481,7 @@ function BuffManager.Add(action, priority)
   end
   
   -- Specific check for cure blindness: if not blind, don't queue
-  if action == "cast 'cure blindness'" and not StatTable.Blindness then
+  if BuffManager.NormalizeAction(action) == "cast cure blindness" and not StatTable.Blindness then
     pdebug("BuffManager.Add(): 'cure blindness' ignored, not blind")
     return false
   end
@@ -610,7 +614,7 @@ function BuffManager.Process()
   end
   
   -- Specific check for cure blindness: if we got cured in the meantime, skip
-  if item.action == "cast 'cure blindness'" and not StatTable.Blindness then
+  if BuffManager.NormalizeAction(item.action) == "cast cure blindness" and not StatTable.Blindness then
     table.remove(BuffManager.Queue, 1)
     
     -- Sync legacy queue

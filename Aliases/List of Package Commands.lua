@@ -42,6 +42,7 @@ local syntax_tbl = {
   {"speedwalk <dirs>", "can speedwalk directions, e.g., speedwalk 3sesdede"},
   {"bud-set <name> <colour_code>", "sets name and colour for buddychat tag"},
   {"silent (on|off)", "turns on silent mode (minimal gtell / emotes)"},
+  {"audio (status|mudlet|windows|test)", "select or test the sound player; Windows fallback is opt-in"},  
   {"pwd <password>", "autologins with password (NOTE: stored in plain text!!)"},
   {"autobuff (on|off)", "automatically recast out-of-combat buffs after combat [default: ON]"},
   {"autostance (on|off)", "automatically switch stances on certain classes [default: OFF]"},

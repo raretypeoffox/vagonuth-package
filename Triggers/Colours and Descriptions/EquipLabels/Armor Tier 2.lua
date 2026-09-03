@@ -1,1 +1,1 @@
-cecho (string.rep (" ",80-tonumber(string.len(line))) .."<purple> [AC - T2-3]")
+cecho (string.rep (" ",80-tonumber(string.len(line))) .."<purple> [AC - T2]")

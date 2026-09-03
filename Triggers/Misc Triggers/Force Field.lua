@@ -20,6 +20,7 @@ if IsClass({"Psionicist","Mindbender"}) then
   shatter_enemy = string.gsub(shatter_enemy, " a ", " ")
   shatter_enemy = string.gsub(shatter_enemy, '^%s*(.-)%s*$', '%1')
   send("cast shatterspell '" .. shatter_enemy .. "'")
+  send("cast shatterspell")
   if quicken then send("quicken off") end
   
 end

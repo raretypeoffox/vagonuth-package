@@ -1,8 +1,8 @@
 -- Class priorities
 local priorityGroups = {
-    { classes = { "War", "Bod", "Bzk", "Rip", "Mon", "Bld", "Shf" }, sortBy = "maxhp" },
-    { classes = { "Rog", "Asn", "Bci", "Arc", "Sld", "Fus" }, sortBy = "maxhp" },
-    { classes = { "Mag", "Wzd", "Stm", "Sor", "Psi", "Mnd", "Fyr", "Nec" }, sortBy = "maxmp" },
+    { classes = { "War", "Ran", "Bod", "Bzk", "Rip", "Mon", "Fsk", "Bld", "Shf" }, sortBy = "maxhp" },
+    { classes = { "Rog", "Asn", "Bci", "Arc", "Sld", "Fus", "Nec" }, sortBy = "maxhp" },
+    { classes = { "Mag", "Wzd", "Stm", "Sor", "Psi", "Mnd", "Fyr"}, sortBy = "maxmp" },
 }
 
 -- table.indexof function to find an index of a value in a table

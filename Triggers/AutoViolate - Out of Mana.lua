@@ -1,11 +1,3 @@
--- Trigger: AutoViolate - Out of Mana 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (start of line): You do not have enough mana to cast violation.
-
--- Script Code:
 coroutine.wrap(function()
 
   send("sleep")

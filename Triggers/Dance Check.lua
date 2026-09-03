@@ -1,11 +1,3 @@
--- Trigger: Dance Check 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (regex): ^\*\w+\* tells the group '(d|st)ance check'$
-
--- Script Code:
 local msg = ""
 
 if StatTable.VeilTimer then

@@ -1,10 +1,3 @@
--- Trigger: Gravitas mob - bugged 
-
-
--- Trigger Patterns:
--- 0 (regex): ^(.*) surrounds \w+ with a telekinetic sink.$
-
--- Script Code:
 if IsGroupMate(matches[2]) then return; end -- just a group mate casting gravitas
 
 GlobalVar.UnequippedLight = GlobalVar.UnequippedLight or nil

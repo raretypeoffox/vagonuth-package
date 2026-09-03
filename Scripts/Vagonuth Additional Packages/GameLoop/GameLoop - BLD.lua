@@ -179,7 +179,7 @@ local DanceName = {
 
 local function autoStancePrerequisites()
   if not GlobalVar.AutoStance then return false end
-  if StatTable.Level < 51 then return end
+  if StatTable.Level < 51 or (StatTable.Level == 51 and StatTable.SubLevel < 101) then return end
   if not gmcp.Char.Status.opponent_health and tonumber(gmcp.Char.Status.opponent_health) < 30 then return false end
   if tonumber(gmcp.Char.Vitals.lag) > 0 then return false end
   return true

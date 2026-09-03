@@ -137,25 +137,22 @@ local function format_send_line(rank, name, v)
   return msg:gsub("=", "-")
 end
 
--- Helper: format a line for echo (plain text with tabs)
+-- Helper: format a line for echo (with color codes and aligned columns)
 local function format_echo_line(rank, name, v)
   local non_bash_rounds = v.rounds - v.bashrounds
   local avg = non_bash_rounds > 0 and math.floor((v.dmg - v.bashdmg) / non_bash_rounds + .05) or math.floor(v.dmg / math.max(1, v.rounds) + .05)
   local dmg = format_int(math.floor(v.dmg + .05))
-  -- adjust tabs based on name length and two-digit ranks
-  local name_thresh = (rank >= 10) and 3 or 4
-  local tab1 = (#name > name_thresh) and "\t" or "\t\t"
-  local tab2 = (#dmg < 8)          and "\t\t" or "\t"
+  local avg_str = DamageCounter.numtodmg(avg)
+  local high_str = DamageCounter.numtodmg(v.highest)
+  local terms = tonumber(v.terminal) or 0
   return string.format(
-    "%d. %s%s%s%s(avg: %s / highest: %s / terms: %d)",
+    "<cyan>%2d. <white>%-13s %11s  <yellow>(avg: <white>%-21s <yellow>/ highest: <white>%-26s <yellow>/ terms: <white>%2d<yellow>)",
     rank,
     name,
-    tab1,
     dmg,
-    tab2,
-    DamageCounter.numtodmg(avg),
-    DamageCounter.numtodmg(v.highest),
-    v.terminal
+    avg_str,
+    high_str,
+    terms
   )
 end
 
@@ -184,19 +181,28 @@ function DamageCounter.Report(op, n)
   announce_brands(sorted_brands(), function(m) send("gtell "..m, false) end)
 end
 
--- Echo (print) version
+-- Echo (cecho) version
 function DamageCounter.ReportEcho(op, n)
-  print("Damage Report:")
-  print("------------------")
+  local players = sorted_players()
   local show = make_filter(op, n)
-  for rank, entry in ipairs(sorted_players()) do
+  local count = 0
+
+  cecho("\n<cyan>Damage Report:\n")
+  cecho("<cyan>----------------------------------------------------------------------------------------------------\n")
+  for rank, entry in ipairs(players) do
     local name = entry[2]
     local v    = DamageCounter.Players[name]
-    if v.rounds >= 1 and show(rank) then
-      print(format_echo_line(rank, name, v))
+    if v and v.rounds >= 1 and show(rank) then
+      cecho(format_echo_line(rank, name, v) .. "\n")
+      count = count + 1
     end
   end
-  announce_brands(sorted_brands(), print)
+  if count == 0 then
+    cecho("<white>No damage recorded.\n")
+  end
+  announce_brands(sorted_brands(), function(m)
+    cecho(string.format("<cyan>%s\n", m:gsub("^Top Brandishers:%s*", "Top Brandishers: <white>")))
+  end)
 end
 
 function DamageCounter.dmgtonum(dmgdesc)

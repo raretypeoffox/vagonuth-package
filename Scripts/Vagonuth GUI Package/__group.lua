@@ -1,0 +1,5 @@
+-------------------------------------------------
+--          Folder for GUI scripts          --
+--                                             --
+-- Note that you can also use external scripts --
+-------------------------------------------------

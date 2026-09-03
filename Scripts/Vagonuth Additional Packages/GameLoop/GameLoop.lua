@@ -319,6 +319,12 @@ function GameLoopOutOfCombatBuffs(MyClass)
         not StatTable.Tombstone and not StatTable.TombstoneExhaust then
       BuffManager.Add("cast 'tombstone'", 1)
     end
+    if StatTable.Level == 125 then
+      if not StatTable.BhyssBlindEye then
+        BuffManager.Add("cast 'bhyss blind eye'")
+      end
+    
+    end
 
   elseif MyClass == "Stormlord" then
     if not StatTable.Solitude and mana_pct > 0.5 then
@@ -535,8 +541,7 @@ function GameLoop()
   end
   
   -- Call Class and Race specific GameLoops if we are in combat
-  if not GlobalVar.AutoStance then return end
-  if Battle.Combat then
+  if Battle.Combat and GlobalVar.AutoStance then
     GameLoopClass(MyClass)
     GameLoopRace(MyRace)
     
@@ -562,3 +567,4 @@ function GameLoop()
 end
 
 
+safeEventHandler("CallOutOfCombatBuffsOnMobDeath", "EndCombat", function() GameLoopOutOfCombatBuffs(StatTable.Class) end, false)

@@ -1,9 +1,3 @@
--- Script: GMCP_Group
--- Attribute: isActive
--- GMCP_Group() called on the following events:
--- gmcp.Char.Group.List
-
--- Script Code:
 local IncludeNecMobName = false -- set to true to show the Nec Mob's name
 
 local function PlayerCanReceiveDirectHeals(Player)

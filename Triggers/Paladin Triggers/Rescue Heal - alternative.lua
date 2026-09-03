@@ -32,7 +32,9 @@ if (count == 1 and StatTable.Level <= 51) then
       -- Only rescue targets with hp < 100%
       rescuehp_pct = GlobalVar.GroupMates[rescuetarget].hp / GlobalVar.GroupMates[rescuetarget].maxhp
 
-      if (rescuehp_pct < 1 and GlobalVar.GroupMates[rescuetarget].class ~= "Pal" and GlobalVar.GroupMates[rescuetarget].class ~= "Fyr") then TryAction("r " .. rescuetarget,2) end
+      if (rescuehp_pct < 1 and GlobalVar.GroupMates[rescuetarget].class ~= "Pal" and GlobalVar.GroupMates[rescuetarget].class ~= "Fyr") then 
+        TryAction("augment 3" .. cs .. "rescue " .. rescuetarget .. cs .. "augment off",2) 
+      end
     
     
     end  

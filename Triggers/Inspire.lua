@@ -1,11 +1,3 @@
--- Trigger: Inspire 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (regex): ^\*\w+\* tells the group 'inspire'$
-
--- Script Code:
 if StatTable.InspireExhaust then
   send("gtell Inspire is still exhausted for " .. StatTable.InspireExhaust .. " ticks",false)
 else

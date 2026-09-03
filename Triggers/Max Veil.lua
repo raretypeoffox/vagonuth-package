@@ -1,11 +1,3 @@
--- Trigger: Max Veil 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (regex): ^\*\w+\* tells the group '(max veil|max viel|veil max|viel max)'$
-
--- Script Code:
 local btmax = BladetranceMax()
 local btlevel = StatTable.BladetranceLevel
 

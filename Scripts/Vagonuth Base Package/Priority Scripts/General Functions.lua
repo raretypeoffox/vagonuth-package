@@ -174,14 +174,20 @@ function printGameMessage(title, message, colour, colour_message)
   colour = colour or "white"
   colour_message = colour_message or ("ansi_" .. colour)
   
-  local formatStr = string.format("<%s>%s<%s>: %s\n", colour, title, colour_message, message)
+  local formatStr = string.format("<%s>%s<%s>: %s", colour, title, colour_message, message)
   if StaticVars.GameMsgsChatOutput then
-    cecho(StaticVars.GameMsgsChatOutput, formatStr)
+    local outputWindow = StaticVars.GameMsgsChatOutput
+    moveCursorEnd(outputWindow)
+    if (tonumber(getColumnNumber(outputWindow)) or 0) > 0 then
+      cecho(outputWindow, "\n")
+    end
+    cecho(outputWindow, formatStr)
+
     if GlobalVar.RightContainer == false then
-      cecho(formatStr)
+      cecho(formatStr .. "\n")
     end
   else
-    cecho(formatStr)
+    cecho(formatStr .. "\n")
   end
 end
 

@@ -1,11 +1,3 @@
--- Trigger: Gravitas mob workaround 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (regex): ^(.*) surrounds \w+ with a telekinetic sink.$
-
--- Script Code:
 --if IsGroupMate(matches[2]) or gmcp.Room.Players(GMCP_name(matches[2])) then return; end -- just a group mate casting gravitas
 
 if IsGroupMate(matches[2]) then return; end -- just a group mate casting gravitas

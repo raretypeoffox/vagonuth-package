@@ -1,29 +1,3 @@
-function beep()
-  if GlobalVar.Silent then return end
-  playSoundFile({name = getMudletHomeDir().. "/Vagonuth-Package/beep.wav"})
-end
-
-function QuickBeep()
-  if GlobalVar.Silent then return end
-  playSoundFile({name = getMudletHomeDir().. "/Vagonuth-Package/quickbeep.wav"})
-end
-
-function QuickBeepVerbose()
-  if not GlobalVar.Verbose then return end
-  QuickBeep()
-end
-
-function VictoryBeep()
-  if GlobalVar.Silent then return end
-  playSoundFile({name = getMudletHomeDir().. "/Vagonuth-Package/victorybeep.mp3", volume = 75})
-end
-
-function TingleBeep()
-  if GlobalVar.Silent then return end
-  playSoundFile({name = getMudletHomeDir().. "/Vagonuth-Package/tingle.mp3", volume = 75})
-end
-
-
 function IsGroupMate(groupie_name) 
   groupie_name = GMCP_name(groupie_name)
 
@@ -36,6 +10,27 @@ function IsGroupMate(groupie_name)
   end
 
   return false -- return FALSE is groupie_name is not a player in our group OR he's invis and we can't detect them
+end
+
+local AbominationTypes = {
+  ["skeleton"] = true,
+  ["zombie"] = true,
+  ["bloated"] = true,
+  ["bloated one"] = true,
+  ["bloated abomination"] = true,
+  ["ghoul"] = true,
+  ["vampire"] = true,
+  ["ghost"] = true,
+  ["abomination"] = true,
+}
+
+-- IsAbomination(name) - returns true if name matches the format of a Necromancer abomination (e.g. "a skeleton named Bob")
+function IsAbomination(name)
+  if not name or name == "" then return false end
+  name = RemoveColourCodes(name)
+  local abom_type = name:lower():match("^%s*an?%s+(.-)%s+named%s+%S.*$")
+  if not abom_type then return false end
+  return AbominationTypes[abom_type] == true
 end
 
 -- Grouped() - returns true if grouped, otherwise false 
@@ -66,7 +61,7 @@ function SafeArea()
       gmcp.Room.Info.zone == "{ LORD } Dev     Rietta's Wonders" or 
       gmcp.Room.Info.zone == "{ LORD } Crom    Thorngate" or
       gmcp.Room.Info.zone == "{ LORD } Vorak   Lord Mud School" or
-      --gmcp.Room.Info.zone == "{ LORD } Odin    Labyrinth of Bo'vul" or
+      gmcp.Room.Info.zone == "{ LORD } Odin    Labyrinth of Bo'vul" or
       gmcp.Room.Info.zone == "{ LORD } Crom    The House of Bandu" or
       gmcp.Room.Info.zone == "{ ALL  } AVATAR  Locker Rental Agency") or
       gmcp.Room.Info.name == "The Flying Citadel of Zin" or

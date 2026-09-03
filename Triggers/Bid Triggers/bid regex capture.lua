@@ -1,3 +1,13 @@
+-- Trigger: bid regex capture 
+-- Attribute: isActive
+-- Attribute: isMultiline
+
+
+-- Trigger Patterns:
+-- 0 (regex): ^ \s?\s?\s?(?<bid_id>\d+) \| \s*(?<bid_current>[0-9,]*) \| \s?\s?\s?(?<bid_time>\d+) \| \s?\s?\s?\s?(?<bid_level>\d+) \| \s*(?<bid_min>[0-9,]*)\s?\|?\s?(?<bid_highest>\*You are the highest bidder\*)?(?<bid_posted>\*You are auctioning this item\*)?$
+-- 1 (regex): ^     > (?<bid_itemname>.*)
+
+-- Script Code:
 --print()
 
 moveCursor(0,getLineCount()-1)
@@ -53,11 +63,11 @@ else
   item_name = "<white>" .. multimatches[2].bid_itemname
 end 
 
-if (multimatches[1].bid_highest~="") then
+if (multimatches[1].bid_highest == "*You are the highest bidder*") then
   item_name = item_name .. "\t<ansi_light_yellow>*HIGHEST BIDDER*"
 end
 
-if (multimatches[1].bid_posted~="") then
+if (multimatches[1].bid_posted == "*You are auctioning this item*") then
   item_name = item_name .. "\t<ansi_light_green>*YOU POSTED THIS ITEM*"
 end
 

@@ -30,6 +30,7 @@ local PSIWeaponLookup = {
   ["Parrot"] = {w1name = "a moldy cracker!", w1keyword = "hootwield", w2name = "a dead rat!", w2keyword = "hootoffhand"},
   ["Draconixs"] = {w1name = "Loki", w1keyword = "loki", w2name = "Thor", w2keyword = "thor"},
   ["Sumfyr"] = {w1name = "an ant chakram", w1keyword ="ant chakram", w2name = "an ant chakram", w2keyword ="ant chakram"},
+  ["Implication"] = {w1name = "Basilisk Fang", w1keyword="fang"},
   --["Infernox"]
   }
   

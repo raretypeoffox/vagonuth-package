@@ -1,13 +1,3 @@
--- Trigger: AutoPlane 
--- Attribute: isActive
--- Attribute: isMultiline
-
-
--- Trigger Patterns:
--- 0 (regex): ^(?<player>\w+) wavers for a moment,? and with a bright flash of green light,? is gone!$
--- 1 (regex): ^\[LORD INFO\]: (?<player>\w+) has just (shifted|returned) to (The |the )?(?<plane>.*)!$
-
--- Script Code:
 local plane = multimatches[2].plane
 if plane == "WaterRealm" then plane = "water" end
 if plane == "EarthRealm" then plane = "earth" end

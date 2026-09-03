@@ -4,13 +4,6 @@ CustomPreachup = {
 ["Qhax"] = "cast prayer soothe",
 }
 
--- Retained for compatibility with personal extensions. AutoFrenzy now controls
--- Frenzy acquisition for every character, so this list is no longer a gate.
-CustomFrenzyList = {
-  --"Azarael",
-  "Thistleshade",
-  "Bruzzorli",
-}
 
 function CustomMDAYPreachup()
   CustomPreachup["Xanur"] = "cast 'minds eye'" .. cs .."cast steel olodagh" .. cs .. "cast steel glugruk" .. cs .. "cast steel azalad" .. cs .. "cast steel zallah"
@@ -152,12 +145,16 @@ function GetSpellsAtPreachup()
   local paladinOath = MyClass == "Paladin" and string.lower(tostring(StatTable.Oath or "")) or ""
   local paladinCanFervor = MyClass == "Paladin" and MyLevel >= 51 and
     paladinOath ~= "" and paladinOath ~= "creation" and paladinOath ~= "peace"
+  local autoRescueActive = type(AR) == "table" and AR.Status and
+    type(AR.RescueList) == "table" and TableSize(AR.RescueList) > 0
+  local canAutoFrenzy = GlobalVar.AutoFrenzy and
+    (not autoRescueActive or MyClass == "Berserker" or MyClass == "Fury")
 
   if MyClass == "Paladin" and type(BuffManager) == "table" and type(BuffManager.RemoveAction) == "function" then
     if not paladinCanFervor then
       BuffManager.RemoveAction("cast fervor")
       BuffManager.RemoveAction("cast frenzy")
-    elseif StatTable.Race == "High Elf" or paladinOath ~= "destruction" or not GlobalVar.AutoFrenzy then
+    elseif StatTable.Race == "High Elf" or paladinOath ~= "destruction" or not canAutoFrenzy then
       BuffManager.RemoveAction("cast frenzy")
     end
   end
@@ -202,11 +199,11 @@ function GetSpellsAtPreachup()
     if paladinCanFervor and not StatTable.Fervor then
       table.insert(commands, "cast fervor")
     end
-    if paladinCanFervor and paladinOath == "destruction" and GlobalVar.AutoFrenzy and
+    if paladinCanFervor and paladinOath == "destruction" and canAutoFrenzy and
        StatTable.Race ~= "High Elf" and not StatTable.Frenzy then
       table.insert(commands, "cast frenzy")
     end
-  elseif GlobalVar.AutoFrenzy and MyLevel >= 51 and StatTable.Race ~= "High Elf" and not StatTable.Frenzy then
+  elseif canAutoFrenzy and MyLevel >= 51 and StatTable.Race ~= "High Elf" and not StatTable.Frenzy then
       if isMDAY and IsNotClass({"Berserker", "Priest"}) and (MyLevel == 125 or MySubLevel > 41) then
         table.insert(commands, "cast frenzy")
       else
@@ -240,6 +237,7 @@ function GetSpellsAtPreachup()
         table.insert(commands, "cast '" .. GlobalVar.KineticEnhancerThree .. "'")
     end
     
+    if not StatTable.IllusoryShield then table.insert(commands, "cast 'illusory shield'") end
 
     if (MyLevel == 125 or MySubLevel > 101) and not StatTable.Savvy then table.insert(commands, "cast savvy") end
     if MyLevel == 125 then

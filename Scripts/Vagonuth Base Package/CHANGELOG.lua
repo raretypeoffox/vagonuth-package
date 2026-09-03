@@ -149,6 +149,20 @@
 -- bug fix: autocast off no longer disables autotarget; autotarget falls back to the configured killstyle
 
 -- v1.5.0
+-- added: gui compact [on|off] for denser GUI spacing on high-DPI displays (Mudlet 5.0 compatability)
+-- added: opt-in Windows audio fallback for Mudlet 5.0 / Qt playback problems (Mudlet 5.0 compatability)
+-- added: audio status, audio mudlet, and audio test commands
+-- changed: audio handling now lives in its own Priority Scripts/Audio script
+-- fixed: bottom GUI panel now stays above Mudlet's input line
+-- minor update: tweaked Nec's 'blood curse' to fire a little faster
+-- minor update: pantheon, high magick, kinetic chain, etc. now fire even if autostance is off
+-- bug fix: necromancer trigger group is now gated
+-- bug fix: necromancer no longer tries to frenzy groupmates
+-- bug fix: autofrenzy only fires if autorescue is off
+
+
+
+-- v1.6.0
 -- TODO: fury lord stuff
 -- TODO: add heroic boon to paladin
 -- TODO: add: shining pennant (cleric) viz?

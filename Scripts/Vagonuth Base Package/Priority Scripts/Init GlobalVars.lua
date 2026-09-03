@@ -1,3 +1,8 @@
+-- Initialization Script
+-- Sets up all the Global Vars we'll be using throughout the various modules
+-- Upon loading up Mudlet / this Profile, scripts are first run from top to bottom.
+-- As such, this script should always be the first (ie top) script in Mudlet
+
 StatTable = StatTable or {}
 AltList = AltList or {}
 AltList.Chars = AltList.Chars or {}
@@ -16,6 +21,7 @@ function Init.GlobalVars()
   GlobalVar.GUI = GlobalVar.GUI or true
   
   GlobalVar.Silent = GlobalVar.Silent or false
+  if GlobalVar.AudioBackend == nil then GlobalVar.AudioBackend = "mudlet" end
   GlobalVar.PerformanceMode = GlobalVar.PerformanceMode or false
   GlobalVar.Debug = GlobalVar.Debug or false
   GlobalVar.Verbose = GlobalVar.Verbose or true
@@ -196,10 +202,11 @@ function Init.Char(MyClass, MyRace, MyLevel, MySubLevel)
     GlobalVar.AutoCasterSingle = ""
     GlobalVar.AutoCasterAOE = ""
     GlobalVar.QuickenStatus = false
-    if MyClass == 'Necromancer' and MyLevel == 51 then
+    
+    if MyClass == 'Necromancer' and MyLevel >= 15 then
       GlobalVar.AutoCast = true
-      GlobalVar.AutoCaster = 'life drain'
-      GlobalVar.AutoCasterSingle = 'life drain'
+      GlobalVar.AutoCaster = 'siphon'
+      GlobalVar.AutoCasterSingle = 'siphon'
     end
     
     -- Skill Variables
@@ -283,7 +290,9 @@ function Init.Char(MyClass, MyRace, MyLevel, MySubLevel)
       end
     elseif MyClass == "Fury" then
       if MyLevel == 125 then
-        --TODO
+        GlobalVar.AutoCast = true
+        GlobalVar.SurgeLevel = 1
+        GlobalVar.AutoCaster = "lash"  
       elseif MyLevel == 51 then
         GlobalVar.AutoCast = false
         GlobalVar.SurgeLevel = 1
@@ -389,7 +398,10 @@ function Init.FirstTime()
   
   -- Install CPC if not already installed
   if not table.contains(getPackages(),"Cross Profile Communication") then
-	 installPackage("https://github.com/takilara/cpc/releases/latest/download/cpc.mpackage")
+	   installPackage("https://github.com/takilara/cpc/releases/latest/download/cpc.mpackage")
+  end
+  if not table.contains(getPackages(),"Vagonuth-Inventory-Mgmt") then
+    installPackage("https://github.com/raretypeoffox/vagonuth-lists-mpackage/releases/latest/download/Vagonuth-Inventory-Mgmt.mpackage")
   end
 end
 
@@ -423,8 +435,10 @@ local PROFILE_VARIABLES = {
   {"BuddyChatName", nil},
   {"BuddyChatColour", nil},
   {"RightContainer", true},
+  {"GUICompact", false},
   {"EchoToMainConsole", false},
   {"Silent", false},
+  {"AudioBackend", "mudlet"},
   {"Password", nil},
   {"AutoStance", false},
   {"AutoPlane", false},
@@ -517,11 +531,3 @@ if OnSysConnectEventHandler  then
 end
 
 OnSysConnectEventHandler = registerAnonymousEventHandler("sysDisconnectionEvent", "OnMudletDisconnect")
-
-
-
-
-
-
-
-

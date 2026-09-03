@@ -1,11 +1,3 @@
--- Trigger: AutoViolate - fail 
--- Attribute: isActive
-
-
--- Trigger Patterns:
--- 0 (start of line): Your attempt to violate this item has failed.
-
--- Script Code:
 
 
 
